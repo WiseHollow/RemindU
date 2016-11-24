@@ -14,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.util.LoginRequest;
+import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,18 +68,22 @@ public class LoginActivity extends AppCompatActivity
                                 final String email = jsonResponse.getString("email");
                                 final String username = jsonResponse.getString("username");
 
-                                final int pointsTotal = jsonResponse.getInt("pointsTotal");
-                                final int pointsGiven = jsonResponse.getInt("pointsGiven");
+                                final int pointsTotal = jsonResponse.getInt("pointsRemaining");
+                                final int pointsGiven = jsonResponse.getInt("pointsSent");
                                 final int pointsReceived = jsonResponse.getInt("pointsReceived");
 
+                                UserProfile profile = new UserProfile(active, fullName, username, email, password, pointsTotal, pointsReceived, pointsGiven);
+
                                 Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
-                                intent.putExtra("active", active);
+                                /*intent.putExtra("active", active);
                                 intent.putExtra("fullname", fullName);
                                 intent.putExtra("email", email);
                                 intent.putExtra("username", username);
-                                intent.putExtra("pointsTotal", pointsTotal);
-                                intent.putExtra("pointsGiven", pointsGiven);
-                                intent.putExtra("pointsReceived", pointsReceived);
+                                intent.putExtra("pointsRemaining", pointsTotal);
+                                intent.putExtra("pointsSent", pointsGiven);
+                                intent.putExtra("pointsReceived", pointsReceived);*/
+
+                                intent.putExtra("profile", profile);
 
                                 LoginActivity.this.startActivity(intent);
                                 finish();

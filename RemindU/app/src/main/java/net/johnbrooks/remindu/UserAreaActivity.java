@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.util.UserProfile;
+
 public class UserAreaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -45,21 +47,23 @@ public class UserAreaActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        final String username = getIntent().getStringExtra("username");
+        /*final String username = getIntent().getStringExtra("username");
         final String fullName = getIntent().getStringExtra("fullname");
         final String email = getIntent().getStringExtra("email");
         final int pointsTotal = getIntent().getIntExtra("pointsTotal", -1);
         final int pointsGiven = getIntent().getIntExtra("pointsGiven", -1);
-        final int pointsReceived = getIntent().getIntExtra("pointsReceived", -1);
+        final int pointsReceived = getIntent().getIntExtra("pointsReceived", -1);*/
+
+        final UserProfile profile = getIntent().getParcelableExtra("profile");
 
         final TextView etName = (TextView) findViewById(R.id.textView_Name);
         final TextView etPointsTotal = (TextView) findViewById(R.id.textView_PointsTotal);
         final TextView etPointsGiven = (TextView) findViewById(R.id.textView_PointsGiven);
         final TextView etPointsReceived = (TextView) findViewById(R.id.textView_PointsReceived);
-        etName.setText(fullName);
-        etPointsTotal.setText("Remaining: " + pointsTotal);
-        etPointsGiven.setText("Given: " + pointsGiven);
-        etPointsReceived.setText("Received: " + pointsReceived);
+        etName.setText(profile.GetFullName());
+        etPointsTotal.setText("Remaining: " + profile.GetPointsRemaining());
+        etPointsGiven.setText("Sent: " + profile.GetPointsSent());
+        etPointsReceived.setText("Received: " + profile.GetPointsReceived());
     }
 
     @Override
