@@ -44,9 +44,16 @@ public class UserAreaActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        final TextView etName = (TextView) findViewById(R.id.textView_Name);
 
         final String username = getIntent().getStringExtra("username");
+        final String fullName = getIntent().getStringExtra("fullname");
+        final String email = getIntent().getStringExtra("email");
+        final int pointsTotal = getIntent().getIntExtra("pointsTotal", -1);
+        final int pointsGiven = getIntent().getIntExtra("pointsGiven", -1);
+        final int pointsReceived = getIntent().getIntExtra("pointsReceived", -1);
+
+        final TextView etName = (TextView) findViewById(R.id.textView_Name);
+        etName.setText(fullName);
     }
 
     @Override

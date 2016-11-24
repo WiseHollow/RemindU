@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity
                                 intent.putExtra("pointsReceived", pointsReceived);
 
                                 LoginActivity.this.startActivity(intent);
+                                finish();
                             }
                             else
                             {
