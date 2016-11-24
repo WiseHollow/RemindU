@@ -45,6 +45,8 @@ public class UserAreaActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         final TextView etName = (TextView) findViewById(R.id.textView_Name);
+
+        final String username = getIntent().getStringExtra("username");
     }
 
     @Override
