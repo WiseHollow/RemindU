@@ -53,7 +53,13 @@ public class UserAreaActivity extends AppCompatActivity
         final int pointsReceived = getIntent().getIntExtra("pointsReceived", -1);
 
         final TextView etName = (TextView) findViewById(R.id.textView_Name);
+        final TextView etPointsTotal = (TextView) findViewById(R.id.textView_PointsTotal);
+        final TextView etPointsGiven = (TextView) findViewById(R.id.textView_PointsGiven);
+        final TextView etPointsReceived = (TextView) findViewById(R.id.textView_PointsReceived);
         etName.setText(fullName);
+        etPointsTotal.setText("Remaining: " + pointsTotal);
+        etPointsGiven.setText("Given: " + pointsGiven);
+        etPointsReceived.setText("Received: " + pointsReceived);
     }
 
     @Override

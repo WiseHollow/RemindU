@@ -15,7 +15,7 @@
 
     <TextView
         android:text="Username"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView_Name"
         android:textSize="24sp"
@@ -25,10 +25,78 @@
 
     <TextView
         android:text="Welcome Back!"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView3"
         android:layout_below="@+id/textView_Name"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Reminders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView10"
+        android:layout_marginTop="15dp"
+        android:textSize="24sp"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textAlignment="center" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_marginTop="14dp"
+        android:id="@+id/scrollView_Reminders"
+        android:scrollbarStyle="insideOverlay"
+        android:layout_below="@+id/textView10"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_height="290dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <TextView
+        android:text="Received: "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_PointsReceived"
+        android:textAlignment="textStart"
+        android:layout_above="@+id/textView_PointsGiven"
+        android:layout_alignLeft="@+id/textView_PointsTotal"
+        android:layout_alignStart="@+id/textView_PointsTotal" />
+
+    <TextView
+        android:text="Given: "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_PointsGiven"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/textView_PointsReceived"
+        android:layout_alignStart="@+id/textView_PointsReceived" />
+
+    <TextView
+        android:text="Point Statistics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_Stats"
+        android:textSize="24sp"
+        android:textAlignment="center"
+        android:layout_below="@+id/scrollView_Reminders"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Remaining: "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_PointsTotal"
+        android:layout_above="@+id/textView_PointsReceived"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>
