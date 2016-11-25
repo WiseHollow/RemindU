@@ -9,6 +9,8 @@ import android.os.Parcelable;
 
 public class UserProfile implements Parcelable
 {
+    public static UserProfile PROFILE = null;
+
     private int Active;
 
     private String FullName;

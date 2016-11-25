@@ -72,18 +72,12 @@ public class LoginActivity extends AppCompatActivity
                                 final int pointsGiven = jsonResponse.getInt("pointsSent");
                                 final int pointsReceived = jsonResponse.getInt("pointsReceived");
 
-                                UserProfile profile = new UserProfile(active, fullName, username, email, password, pointsTotal, pointsReceived, pointsGiven);
+                                //UserProfile profile = new UserProfile(active, fullName, username, email, password, pointsTotal, pointsReceived, pointsGiven);
+                                UserProfile.PROFILE = new UserProfile(active, fullName, username, email, password, pointsTotal, pointsReceived, pointsGiven);
 
                                 Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
-                                /*intent.putExtra("active", active);
-                                intent.putExtra("fullname", fullName);
-                                intent.putExtra("email", email);
-                                intent.putExtra("username", username);
-                                intent.putExtra("pointsRemaining", pointsTotal);
-                                intent.putExtra("pointsSent", pointsGiven);
-                                intent.putExtra("pointsReceived", pointsReceived);*/
 
-                                intent.putExtra("profile", profile);
+                                //intent.putExtra("profile", profile);
 
                                 LoginActivity.this.startActivity(intent);
                                 finish();

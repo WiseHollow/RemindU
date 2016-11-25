@@ -1,8 +1,10 @@
 package net.johnbrooks.remindu;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,7 +20,9 @@ import android.widget.TextView;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class UserAreaActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener
+{
+    //private UserProfile profile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -46,24 +50,20 @@ public class UserAreaActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //
+        // Get Profile from previous activity
+        //
 
-        /*final String username = getIntent().getStringExtra("username");
-        final String fullName = getIntent().getStringExtra("fullname");
-        final String email = getIntent().getStringExtra("email");
-        final int pointsTotal = getIntent().getIntExtra("pointsTotal", -1);
-        final int pointsGiven = getIntent().getIntExtra("pointsGiven", -1);
-        final int pointsReceived = getIntent().getIntExtra("pointsReceived", -1);*/
-
-        final UserProfile profile = getIntent().getParcelableExtra("profile");
+        //profile = getIntent().getParcelableExtra("profile");
 
         final TextView etName = (TextView) findViewById(R.id.textView_Name);
         final TextView etPointsTotal = (TextView) findViewById(R.id.textView_PointsTotal);
         final TextView etPointsGiven = (TextView) findViewById(R.id.textView_PointsGiven);
         final TextView etPointsReceived = (TextView) findViewById(R.id.textView_PointsReceived);
-        etName.setText(profile.GetFullName());
-        etPointsTotal.setText("Remaining: " + profile.GetPointsRemaining());
-        etPointsGiven.setText("Sent: " + profile.GetPointsSent());
-        etPointsReceived.setText("Received: " + profile.GetPointsReceived());
+        etName.setText(UserProfile.PROFILE.GetFullName());
+        etPointsTotal.setText("Remaining: " + UserProfile.PROFILE.GetPointsRemaining());
+        etPointsGiven.setText("Sent: " + UserProfile.PROFILE.GetPointsSent());
+        etPointsReceived.setText("Received: " + UserProfile.PROFILE.GetPointsReceived());
     }
 
     @Override
@@ -104,17 +104,17 @@ public class UserAreaActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_profile)
+        {
+            Intent intent = new Intent(UserAreaActivity.this, MyProfileActivity.class);
+            UserAreaActivity.this.startActivity(intent);
+        }
+        else if (id == R.id.nav_manage)
+        {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        }
+        else if (id == R.id.nav_invite)
+        {
 
         }
 
