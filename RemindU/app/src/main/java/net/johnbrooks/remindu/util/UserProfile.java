@@ -1,7 +1,15 @@
 package net.johnbrooks.remindu.util;
 
+import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import net.johnbrooks.remindu.UserAreaActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by John on 11/24/2016.
@@ -22,6 +30,8 @@ public class UserProfile implements Parcelable
     private int PointsSent;
     private int PointsReceived;
 
+    private List<Reminder> Reminders;
+
     public UserProfile(int active, String fullName, String username, String email, String password, Integer pointsRemaining, Integer pointsReceived, Integer pointsSent)
     {
         Active = active;
@@ -32,6 +42,15 @@ public class UserProfile implements Parcelable
         PointsReceived = pointsReceived;
         PointsRemaining = pointsRemaining;
         PointsSent = pointsSent;
+
+        Reminders = new ArrayList<>();
+
+        Reminder test = new Reminder("This is a test reminder.");
+        Reminder test2 = new Reminder("Make sure to take out the trash. ");
+        test2.SetImportant(true);
+
+        Reminders.add(test);
+        Reminders.add(test2);
     }
 
     public final int IsActive() { return Active; }
@@ -43,6 +62,8 @@ public class UserProfile implements Parcelable
     public final int GetPointsSent() { return PointsSent; }
     public final int GetPointsReceived() { return PointsReceived; }
 
+    public List<Reminder> GetReminders() { return Reminders; }
+
     protected UserProfile(Parcel in)
     {
         Active = in.readInt();
@@ -53,6 +74,16 @@ public class UserProfile implements Parcelable
         PointsRemaining = in.readInt();
         PointsSent = in.readInt();
         PointsReceived = in.readInt();
+    }
+
+    public void writeToLinearLayout(Activity activity, LinearLayout layout)
+    {
+        for (Reminder r : GetReminders())
+        {
+            EditText text = new EditText(activity);
+            text.setText(r.GetMessage());
+            layout.addView(text);
+        }
     }
 
     public static final Creator<UserProfile> CREATOR = new Creator<UserProfile>()

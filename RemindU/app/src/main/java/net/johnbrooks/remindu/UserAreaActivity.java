@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.text.Layout;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,9 +16,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
+
+import java.util.List;
 
 public class UserAreaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
@@ -51,19 +56,21 @@ public class UserAreaActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //
-        // Get Profile from previous activity
+        // Gets
         //
 
-        //profile = getIntent().getParcelableExtra("profile");
-
         final TextView etName = (TextView) findViewById(R.id.textView_Name);
-        final TextView etPointsTotal = (TextView) findViewById(R.id.textView_PointsTotal);
-        final TextView etPointsGiven = (TextView) findViewById(R.id.textView_PointsGiven);
-        final TextView etPointsReceived = (TextView) findViewById(R.id.textView_PointsReceived);
+        final LinearLayout layout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
+
+        if (UserProfile.PROFILE == null || layout == null)
+            return;
+
+        //
+        // Sets
+        //
+
         etName.setText(UserProfile.PROFILE.GetFullName());
-        etPointsTotal.setText("Remaining: " + UserProfile.PROFILE.GetPointsRemaining());
-        etPointsGiven.setText("Sent: " + UserProfile.PROFILE.GetPointsSent());
-        etPointsReceived.setText("Received: " + UserProfile.PROFILE.GetPointsReceived());
+        UserProfile.PROFILE.writeToLinearLayout(UserAreaActivity.this, layout);
     }
 
     @Override
