@@ -80,7 +80,10 @@ public class Reminder
         Bitmap bCheckmark = BitmapFactory.decodeResource( activity.getResources(), R.drawable.checkmark_48 );
         Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_48 );
         Bitmap bClock = BitmapFactory.decodeResource( activity.getResources(), R.drawable.clock_48 );
+        Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48 );
         int messageLength = GetMessage().toCharArray().length;
+        if (Important)
+            messageLength+=3;
 
         //Log.d("TEST", "Size: " + parent.getChildCount());
         int color = Color.LTGRAY;
@@ -90,6 +93,8 @@ public class Reminder
         //    color = Color.argb(255, 255, 55, 55); //TODO: Change to ! mark
 
         SpannableStringBuilder buttonContent = new SpannableStringBuilder();
+        if (Important)
+            buttonContent.append("_  ");
         buttonContent.append(GetMessage());
         buttonContent.append("\n");
         buttonContent.append("_ _ _" + "   " + "Time left: " + GetETA());
@@ -98,6 +103,8 @@ public class Reminder
         buttonContent.setSpan(new ImageSpan(view.getContext(), bCheckmark), messageLength + 1, messageLength + 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         buttonContent.setSpan(new ImageSpan(view.getContext(), bDelete), messageLength + 3, messageLength + 4, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         buttonContent.setSpan(new ImageSpan(view.getContext(), bClock), messageLength + 5, messageLength + 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        if (Important)
+            buttonContent.setSpan(new ImageSpan(view.getContext(), bImportant), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         ClickableSpan checkMarkClick = new ClickableSpan() {
             @Override
