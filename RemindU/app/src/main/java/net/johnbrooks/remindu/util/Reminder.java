@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -80,9 +81,13 @@ public class Reminder
         Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_48 );
         Bitmap bClock = BitmapFactory.decodeResource( activity.getResources(), R.drawable.clock_48 );
         int messageLength = GetMessage().toCharArray().length;
+
+        //Log.d("TEST", "Size: " + parent.getChildCount());
         int color = Color.LTGRAY;
-        if (Important)
-            color = Color.argb(255, 255, 55, 55);
+        if ((parent.getChildCount()) % 2 != 0)
+            color = Color.argb(255, 176, 176, 176);
+        //if (Important)
+        //    color = Color.argb(255, 255, 55, 55); //TODO: Change to ! mark
 
         SpannableStringBuilder buttonContent = new SpannableStringBuilder(GetMessage() + "\n" + "_ _ _" + "   " + "Time left: " + GetETA());
         buttonContent.setSpan(new RelativeSizeSpan(2f), 0, messageLength - 1, 0);
