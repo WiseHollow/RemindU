@@ -89,12 +89,16 @@ public class Reminder
         //if (Important)
         //    color = Color.argb(255, 255, 55, 55); //TODO: Change to ! mark
 
-        SpannableStringBuilder buttonContent = new SpannableStringBuilder(GetMessage() + "\n" + "_ _ _" + "   " + "Time left: " + GetETA());
-        buttonContent.setSpan(new RelativeSizeSpan(2f), 0, messageLength - 1, 0);
+        SpannableStringBuilder buttonContent = new SpannableStringBuilder();
+        buttonContent.append(GetMessage());
+        buttonContent.append("\n");
+        buttonContent.append("_ _ _" + "   " + "Time left: " + GetETA());
+        buttonContent.setSpan(new RelativeSizeSpan(1f), 0, messageLength - 1, 0);
         buttonContent.setSpan(new RelativeSizeSpan(0.75f), messageLength + 7, buttonContent.length(), 0);
         buttonContent.setSpan(new ImageSpan(view.getContext(), bCheckmark), messageLength + 1, messageLength + 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         buttonContent.setSpan(new ImageSpan(view.getContext(), bDelete), messageLength + 3, messageLength + 4, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         buttonContent.setSpan(new ImageSpan(view.getContext(), bClock), messageLength + 5, messageLength + 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
         ClickableSpan checkMarkClick = new ClickableSpan() {
             @Override
             public void onClick(View view)
@@ -125,8 +129,10 @@ public class Reminder
         buttonContent.setSpan(clockClick, messageLength + 5, messageLength + 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         view.setText(buttonContent);
-        view.setPadding(3, 10, 3, 10);
+        view.setPadding(10, 12, 10, 12);
         view.setBackgroundColor(color);
+
+
 
         Widget = view;
         return view;
