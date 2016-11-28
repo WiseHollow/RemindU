@@ -3,10 +3,9 @@ package net.johnbrooks.remindu.util;
 import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import net.johnbrooks.remindu.UserAreaActivity;
+import net.johnbrooks.remindu.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,12 +77,20 @@ public class UserProfile implements Parcelable
 
     public void writeToLinearLayout(Activity activity, LinearLayout layout)
     {
+        layout.removeAllViews();
+
         for (Reminder r : GetReminders())
         {
-            EditText text = new EditText(activity);
-            text.setText(r.GetMessage());
-            layout.addView(text);
+            layout.addView(r.CreateWidget(activity, layout));
         }
+    }
+
+    public void deleteReminder(Reminder r)
+    {
+        //TODO: Send notification to sender that it was deleted.
+
+        Reminders.remove(r);
+        writeToLinearLayout((Activity) r.GetParent().getContext(), r.GetParent());
     }
 
     public static final Creator<UserProfile> CREATOR = new Creator<UserProfile>()
