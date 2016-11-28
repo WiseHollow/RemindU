@@ -67,6 +67,7 @@ public class Reminder
 
     public void SetImportant(boolean value) { Important = value; }
     public void SetProgress(int updatedProgress) { Progress = updatedProgress; }
+    public void SetWidget(TextView To) { Widget = To; }
     public TextView CreateWidget(final Activity activity, LinearLayout parent)
     {
         if (Widget != null)
@@ -89,8 +90,6 @@ public class Reminder
         int color = Color.LTGRAY;
         if ((parent.getChildCount()) % 2 != 0)
             color = Color.argb(255, 176, 176, 176);
-        //if (Important)
-        //    color = Color.argb(255, 255, 55, 55); //TODO: Change to ! mark
 
         SpannableStringBuilder buttonContent = new SpannableStringBuilder();
         if (Important)

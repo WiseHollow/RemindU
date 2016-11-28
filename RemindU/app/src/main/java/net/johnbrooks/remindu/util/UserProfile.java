@@ -79,12 +79,21 @@ public class UserProfile implements Parcelable
 
     public void writeToLinearLayout(Activity activity, LinearLayout layout)
     {
-        layout.removeAllViews();
+        resetLinearLayout(layout);
 
         for (Reminder r : GetReminders())
         {
             layout.addView(r.CreateWidget(activity, layout));
         }
+    }
+
+    private void resetLinearLayout(LinearLayout layout)
+    {
+        for (Reminder r : GetReminders())
+        {
+            r.SetWidget(null);
+        }
+        layout.removeAllViews();
     }
 
     public void deleteReminder(Reminder r)
