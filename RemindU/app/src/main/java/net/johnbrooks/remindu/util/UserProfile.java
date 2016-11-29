@@ -5,8 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.LinearLayout;
 
-import net.johnbrooks.remindu.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +27,7 @@ public class UserProfile implements Parcelable
     private int PointsSent;
     private int PointsReceived;
 
+    private List<ContactProfile> Contacts;
     private List<Reminder> Reminders;
 
     public UserProfile(int active, String fullName, String username, String email, String password, Integer pointsRemaining, Integer pointsReceived, Integer pointsSent)
@@ -43,6 +42,7 @@ public class UserProfile implements Parcelable
         PointsSent = pointsSent;
 
         Reminders = new ArrayList<>();
+        Contacts = new ArrayList<>();
 
         Reminder test = new Reminder("This is a test reminder.");
         Reminder test2 = new Reminder("Make sure to take out the trash. ");
@@ -64,6 +64,8 @@ public class UserProfile implements Parcelable
     public final int GetPointsReceived() { return PointsReceived; }
 
     public List<Reminder> GetReminders() { return Reminders; }
+    public List<ContactProfile> GetContacts() { return Contacts; }
+    public void AddContact(ContactProfile contact) { Contacts.add(contact); }
 
     protected UserProfile(Parcel in)
     {
