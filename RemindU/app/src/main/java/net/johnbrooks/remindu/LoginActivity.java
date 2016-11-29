@@ -18,7 +18,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
-import net.johnbrooks.remindu.util.LoginRequest;
+import net.johnbrooks.remindu.requests.LoginRequest;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity
                         UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, pointsTotal, pointsReceived, pointsGiven);
                         for (String contact : contacts.split("&"))
                         {
-                            Log.d("INFO", contact);
+                            //Log.d("INFO", contact);
                             if (contact == "" || contact == " ")
                                 continue;
                             String[] key = contact.split("%");
@@ -123,14 +123,14 @@ public class LoginActivity extends AppCompatActivity
                                 continue;
                             }*/
 
-                            Log.d("TEST", "Key[0] = '" + key[0] + "'");
+                            //Log.d("TEST", "Key[0] = '" + key[0] + "'");
                             if (key[0].equalsIgnoreCase("0"))
                             {
                                 UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[1]), key[2]));
                             }
                             else if (key[0].equalsIgnoreCase("1"))
                             {
-                                Log.d("INFO", "HIT " + key.length);
+                                //Log.d("INFO", "HIT " + key.length);
                                 if (key.length >= 6)
                                     UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], key[5]));
                                 else if (key.length == 5)

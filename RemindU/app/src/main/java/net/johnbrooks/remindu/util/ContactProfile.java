@@ -17,4 +17,8 @@ public class ContactProfile
     public final int GetID() { return ID; }
     public final String GetEmail() { return Email; }
     public String GetFullName() { return Email; }
+    public boolean IsContact()
+    {
+        return false;
+    }
 }

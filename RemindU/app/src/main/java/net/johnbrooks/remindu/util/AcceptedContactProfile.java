@@ -18,10 +18,11 @@ public class AcceptedContactProfile extends ContactProfile
     @Override
     public final String GetFullName() { return FullName; }
     public final String GetUsername() { return Username; }
+    @Override
     public final boolean IsContact()
     {
         for (String s : Contacts.split(" "))
-            if (Integer.valueOf(s) == UserProfile.PROFILE.GetUserID())
+            if (Integer.parseInt(s) == UserProfile.PROFILE.GetUserID())
                 return true;
         return false;
     }

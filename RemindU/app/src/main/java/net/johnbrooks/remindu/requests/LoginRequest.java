@@ -1,4 +1,4 @@
-package net.johnbrooks.remindu.util;
+package net.johnbrooks.remindu.requests;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -14,6 +14,7 @@ import java.util.Map;
 public class LoginRequest extends StringRequest
 {
     private static final String LOGIN_REQUEST_URL = "http://johnbrooks.net/remindu/scripts/login.php";
+    //private static final String LOGIN_REQUEST_URL = "http://127.0.0.1/remindu/scripts/login.php";
     private Map<String, String> params;
 
     public LoginRequest(String email, String password, Response.Listener<String> listener)

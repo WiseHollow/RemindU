@@ -68,7 +68,6 @@ public class UserProfile implements Parcelable
 
     public List<Reminder> GetReminders() { return Reminders; }
     public List<ContactProfile> GetContacts() { return Contacts; }
-    public void AddContact(ContactProfile contact) { Contacts.add(contact); }
 
     protected UserProfile(Parcel in)
     {
@@ -107,6 +106,35 @@ public class UserProfile implements Parcelable
 
         Reminders.remove(r);
         writeToLinearLayout((Activity) r.GetParent().getContext(), r.GetParent());
+    }
+
+    public void addReminder(Reminder r)
+    {
+        //TODO: SAVE TO SERVER
+
+        Reminders.add(r);
+        writeToLinearLayout((Activity) r.GetParent().getContext(), r.GetParent());
+    }
+
+    public void AddContact(ContactProfile profile)
+    {
+        GetContacts().add(profile);
+
+        //TODO: SEND REQUEST TO SERVER
+    }
+
+    public void RemoveContact(ContactProfile profile)
+    {
+        GetContacts().remove(profile);
+
+        //TODO: SEND REQUEST TO SERVER
+    }
+
+    public void RemoveContact(int _id)
+    {
+        for (ContactProfile p : GetContacts())
+            if (p.GetID() == _id)
+                RemoveContact(p);
     }
 
     public static final Creator<UserProfile> CREATOR = new Creator<UserProfile>()
