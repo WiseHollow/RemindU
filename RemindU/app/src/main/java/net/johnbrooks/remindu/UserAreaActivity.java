@@ -67,7 +67,7 @@ public class UserAreaActivity extends AppCompatActivity
         final TextView etName = (TextView) findViewById(R.id.textView_Name);
         final LinearLayout layout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
 
-        final Menu menu = navigationView.getMenu(); //TODO: IS NOT WORKING. CHECK activity_user_area_drawer.xml and make a proper way of getting the menu.
+        final Menu menu = navigationView.getMenu();
 
         if (UserProfile.PROFILE == null || layout == null)
             return;
