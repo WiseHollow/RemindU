@@ -8,7 +8,7 @@ public class AcceptedContactProfile extends ContactProfile
 {
     private String FullName, Username, Contacts;
 
-    public AcceptedContactProfile(int id, String fullName, String username, String email, String contacts)
+    public AcceptedContactProfile(int id, String email, String fullName, String username, String contacts)
     {
         super(id, email);
         FullName = fullName;
