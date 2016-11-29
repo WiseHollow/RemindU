@@ -118,7 +118,8 @@ public class UserAreaActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_manage)
         {
-
+            Intent intent = new Intent(UserAreaActivity.this, ManageContactsActivity.class);
+            UserAreaActivity.this.startActivity(intent);
         }
         else if (id == R.id.nav_invite)
         {
