@@ -123,15 +123,17 @@ public class LoginActivity extends AppCompatActivity
                                 continue;
                             }*/
 
-                            if (key[0] == "0")
+                            Log.d("TEST", "Key[0] = '" + key[0] + "'");
+                            if (key[0].equalsIgnoreCase("0"))
                             {
                                 UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[1]), key[2]));
                             }
-                            else if (key[0] == "1")
+                            else if (key[0].equalsIgnoreCase("1"))
                             {
-                                if (key.length == 5)
+                                Log.d("INFO", "HIT " + key.length);
+                                if (key.length >= 6)
                                     UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], key[5]));
-                                else if (key.length == 4)
+                                else if (key.length == 5)
                                     UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], ""));
                             }
 
