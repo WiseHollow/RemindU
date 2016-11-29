@@ -1,24 +1,20 @@
 package net.johnbrooks.remindu.util;
 
 /**
- * Created by John on 11/28/2016.
+ * Created by John on 11/29/2016.
  */
 
 public class ContactProfile
 {
     private int ID;
-    private String FullName, Username, Email, Contacts;
+    private String Email;
 
-    public ContactProfile(int id, String fullName, String username, String email, String contacts)
+    public ContactProfile(int id, String email)
     {
         ID = id;
-        FullName = fullName;
-        Username = username;
         Email = email;
-        Contacts = contacts;
     }
     public final int GetID() { return ID; }
-    public final String GetFullName() { return FullName; }
-    public final String GetUsername() { return Username; }
     public final String GetEmail() { return Email; }
+    public String GetFullName() { return Email; }
 }

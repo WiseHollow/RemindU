@@ -18,10 +18,6 @@
 
     <item android:title="Contacts">
         <menu>
-            <item
-                android:id="@+id/test"
-                android:icon="@drawable/user_48"
-                android:title="Test Contact" />
         </menu>
     </item>
 

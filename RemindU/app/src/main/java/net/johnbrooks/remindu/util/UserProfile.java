@@ -16,6 +16,7 @@ public class UserProfile implements Parcelable
 {
     public static UserProfile PROFILE = null;
 
+    private int UserID;
     private int Active;
 
     private String FullName;
@@ -30,8 +31,9 @@ public class UserProfile implements Parcelable
     private List<ContactProfile> Contacts;
     private List<Reminder> Reminders;
 
-    public UserProfile(int active, String fullName, String username, String email, String password, Integer pointsRemaining, Integer pointsReceived, Integer pointsSent)
+    public UserProfile(final int id, final int active, final String fullName, final String username, final String email, final String password, final Integer pointsRemaining, final Integer pointsReceived, final Integer pointsSent)
     {
+        UserID = id;
         Active = active;
         FullName = fullName;
         Username = username;
@@ -55,6 +57,7 @@ public class UserProfile implements Parcelable
     }
 
     public final int IsActive() { return Active; }
+    public final int GetUserID() { return UserID; }
     public final String GetFullName() { return FullName; }
     public final String GetUsername() { return Username; }
     public final String GetEmail() { return Email; }

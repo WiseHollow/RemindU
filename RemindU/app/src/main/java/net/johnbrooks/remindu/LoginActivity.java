@@ -16,6 +16,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
+import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.LoginRequest;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -96,6 +97,7 @@ public class LoginActivity extends AppCompatActivity
 
                     if (success)
                     {
+                        final int id = jsonResponse.getInt("userID");
                         final int active = jsonResponse.getInt("active");
 
                         final String fullName = jsonResponse.getString("fullname");
@@ -108,22 +110,32 @@ public class LoginActivity extends AppCompatActivity
 
                         final String contacts = jsonResponse.getString("contacts");
 
-                        UserProfile.PROFILE = new UserProfile(active, fullName, username, email, password, pointsTotal, pointsReceived, pointsGiven);
+                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, pointsTotal, pointsReceived, pointsGiven);
                         for (String contact : contacts.split("&"))
                         {
                             Log.d("INFO", contact);
                             if (contact == "" || contact == " ")
                                 continue;
                             String[] key = contact.split("%");
-                            if (key.length < 4)
+                            /*if (key.length < 4)
                             {
-                                Log.d("SEVERE", "jsonResponse contains invalid amount of keys per contact.");
+                                Log.d("INFO", "Contact request is still pending.");
                                 continue;
+                            }*/
+
+                            if (key[0] == "0")
+                            {
+                                UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[1]), key[2]));
                             }
-                            if (key.length == 5)
-                                UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[0]), key[1], key[2], key[3], key[4]));
-                            else if (key.length == 4)
-                                UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[0]), key[1], key[2], key[3], ""));
+                            else if (key[0] == "1")
+                            {
+                                if (key.length == 5)
+                                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], key[5]));
+                                else if (key.length == 4)
+                                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], ""));
+                            }
+
+
                         }
 
                         //

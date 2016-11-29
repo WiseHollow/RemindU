@@ -1,15 +1,10 @@
 package net.johnbrooks.remindu;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.text.Layout;
-import android.util.Log;
+import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,15 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
-import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
-
-import java.util.List;
 
 public class UserAreaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
@@ -78,14 +70,7 @@ public class UserAreaActivity extends AppCompatActivity
 
         etName.setText(UserProfile.PROFILE.GetFullName());
         UserProfile.PROFILE.writeToLinearLayout(UserAreaActivity.this, layout);
-
-        if (menu == null)
-            Log.d("SEVERE", "Menu is NULL");
-
-        for(ContactProfile contact : UserProfile.PROFILE.GetContacts())
-        {
-            MenuItem item = menu.add(contact.GetFullName());
-        }
+        SetupContacts(menu);
     }
 
     @Override
@@ -143,5 +128,23 @@ public class UserAreaActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void SetupContacts(final Menu menu)
+    {
+        SubMenu contactMenu = menu.addSubMenu("Contacts");
+        for(ContactProfile contact : UserProfile.PROFILE.GetContacts())
+        {
+            MenuItem item = contactMenu.add(contact.GetFullName());
+            item.setIcon(R.drawable.user_48);
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
+            {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem)
+                {
+                    return false;
+                }
+            });
+        }
     }
 }
