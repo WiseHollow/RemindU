@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -65,6 +67,8 @@ public class UserAreaActivity extends AppCompatActivity
         final TextView etName = (TextView) findViewById(R.id.textView_Name);
         final LinearLayout layout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
 
+        final Menu menu = navigationView.getMenu(); //TODO: IS NOT WORKING. CHECK activity_user_area_drawer.xml and make a proper way of getting the menu.
+
         if (UserProfile.PROFILE == null || layout == null)
             return;
 
@@ -74,6 +78,14 @@ public class UserAreaActivity extends AppCompatActivity
 
         etName.setText(UserProfile.PROFILE.GetFullName());
         UserProfile.PROFILE.writeToLinearLayout(UserAreaActivity.this, layout);
+
+        if (menu == null)
+            Log.d("SEVERE", "Menu is NULL");
+
+        for(ContactProfile contact : UserProfile.PROFILE.GetContacts())
+        {
+            MenuItem item = menu.add(contact.GetFullName());
+        }
     }
 
     @Override
