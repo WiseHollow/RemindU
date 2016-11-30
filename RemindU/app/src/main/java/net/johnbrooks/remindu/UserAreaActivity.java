@@ -17,9 +17,8 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
-import net.johnbrooks.remindu.util.PullScheduler;
+import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class UserAreaActivity extends AppCompatActivity

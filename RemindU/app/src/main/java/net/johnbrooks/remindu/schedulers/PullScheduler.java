@@ -1,7 +1,9 @@
-package net.johnbrooks.remindu.util;
+package net.johnbrooks.remindu.schedulers;
 
 import android.app.Activity;
 import android.os.Handler;
+
+import net.johnbrooks.remindu.util.UserProfile;
 
 /**
  * Created by John on 11/30/2016.
