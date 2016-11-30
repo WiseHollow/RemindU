@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editText_AddContact_Email"
+        android:hint="Email Address"
+        android:textAlignment="center" />
+
+    <Button
+        android:text="Add Contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_AddContact_Submit" />
+
+    <TextView
+        android:text="Privacy Statement: When adding a contact, you will not be able to interact with the new contact until they have also added you as a contact. "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView5"
+        android:textAlignment="center" />
+</LinearLayout>

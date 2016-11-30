@@ -23,7 +23,7 @@ public class AddContactRequest extends StringRequest
         params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
-        params.put("target_id", targetID);
+        params.put("target", targetID);
     }
 
     @Override

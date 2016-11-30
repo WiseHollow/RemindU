@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
+import net.johnbrooks.remindu.util.PullScheduler;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class UserAreaActivity extends AppCompatActivity
@@ -68,6 +69,7 @@ public class UserAreaActivity extends AppCompatActivity
         // Sets
         //
 
+        PullScheduler.Initialize(UserAreaActivity.this);
         etName.setText(UserProfile.PROFILE.GetFullName());
         UserProfile.PROFILE.writeToLinearLayout(UserAreaActivity.this, layout);
         SetupContacts(menu);

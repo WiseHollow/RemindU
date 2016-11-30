@@ -14,7 +14,6 @@ import java.util.Map;
 public class DeleteContactRequest extends StringRequest
 {
     private static final String LOGIN_REQUEST_URL = "http://johnbrooks.net/remindu/scripts/removeContact.php";
-    //private static final String LOGIN_REQUEST_URL = "http://127.0.0.1/remindu/scripts/removeContact.php";
     private Map<String, String> params;
 
     public DeleteContactRequest(String email, String password, String targetID, Response.Listener<String> listener)
@@ -24,7 +23,7 @@ public class DeleteContactRequest extends StringRequest
         params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
-        params.put("target_id", targetID);
+        params.put("target", targetID);
     }
 
     @Override

@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
+    @Deprecated
     private Response.Listener<String> GetLoginResponseListener(final String email, final String password)
     {
         Response.Listener<String> responseListener = new Response.Listener<String>()

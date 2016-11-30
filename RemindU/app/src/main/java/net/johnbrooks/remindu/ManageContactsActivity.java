@@ -1,5 +1,6 @@
 package net.johnbrooks.remindu;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -16,7 +17,10 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,6 +28,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
+import net.johnbrooks.remindu.requests.AddContactRequest;
 import net.johnbrooks.remindu.requests.DeleteContactRequest;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -46,8 +51,33 @@ public class ManageContactsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                //        .setAction("Action", null).show();
+                final Dialog dialog = new Dialog(ManageContactsActivity.this);
+                dialog.setTitle("Add Contact");
+                dialog.setContentView(R.layout.dialog_add_contact);
+                dialog.show();
+
+                final EditText et_Email = (EditText) dialog.findViewById(R.id.editText_AddContact_Email);
+                Button button = (Button) dialog.findViewById(R.id.button_AddContact_Submit);
+
+                button.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        String email = et_Email.getText().toString();
+
+                        Log.d("INFO", "Requesting that contact email=" + email + " be added.");
+                        Response.Listener<String> responseListener = GetResponseListener(email);
+
+                        AddContactRequest request = new AddContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), email, responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(ManageContactsActivity.this);
+                        queue.add(request);
+
+                        dialog.cancel();
+                    }
+                });
             }
         });
 
@@ -86,6 +116,7 @@ public class ManageContactsActivity extends AppCompatActivity {
                 public void onClick(View view)
                 {
                     //TODO: Pull data from server
+                    Log.d("INFO", "Requesting that contact id=" + targetID + " be removed.");
                     Response.Listener<String> responseListener = GetResponseListener(targetID);
 
                     DeleteContactRequest request = new DeleteContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), String.valueOf(targetID), responseListener);
@@ -105,7 +136,7 @@ public class ManageContactsActivity extends AppCompatActivity {
         }
     }
 
-    private Response.Listener<String> GetResponseListener(final int targetID)
+    private Response.Listener<String> GetResponseListener(final int target)
     {
         Response.Listener<String> responseListener = new Response.Listener<String>()
         {
@@ -117,9 +148,11 @@ public class ManageContactsActivity extends AppCompatActivity {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
 
+                    Log.d("INFO", "Received response: " + success);
+
                     if (success)
                     {
-                        UserProfile.PROFILE.RemoveContact(targetID);
+                        UserProfile.PROFILE.RemoveContact(target);
                     }
                     else
                     {
@@ -128,6 +161,40 @@ public class ManageContactsActivity extends AppCompatActivity {
                                 .setNegativeButton("Close", null)
                                 .create()
                                 .show();
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        return responseListener;
+    }
+
+    private Response.Listener<String> GetResponseListener(final String target)
+    {
+        Response.Listener<String> responseListener = new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                try
+                {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+
+                    Log.d("INFO", "Received response: " + success);
+
+                    if (success)
+                    {
+                        Snackbar.make(findViewById(R.id.content_manage_contacts), "Added user of email: " + target, Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                    else
+                    {
+                        Snackbar.make(findViewById(R.id.content_manage_contacts), "Email is not registered, or are already added.", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
                     }
                 } catch (JSONException e)
                 {
