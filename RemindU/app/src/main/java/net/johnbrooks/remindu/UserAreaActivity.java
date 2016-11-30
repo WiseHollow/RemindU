@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -65,10 +66,16 @@ public class UserAreaActivity extends AppCompatActivity
             return;
 
         //
-        // Sets
+        // Run schedules
         //
 
         PullScheduler.Initialize(UserAreaActivity.this);
+        UpdateUserAreaScheduler.Initialize(UserAreaActivity.this);
+
+        //
+        // Sets
+        //
+
         etName.setText(UserProfile.PROFILE.GetFullName());
         UserProfile.PROFILE.writeToLinearLayout(UserAreaActivity.this, layout);
         SetupContacts(menu);
