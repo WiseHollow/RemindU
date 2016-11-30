@@ -107,6 +107,7 @@ public class ManageContactsActivity extends AppCompatActivity
         for (ContactProfile profile : UserProfile.PROFILE.GetContacts())
         {
             final int targetID = profile.GetID();
+            final String targetEmail = profile.GetEmail();
 
             TextView view = new TextView(ManageContactsActivity.this);
             view.setMovementMethod(LinkMovementMethod.getInstance());
@@ -130,6 +131,13 @@ public class ManageContactsActivity extends AppCompatActivity
                 @Override
                 public void onClick(View view)
                 {
+                    if (targetID == -1)
+                    {
+                        //UserProfile.PROFILE.RemoveContact(targetEmail);
+                        //UpdateContactsList();
+                        return;
+                    }
+
                     //TODO: Pull data from server
                     Log.d("INFO", "Requesting that contact id=" + targetID + " be removed.");
                     Response.Listener<String> responseListener = GetResponseListener(targetID);

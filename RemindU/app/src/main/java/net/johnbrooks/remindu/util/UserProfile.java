@@ -153,6 +153,13 @@ public class UserProfile implements Parcelable
                 RemoveContact(p);
     }
 
+    public void RemoveContact(String _email)
+    {
+        for (ContactProfile p : GetContacts())
+            if (p.GetEmail().equalsIgnoreCase(_email))
+                RemoveContact(p);
+    }
+
     public void Pull(Activity activity)
     {
         Log.d("INFO", "Pulling profile from server...");
