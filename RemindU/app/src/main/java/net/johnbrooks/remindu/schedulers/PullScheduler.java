@@ -12,8 +12,10 @@ import net.johnbrooks.remindu.util.UserProfile;
 public class PullScheduler
 {
     private static PullScheduler scheduler = null;
+    private static Activity sActivity;
     public static void Initialize(Activity activity)
     {
+        sActivity = activity;
         if (scheduler == null)
             scheduler = new PullScheduler(activity);
     }
@@ -21,6 +23,12 @@ public class PullScheduler
     {
         scheduler.stopRepeatingTask();
         scheduler = null;
+    }
+    public static void Call()
+    {
+        Activity a = sActivity;
+        Cancel();
+        Initialize(a);
     }
 
     private final int mInterval = 10000; // milliseconds. 10 seconds

@@ -1,9 +1,9 @@
 package net.johnbrooks.remindu.schedulers;
 
 import android.os.Handler;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.ManageContactsActivity;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.UserAreaActivity;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -12,13 +12,13 @@ import net.johnbrooks.remindu.util.UserProfile;
  * Created by John on 11/30/2016.
  */
 
-public class UpdateUserAreaScheduler
+public class UpdateManageContactsScheduler
 {
-    private static UpdateUserAreaScheduler scheduler = null;
-    public static void Initialize(UserAreaActivity activity)
+    private static UpdateManageContactsScheduler scheduler = null;
+    public static void Initialize(ManageContactsActivity activity)
     {
         if (scheduler == null)
-            scheduler = new UpdateUserAreaScheduler(activity);
+            scheduler = new UpdateManageContactsScheduler(activity);
     }
     public static void Cancel()
     {
@@ -26,11 +26,11 @@ public class UpdateUserAreaScheduler
         scheduler = null;
     }
 
-    private UserAreaActivity Activity = null;
+    private ManageContactsActivity Activity = null;
     private final int mInterval = 5000; // milliseconds
     private Handler mHandler;
 
-    public UpdateUserAreaScheduler(UserAreaActivity activity)
+    public UpdateManageContactsScheduler(ManageContactsActivity activity)
     {
         Activity = activity;
         mHandler = new Handler();
@@ -60,12 +60,7 @@ public class UpdateUserAreaScheduler
         }
         else
         {
-            final LinearLayout layout = (LinearLayout) Activity.findViewById(R.id.scrollView_Reminders_Layout);
-            TextView tvDisplayName = (TextView) Activity.findViewById(R.id.textView_Name);
-
-            tvDisplayName.setText(UserProfile.PROFILE.GetFullName());
-            UserProfile.PROFILE.writeToLinearLayout(Activity, layout);
-            Activity.SetupContacts();
+            Activity.UpdateContactsList();
         }
     }
 

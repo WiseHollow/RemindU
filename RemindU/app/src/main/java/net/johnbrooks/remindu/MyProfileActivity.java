@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.schedulers.UpdateMyProfileScheduler;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class MyProfileActivity extends AppCompatActivity {
@@ -45,7 +46,9 @@ public class MyProfileActivity extends AppCompatActivity {
         tvPointsSent.setText("Points Sent: " + UserProfile.PROFILE.GetPointsSent());
 
         //
+        // Set scheduler
         //
-        //
+
+        UpdateMyProfileScheduler.Initialize(MyProfileActivity.this);
     }
 }

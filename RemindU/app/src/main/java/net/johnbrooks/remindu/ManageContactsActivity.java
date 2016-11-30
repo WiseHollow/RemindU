@@ -30,14 +30,16 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.requests.AddContactRequest;
 import net.johnbrooks.remindu.requests.DeleteContactRequest;
+import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.schedulers.UpdateManageContactsScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ManageContactsActivity extends AppCompatActivity {
-
+public class ManageContactsActivity extends AppCompatActivity
+{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,11 +83,24 @@ public class ManageContactsActivity extends AppCompatActivity {
             }
         });
 
+        //
+        // Set scheduler
+        //
+
+        UpdateManageContactsScheduler.Initialize(ManageContactsActivity.this);
+
+        //
+
+        UpdateContactsList();
+    }
+
+    public void UpdateContactsList()
+    {
         LinearLayout layout = (LinearLayout) findViewById(R.id.Manage_Contacts_Scroll_View_Layout);
+        layout.removeAllViews();
 
         Bitmap bDefaultAvatar = BitmapFactory.decodeResource( getResources(), R.drawable.user_48 );
         Bitmap bDelete = BitmapFactory.decodeResource( getResources(), R.drawable.delete_48);
-
         //
         // For each profile in contacts, lets make a textview for that profile.
         //
@@ -153,6 +168,8 @@ public class ManageContactsActivity extends AppCompatActivity {
                     if (success)
                     {
                         UserProfile.PROFILE.RemoveContact(target);
+                        PullScheduler.Call();
+                        UpdateContactsList();
                     }
                     else
                     {
@@ -190,6 +207,10 @@ public class ManageContactsActivity extends AppCompatActivity {
                     {
                         Snackbar.make(findViewById(R.id.content_manage_contacts), "Added user of email: " + target, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
+
+                        UserProfile.PROFILE.AddContact(new ContactProfile(-1, target));
+                        UpdateContactsList();
+                        PullScheduler.Call();
                     }
                     else
                     {

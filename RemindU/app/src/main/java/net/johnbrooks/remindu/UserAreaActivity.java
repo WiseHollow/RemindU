@@ -25,7 +25,7 @@ import net.johnbrooks.remindu.util.UserProfile;
 public class UserAreaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
-    //private UserProfile profile = null;
+    private SubMenu contactsSubMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -61,6 +61,7 @@ public class UserAreaActivity extends AppCompatActivity
         final LinearLayout layout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
 
         final Menu menu = navigationView.getMenu();
+        contactsSubMenu = menu.addSubMenu("Contacts");
 
         if (UserProfile.PROFILE == null || layout == null)
             return;
@@ -78,7 +79,7 @@ public class UserAreaActivity extends AppCompatActivity
 
         etName.setText(UserProfile.PROFILE.GetFullName());
         UserProfile.PROFILE.writeToLinearLayout(UserAreaActivity.this, layout);
-        SetupContacts(menu);
+        SetupContacts();
     }
 
     @Override
@@ -139,12 +140,12 @@ public class UserAreaActivity extends AppCompatActivity
         return true;
     }
 
-    private void SetupContacts(final Menu menu)
+    public void SetupContacts()
     {
-        SubMenu contactMenu = menu.addSubMenu("Contacts");
+        contactsSubMenu.clear();
         for(ContactProfile contact : UserProfile.PROFILE.GetContacts())
         {
-            MenuItem item = contactMenu.add(contact.GetFullName());
+            MenuItem item = contactsSubMenu.add(contact.GetFullName());
             item.setIcon(R.drawable.user_48);
             item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
             {
