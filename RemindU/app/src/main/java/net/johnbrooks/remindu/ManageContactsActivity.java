@@ -41,9 +41,11 @@ public class ManageContactsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -83,7 +85,7 @@ public class ManageContactsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view)
                 {
-                    //TODO: Refresh data from server
+                    //TODO: Pull data from server
                     Response.Listener<String> responseListener = GetResponseListener(targetID);
 
                     DeleteContactRequest request = new DeleteContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), String.valueOf(targetID), responseListener);
