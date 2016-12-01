@@ -40,6 +40,9 @@ public class LoginActivity extends AppCompatActivity
         final Button bLogin = (Button) findViewById(R.id.button_Login);
         final TextView tvRegister = (TextView) findViewById(R.id.textView_Register);
 
+        //
+        // What happens when the register button is clicked.
+        //
         tvRegister.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -49,6 +52,10 @@ public class LoginActivity extends AppCompatActivity
                 LoginActivity.this.startActivity(registerIntent);
             }
         });
+
+        //
+        // This is what happens when login button is clicked.
+        //
 
         bLogin.setOnClickListener(new View.OnClickListener()
         {
@@ -67,6 +74,9 @@ public class LoginActivity extends AppCompatActivity
         });
     }
 
+    //
+    // Checks for saved login data, for instant login. Run this when the activity is created.
+    //
     private void AttemptAutoLogin()
     {
         SharedPreferences sharedPref = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
@@ -98,6 +108,7 @@ public class LoginActivity extends AppCompatActivity
 
                     if (success)
                     {
+                        // If we successfully login, lets get all information passed from server.
                         final int id = jsonResponse.getInt("userID");
                         final int active = jsonResponse.getInt("active");
 
@@ -111,27 +122,24 @@ public class LoginActivity extends AppCompatActivity
 
                         final String contacts = jsonResponse.getString("contacts");
 
+                        // Using pulled information, we can create a profile for the user.
+
                         UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, pointsTotal, pointsReceived, pointsGiven);
+
+                        // Next, lets make sense of the contacts string given by the server.
+                        // It will pass either a AcceptedContactProfile info, or just limited information used to make a ContactProfile.
+
                         for (String contact : contacts.split("&"))
                         {
-                            //Log.d("INFO", contact);
                             if (contact == "" || contact == " ")
                                 continue;
                             String[] key = contact.split("%");
-                            /*if (key.length < 4)
-                            {
-                                Log.d("INFO", "Contact request is still pending.");
-                                continue;
-                            }*/
-
-                            //Log.d("TEST", "Key[0] = '" + key[0] + "'");
-                            if (key[0].equalsIgnoreCase("0"))
+                            if (key[0].equalsIgnoreCase("0")) // 0 = The contact doesn't have us added.
                             {
                                 UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[1]), key[2]));
                             }
-                            else if (key[0].equalsIgnoreCase("1"))
+                            else if (key[0].equalsIgnoreCase("1")) // 1 = mutually contacts.
                             {
-                                //Log.d("INFO", "HIT " + key.length);
                                 if (key.length >= 6)
                                     UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], key[5]));
                                 else if (key.length == 5)
@@ -152,7 +160,7 @@ public class LoginActivity extends AppCompatActivity
                         editor.commit();
 
                         //
-                        //
+                        // Let's now to to the User Area now that we have logged in.
                         //
 
                         Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);

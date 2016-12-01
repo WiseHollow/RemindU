@@ -38,10 +38,14 @@ public class RegisterActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                // When the register button is clicked. We will pull entered information.
+
                 final String fullname = etFullName.getText().toString();
                 final String username = etUsername.getText().toString();
                 final String email = etEmail.getText().toString();
                 final String password = etPassword.getText().toString();
+
+                // Next we will create an error dialog to prepare for possible errors in input.
 
                 AlertDialog.Builder errorDialog = new AlertDialog.Builder(RegisterActivity.this);
                 if (!email.contains("@") || !email.contains("."))
@@ -96,7 +100,8 @@ public class RegisterActivity extends AppCompatActivity
                             boolean usernameAvailable = jsonResponse.getBoolean("username_available");
                             boolean emailAvailable = jsonResponse.getBoolean("email_available");
 
-                            //Log.d("INFO", "Received username " + gotUsername);
+                            // The server is able to tell us if the username and email is available.
+
                             if (success)
                             {
                                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
@@ -105,6 +110,8 @@ public class RegisterActivity extends AppCompatActivity
                             }
                             else
                             {
+                                // Create a string with the proper error message and send to user.
+
                                 String message = "Registration Failed!";
                                 if (!usernameAvailable)
                                     message+="\nUsername is not available.";

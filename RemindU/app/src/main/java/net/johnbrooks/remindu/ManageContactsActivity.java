@@ -48,6 +48,12 @@ public class ManageContactsActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        //
+        // fab will be treated as a new contact button. When clicked, popup a dialog to enter
+        // an email address.
+        //
+
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -73,6 +79,7 @@ public class ManageContactsActivity extends AppCompatActivity
                         Log.d("INFO", "Requesting that contact email=" + email + " be added.");
                         Response.Listener<String> responseListener = GetResponseListener(email);
 
+                        // Send request to server for contact adding.
                         AddContactRequest request = new AddContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), email, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ManageContactsActivity.this);
                         queue.add(request);
@@ -84,11 +91,13 @@ public class ManageContactsActivity extends AppCompatActivity
         });
 
         //
-        // Set scheduler
+        // Set scheduler to update contact list every set period of time.
         //
 
         UpdateManageContactsScheduler.Initialize(ManageContactsActivity.this);
 
+        //
+        // Fill up the contact list for the first time.
         //
 
         UpdateContactsList();
@@ -99,7 +108,10 @@ public class ManageContactsActivity extends AppCompatActivity
         LinearLayout layout = (LinearLayout) findViewById(R.id.Manage_Contacts_Scroll_View_Layout);
         layout.removeAllViews();
 
+        //TODO: Make work with custom avatars.
+        // Right now we only use a default avatar for each contact.
         Bitmap bDefaultAvatar = BitmapFactory.decodeResource( getResources(), R.drawable.user_48 );
+        // Lets get our delete image.
         Bitmap bDelete = BitmapFactory.decodeResource( getResources(), R.drawable.delete_48);
         //
         // For each profile in contacts, lets make a textview for that profile.
@@ -122,10 +134,16 @@ public class ManageContactsActivity extends AppCompatActivity
             }
             else
             {
+                // We shall make the text black if the contact is mutual.
                 builder.setSpan(new ForegroundColorSpan(Color.BLACK), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
+            // Insert the images in required positions.
             builder.setSpan(new ImageSpan(view.getContext(), bDefaultAvatar), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             builder.setSpan(new ImageSpan(view.getContext(), bDelete), 2, 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            //
+            // Span Delete will be placed on top of the image for delete.
+            // Using it will send a request to the server to remove a contact.
+            //
             ClickableSpan spanDelete = new ClickableSpan()
             {
                 @Override

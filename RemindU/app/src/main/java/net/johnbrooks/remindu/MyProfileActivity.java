@@ -15,6 +15,8 @@ public class MyProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
 
+        // This activity is the home of our personal information.
+
         //
         // Get TextViews
         //
