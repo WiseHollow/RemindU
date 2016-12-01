@@ -7,7 +7,19 @@ import android.widget.TextView;
 import net.johnbrooks.remindu.schedulers.UpdateMyProfileScheduler;
 import net.johnbrooks.remindu.util.UserProfile;
 
-public class MyProfileActivity extends AppCompatActivity {
+public class MyProfileActivity extends AppCompatActivity
+{
+
+    public TextView tvFullName = null;
+    public TextView tvUsername = null;
+    public TextView tvEmail = null;
+
+    public TextView tvActiveSentReminders = null;
+    public TextView tvPendingReceivedReminders = null;
+
+    public TextView tvPointsRemaining = null;
+    public TextView tvPointsReceived = null;
+    public TextView tvPointsSent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -21,16 +33,16 @@ public class MyProfileActivity extends AppCompatActivity {
         // Get TextViews
         //
 
-        TextView tvFullName = (TextView) findViewById(R.id.textView_Profile_FullName);
-        TextView tvUsername = (TextView) findViewById(R.id.textView_Profile_Username);
-        TextView tvEmail = (TextView) findViewById(R.id.textView_Profile_Email);
+        tvFullName = (TextView) findViewById(R.id.textView_Profile_FullName);
+        tvUsername = (TextView) findViewById(R.id.textView_Profile_Username);
+        tvEmail = (TextView) findViewById(R.id.textView_Profile_Email);
 
-        TextView tvActiveSentReminders = (TextView) findViewById(R.id.textView_Profile_ActiveSentReminders);
-        TextView tvPendingReceivedReminders = (TextView) findViewById(R.id.textView_Profile_ActiveReceivedReminders);
+        tvActiveSentReminders = (TextView) findViewById(R.id.textView_Profile_ActiveSentReminders);
+        tvPendingReceivedReminders = (TextView) findViewById(R.id.textView_Profile_ActiveReceivedReminders);
 
-        TextView tvPointsRemaining = (TextView) findViewById(R.id.textView_Profile_PointsRemaining);
-        TextView tvPointsReceived = (TextView) findViewById(R.id.textView_Profile_PointsReceived);
-        TextView tvPointsSent = (TextView) findViewById(R.id.textView_Profile_PointsSent);
+        tvPointsRemaining = (TextView) findViewById(R.id.textView_Profile_PointsRemaining);
+        tvPointsReceived = (TextView) findViewById(R.id.textView_Profile_PointsReceived);
+        tvPointsSent = (TextView) findViewById(R.id.textView_Profile_PointsSent);
 
         //
         // Fill TextView information
