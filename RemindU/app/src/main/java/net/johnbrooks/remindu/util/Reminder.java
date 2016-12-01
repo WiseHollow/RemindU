@@ -59,6 +59,20 @@ public class Reminder
         Date = c.getTime();
     }
 
+    public Reminder(String message, boolean important)
+    {
+        Message = message;
+        Date = new Date();
+        Important = important;
+        State = ReminderState.NOT_STARTED;
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(Date);
+        c.add(Calendar.DATE, 1);
+        c.add(Calendar.HOUR, 6);
+        Date = c.getTime();
+    }
+
     public String GetMessage() { return Message; }
     public Date GetDate() { return Date; }
     public boolean GetImportant() { return Important; }
@@ -83,7 +97,7 @@ public class Reminder
         Bitmap bClock = BitmapFactory.decodeResource( activity.getResources(), R.drawable.clock_48 );
         Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48 );
         int messageLength = GetMessage().toCharArray().length;
-        if (Important)
+        if (GetImportant())
             messageLength+=3;
 
         //Log.d("TEST", "Size: " + parent.getChildCount());
@@ -102,7 +116,7 @@ public class Reminder
         buttonContent.setSpan(new ImageSpan(view.getContext(), bCheckmark), messageLength + 1, messageLength + 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         buttonContent.setSpan(new ImageSpan(view.getContext(), bDelete), messageLength + 3, messageLength + 4, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         buttonContent.setSpan(new ImageSpan(view.getContext(), bClock), messageLength + 5, messageLength + 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        if (Important)
+        if (GetImportant())
             buttonContent.setSpan(new ImageSpan(view.getContext(), bImportant), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         ClickableSpan checkMarkClick = new ClickableSpan() {
