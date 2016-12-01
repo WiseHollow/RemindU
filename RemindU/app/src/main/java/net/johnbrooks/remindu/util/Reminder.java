@@ -43,14 +43,14 @@ public class Reminder
     private Date Date;
     private boolean Important;
 
-    private int Progress; // 0 - 100
+    private ReminderState State;
 
     public Reminder(String message)
     {
         Message = message;
         Date = new Date();
         Important = false;
-        Progress = 0;
+        State = ReminderState.NOT_STARTED;
 
         Calendar c = Calendar.getInstance();
         c.setTime(Date);
@@ -62,11 +62,11 @@ public class Reminder
     public String GetMessage() { return Message; }
     public Date GetDate() { return Date; }
     public boolean GetImportant() { return Important; }
-    public int GetProgress() { return Progress; }
+    public ReminderState GetState() { return State; }
     public LinearLayout GetParent() { return Parent; }
 
     public void SetImportant(boolean value) { Important = value; }
-    public void SetProgress(int updatedProgress) { Progress = updatedProgress; }
+    public void SetState(ReminderState state) { State = state; }
     public void SetWidget(TextView To) { Widget = To; }
     public TextView CreateWidget(final Activity activity, LinearLayout parent)
     {
@@ -111,7 +111,7 @@ public class Reminder
             {
                 //TODO: Mark as complete
                 //TODO: Open dialog giving options of progress.
-                SetProgress(100);
+                SetState(ReminderState.COMPLETE);
             }
         };
         ClickableSpan deleteClick = new ClickableSpan()
@@ -176,4 +176,9 @@ public class Reminder
 
         return eta;
     }
+}
+
+enum ReminderState
+{
+    NOT_STARTED, IN_PROGRESS, COMPLETE
 }
