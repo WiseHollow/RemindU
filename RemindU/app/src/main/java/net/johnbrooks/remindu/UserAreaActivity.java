@@ -1,5 +1,6 @@
 package net.johnbrooks.remindu;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -38,9 +39,14 @@ public class UserAreaActivity extends AppCompatActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View view)
+            {
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                //        .setAction("Action", null).show();
+                Dialog dialog = new Dialog(UserAreaActivity.this);
+                dialog.setTitle("Send Reminder");
+                dialog.setContentView(R.layout.dialog_create_reminder);
+                dialog.show();
             }
         });
 
