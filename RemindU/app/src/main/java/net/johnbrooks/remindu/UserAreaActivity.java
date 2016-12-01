@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.baoyz.widget.PullRefreshLayout;
+
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
@@ -27,6 +29,7 @@ public class UserAreaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
     private SubMenu contactsSubMenu;
+    private PullRefreshLayout pullRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,6 +72,8 @@ public class UserAreaActivity extends AppCompatActivity
         final Menu menu = navigationView.getMenu();
         contactsSubMenu = menu.addSubMenu("Contacts");
 
+        pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+
         if (UserProfile.PROFILE == null || layout == null)
             return;
 
@@ -86,6 +91,26 @@ public class UserAreaActivity extends AppCompatActivity
         etName.setText(UserProfile.PROFILE.GetFullName());
         UserProfile.PROFILE.writeToLinearLayout(UserAreaActivity.this, layout);
         SetupContacts();
+
+        //
+        // Create Listeners
+        //
+
+        pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener()
+        {
+            @Override
+            public void onRefresh()
+            {
+                PullScheduler.Call();
+                pullRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        pullRefreshLayout.setRefreshing(false);
+                    }
+                }, 1500);
+            }
+        });
     }
 
     @Override

@@ -31,7 +31,7 @@ public class PullScheduler
         Initialize(a);
     }
 
-    private final int mInterval = 10000; // milliseconds. 10 seconds
+    private final int mInterval = 60000; // milliseconds. 60 seconds
     private Handler mHandler;
     private Activity Activity;
 

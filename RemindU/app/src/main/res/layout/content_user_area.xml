@@ -13,6 +13,11 @@
     tools:context="net.johnbrooks.remindu.UserAreaActivity"
     tools:showIn="@layout/app_bar_user_area">
 
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <TextView
         android:text="Username"
         android:layout_width="match_parent"
@@ -63,5 +68,7 @@
              />
     </ScrollView>
 
+
+    </com.baoyz.widget.PullRefreshLayout>
 
 </RelativeLayout>
