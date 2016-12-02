@@ -5,18 +5,6 @@
     android:orientation="vertical"
     android:weightSum="1">
 
-    <TextView
-        android:text="Select Recipient"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView7"
-        android:textAlignment="center" />
-
-    <Spinner
-        android:id="@+id/planets_spinner"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-
     <EditText
         android:ems="10"
         android:id="@+id/editText"
@@ -38,6 +26,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/switch1"
         android:layout_weight="0.11" />
+
+    <TextView
+        android:text="Select Recipient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView7"
+        android:textAlignment="viewStart" />
+
+    <Spinner
+        android:id="@+id/planets_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:text="Send"

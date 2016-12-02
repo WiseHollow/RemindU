@@ -132,6 +132,11 @@ public class UserProfile implements Parcelable
         writeToLinearLayout((Activity) r.GetParent().getContext(), r.GetParent());
     }
 
+    public void pushReminder(Reminder r)
+    {
+        //TODO: Send changes to server.
+    }
+
     public void AddContact(ContactProfile profile)
     {
         GetContacts().add(profile);
