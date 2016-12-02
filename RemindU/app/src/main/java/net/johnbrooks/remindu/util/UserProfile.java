@@ -62,14 +62,9 @@ public class UserProfile implements Parcelable
         Reminders = new ArrayList<>();
         Contacts = new ArrayList<>();
 
-        Reminder test = new Reminder("This is a test reminder.");
-        Reminder test2 = new Reminder("Make sure to take out the trash. ");
-        Reminder test3 = new Reminder("This is a test reminder.");
-        test2.SetImportant(true);
-
-        Reminders.add(test);
-        Reminders.add(test2);
-        Reminders.add(test3);
+        Reminder.CreateReminder("This is a test reminder.", false);
+        Reminder.CreateReminder("Make sure to take out the trash. ", true);
+        Reminder.CreateReminder("This is a test reminder.", false);
     }
 
     public final int IsActive() { return Active; }

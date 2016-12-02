@@ -37,6 +37,26 @@ import java.util.concurrent.TimeUnit;
 
 public class Reminder
 {
+
+    /** Insert a reminder into memory, and upload the request to the user's online records. */
+    public static Reminder CreateReminder(String message, boolean important)
+    {
+        Reminder reminder = new Reminder(message);
+        reminder.SetImportant(important);
+        UserProfile.PROFILE.addReminder(reminder);
+
+        return reminder;
+    }
+    /** Insert a reminder into memory (local only). */
+    public static Reminder LoadReminder(String message, boolean important)
+    {
+        Reminder reminder = new Reminder(message);
+        reminder.SetImportant(important);
+        UserProfile.PROFILE.addReminder(reminder);
+
+        return reminder;
+    }
+
     private LinearLayout Parent;
     private TextView Widget;
     private String Message;
@@ -45,25 +65,11 @@ public class Reminder
 
     private ReminderState State;
 
-    public Reminder(String message)
+    private Reminder(String message)
     {
         Message = message;
         Date = new Date();
         Important = false;
-        State = ReminderState.NOT_STARTED;
-
-        Calendar c = Calendar.getInstance();
-        c.setTime(Date);
-        c.add(Calendar.DATE, 1);
-        c.add(Calendar.HOUR, 6);
-        Date = c.getTime();
-    }
-
-    public Reminder(String message, boolean important)
-    {
-        Message = message;
-        Date = new Date();
-        Important = important;
         State = ReminderState.NOT_STARTED;
 
         Calendar c = Calendar.getInstance();
