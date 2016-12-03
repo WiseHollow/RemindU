@@ -64,7 +64,7 @@ public class UpdateUserAreaScheduler
             TextView tvDisplayName = (TextView) Activity.findViewById(R.id.textView_Name);
 
             tvDisplayName.setText(UserProfile.PROFILE.GetFullName());
-            UserProfile.PROFILE.writeToLinearLayout(Activity, layout);
+            UserProfile.PROFILE.RefreshReminderLayout();
             Activity.SetupContacts();
         }
     }

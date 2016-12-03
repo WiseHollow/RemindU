@@ -1,11 +1,8 @@
 package net.johnbrooks.remindu;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -16,37 +13,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.baoyz.widget.PullRefreshLayout;
 
-import net.johnbrooks.remindu.requests.LoginRequest;
-import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
-import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
-
-import java.util.Date;
 
 public class UserAreaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
+    private static UserAreaActivity activity;
+    public static UserAreaActivity GetActivity() { return activity; }
+
     private SubMenu contactsSubMenu;
     private PullRefreshLayout pullRefreshLayout;
+    public LinearLayout reminderLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        activity = UserAreaActivity.this;
         setContentView(R.layout.activity_user_area);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,14 +67,14 @@ public class UserAreaActivity extends AppCompatActivity
         //
 
         final TextView etName = (TextView) findViewById(R.id.textView_Name);
-        final LinearLayout layout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
+        reminderLayout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
 
         final Menu menu = navigationView.getMenu();
         contactsSubMenu = menu.addSubMenu("Contacts");
 
         pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
-        if (UserProfile.PROFILE == null || layout == null)
+        if (UserProfile.PROFILE == null || reminderLayout == null)
             return;
 
         //
@@ -98,7 +89,7 @@ public class UserAreaActivity extends AppCompatActivity
         //
 
         etName.setText(UserProfile.PROFILE.GetFullName());
-        UserProfile.PROFILE.writeToLinearLayout(UserAreaActivity.this, layout);
+        UserProfile.PROFILE.RefreshReminderLayout();
         SetupContacts();
 
         //

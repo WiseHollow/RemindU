@@ -28,7 +28,7 @@ public class SendReminderRequest extends StringRequest
         params.put("password", password);
         params.put("message", message);
         params.put("important", String.valueOf((important) ? 1 : 0));
-        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
         String dateString = formatter.format(date);
         params.put("date", dateString);
     }

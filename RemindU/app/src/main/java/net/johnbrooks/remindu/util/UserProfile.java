@@ -1,12 +1,8 @@
 package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.LinearLayout;
 
@@ -14,7 +10,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
-import net.johnbrooks.remindu.LoginActivity;
 import net.johnbrooks.remindu.UserAreaActivity;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.LoginRequest;
@@ -89,13 +84,13 @@ public class UserProfile implements Parcelable
         PointsReceived = in.readInt();
     }
 
-    public void writeToLinearLayout(Activity activity, LinearLayout layout)
+    public void RefreshReminderLayout()
     {
-        resetLinearLayout(layout);
+        resetLinearLayout(UserAreaActivity.GetActivity().reminderLayout);
 
         for (Reminder r : GetReminders())
         {
-            layout.addView(r.CreateWidget(activity, layout));
+            UserAreaActivity.GetActivity().reminderLayout.addView(r.CreateWidget(UserAreaActivity.GetActivity(), UserAreaActivity.GetActivity().reminderLayout));
         }
     }
 
@@ -113,13 +108,13 @@ public class UserProfile implements Parcelable
         //TODO: Send notification to sender that it was deleted.
 
         Reminders.remove(r);
-        writeToLinearLayout((Activity) r.GetParent().getContext(), r.GetParent());
+        RefreshReminderLayout();
     }
 
     public void AddReminder(Reminder r)
     {
         Reminders.add(r);
-        //writeToLinearLayout((Activity) r.GetParent().getContext(), r.GetParent());
+        //RefreshReminderLayout((Activity) r.GetParent().getContext(), r.GetParent());
     }
 
     public void pushReminder(Reminder r)

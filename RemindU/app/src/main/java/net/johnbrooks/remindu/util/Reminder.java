@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.UserAreaActivity;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
 
 import org.json.JSONException;
@@ -70,7 +71,7 @@ public class Reminder
                             int state = jsonResponse.getJSONObject(String.valueOf(i)).getInt("state");
                             int important = jsonResponse.getJSONObject(String.valueOf(i)).getInt("important");
                             String dateString = jsonResponse.getJSONObject(String.valueOf(i)).getString("date");
-                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+                            DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
                             Date date = formatter.parse(dateString);
 
                             int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
@@ -78,6 +79,8 @@ public class Reminder
 
                             Reminder.LoadReminder(from, to, message, important > 0 ? true : false, date);
                         }
+
+                        UserProfile.PROFILE.RefreshReminderLayout();
                     }
                     else
                     {
@@ -96,7 +99,7 @@ public class Reminder
     /** Insert a reminder into memory, and upload the request to the user's online records. */
     public static Reminder CreateReminder(int user_id_to, String message, boolean important, Date date, Activity activity)
     {
-        Reminder reminder = new Reminder(message, UserProfile.PROFILE.GetUserID(), user_id_to);
+        Reminder reminder = new Reminder(message, UserProfile.PROFILE.GetUserID(), user_id_to, date);
         reminder.SetImportant(important);
         UserProfile.PROFILE.AddReminder(reminder);
 
@@ -109,7 +112,7 @@ public class Reminder
     /** Insert a reminder into memory (local only). */
     public static Reminder LoadReminder(int user_id_from, int user_id_to, String message, boolean important, Date date)
     {
-        Reminder reminder = new Reminder(message, user_id_from, user_id_to);
+        Reminder reminder = new Reminder(message, user_id_from, user_id_to, date);
         reminder.SetImportant(important);
         UserProfile.PROFILE.AddReminder(reminder);
 
@@ -126,12 +129,12 @@ public class Reminder
 
     private ReminderState State;
 
-    private Reminder(String message, int user_id_from, int user_id_to)
+    private Reminder(String message, int user_id_from, int user_id_to, Date date)
     {
         User_ID_From = user_id_from;
         User_ID_To = user_id_to;
         Message = message;
-        Date = new Date();
+        Date = date;
         Important = false;
         State = ReminderState.NOT_STARTED;
 
@@ -163,7 +166,7 @@ public class Reminder
         final Reminder reminder = this;
         TextView view = new TextView(activity);
         view.setMovementMethod(LinkMovementMethod.getInstance());
-        Bitmap bCheckmark = BitmapFactory.decodeResource( activity.getResources(), R.drawable.checkmark_48 );
+        Bitmap bCheckMark = BitmapFactory.decodeResource( activity.getResources(), R.drawable.checkmark_48 );
         Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_48 );
         Bitmap bClock = BitmapFactory.decodeResource( activity.getResources(), R.drawable.clock_48 );
         Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48 );
@@ -184,7 +187,7 @@ public class Reminder
         buttonContent.append("_ _ _" + "   " + "Time left: " + GetETA());
         buttonContent.setSpan(new RelativeSizeSpan(1f), 0, messageLength - 1, 0);
         buttonContent.setSpan(new RelativeSizeSpan(0.75f), messageLength + 7, buttonContent.length(), 0);
-        buttonContent.setSpan(new ImageSpan(view.getContext(), bCheckmark), messageLength + 1, messageLength + 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        buttonContent.setSpan(new ImageSpan(view.getContext(), bCheckMark), messageLength + 1, messageLength + 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         buttonContent.setSpan(new ImageSpan(view.getContext(), bDelete), messageLength + 3, messageLength + 4, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         buttonContent.setSpan(new ImageSpan(view.getContext(), bClock), messageLength + 5, messageLength + 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         if (GetImportant())
@@ -245,13 +248,10 @@ public class Reminder
             result.put(unit,diff);
         }
 
-        long months = result.get(TimeUnit.DAYS) / 12;
         long days = result.get(TimeUnit.DAYS);
         long hours = result.get(TimeUnit.HOURS);
         long minutes = result.get(TimeUnit.MINUTES);
 
-        if (months > 0)
-            eta += months + " months ";
         if (days > 0)
             eta += days + " days ";
         if (hours > 0)
