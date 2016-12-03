@@ -19,6 +19,9 @@ public class ContactProfile
     public String GetFullName() { return Email; }
     public boolean IsContact()
     {
-        return false;
+        if (this.getClass() == AcceptedContactProfile.class)
+            return true;
+        else
+            return false;
     }
 }

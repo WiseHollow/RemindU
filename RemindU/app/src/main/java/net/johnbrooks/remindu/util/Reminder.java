@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.support.v7.app.AlertDialog;
-import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -15,12 +12,22 @@ import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import net.johnbrooks.remindu.R;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 
+import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.requests.SendReminderRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -37,26 +44,80 @@ import java.util.concurrent.TimeUnit;
 
 public class Reminder
 {
+    public static Response.Listener<String> GetReceivedResponseListener()
+    {
+        return new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                try
+                {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String errorMessage = jsonResponse.getString("message");
+
+                    Log.d("INFO", "Received response: " + success);
+
+                    if (success)
+                    {
+                        int size = jsonResponse.getInt("size");
+                        UserProfile.PROFILE.GetReminders().clear();
+
+                        for(int i = 0; i < size; i++)
+                        {
+                            String message = jsonResponse.getJSONObject(String.valueOf(i)).getString("message");
+                            int state = jsonResponse.getJSONObject(String.valueOf(i)).getInt("state");
+                            int important = jsonResponse.getJSONObject(String.valueOf(i)).getInt("important");
+                            String dateString = jsonResponse.getJSONObject(String.valueOf(i)).getString("date");
+                            DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+                            Date date = formatter.parse(dateString);
+
+                            int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
+                            int to = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_to");
+
+                            Reminder.LoadReminder(from, to, message, important > 0 ? true : false, date);
+                        }
+                    }
+                    else
+                    {
+                        Log.d("ERROR", "Message: " + errorMessage);
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
 
     /** Insert a reminder into memory, and upload the request to the user's online records. */
-    public static Reminder CreateReminder(String message, boolean important)
+    public static Reminder CreateReminder(int user_id_from, int user_id_to, String message, boolean important, Date date, Activity activity)
     {
-        Reminder reminder = new Reminder(message);
+        Reminder reminder = new Reminder(message, user_id_from, user_id_to);
         reminder.SetImportant(important);
-        UserProfile.PROFILE.addReminder(reminder);
+        UserProfile.PROFILE.AddReminder(reminder);
+
+        SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), message, important, date, reminder.GetSendResponseListener());
+        RequestQueue queue = Volley.newRequestQueue(activity);
+        queue.add(request);
 
         return reminder;
     }
     /** Insert a reminder into memory (local only). */
-    public static Reminder LoadReminder(String message, boolean important)
+    public static Reminder LoadReminder(int user_id_from, int user_id_to, String message, boolean important, Date date)
     {
-        Reminder reminder = new Reminder(message);
+        Reminder reminder = new Reminder(message, user_id_from, user_id_to);
         reminder.SetImportant(important);
-        UserProfile.PROFILE.addReminder(reminder);
+        UserProfile.PROFILE.AddReminder(reminder);
 
         return reminder;
     }
 
+    private int User_ID_From;
+    private int User_ID_To;
     private LinearLayout Parent;
     private TextView Widget;
     private String Message;
@@ -65,8 +126,10 @@ public class Reminder
 
     private ReminderState State;
 
-    private Reminder(String message)
+    private Reminder(String message, int user_id_from, int user_id_to)
     {
+        User_ID_From = user_id_from;
+        User_ID_To = user_id_to;
         Message = message;
         Date = new Date();
         Important = false;
@@ -79,6 +142,8 @@ public class Reminder
         Date = c.getTime();
     }
 
+    public int GetFrom() { return User_ID_From; }
+    public int GetTo() { return User_ID_To; }
     public String GetMessage() { return Message; }
     public Date GetDate() { return Date; }
     public boolean GetImportant() { return Important; }
@@ -195,6 +260,37 @@ public class Reminder
             eta += minutes + " minutes ";
 
         return eta;
+    }
+
+    private Response.Listener<String> GetSendResponseListener()
+    {
+        return new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                try
+                {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    Log.d("INFO", "Received response: " + success);
+
+                    if (success)
+                    {
+                        //TODO: Pull Reminders from server and refresh user area.
+                    }
+                    else
+                    {
+                        Log.d("ERROR", "Message: " + message);
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
     }
 }
 

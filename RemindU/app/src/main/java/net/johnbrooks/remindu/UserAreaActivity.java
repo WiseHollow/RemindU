@@ -15,15 +15,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.baoyz.widget.PullRefreshLayout;
 
+import net.johnbrooks.remindu.requests.LoginRequest;
+import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
+
+import java.util.Date;
 
 public class UserAreaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
@@ -174,7 +184,7 @@ public class UserAreaActivity extends AppCompatActivity
     public void SetupContacts()
     {
         contactsSubMenu.clear();
-        for(ContactProfile contact : UserProfile.PROFILE.GetContacts())
+        for(final ContactProfile contact : UserProfile.PROFILE.GetContacts())
         {
             MenuItem item = contactsSubMenu.add(contact.GetFullName());
             item.setIcon(R.drawable.user_48);
@@ -183,7 +193,44 @@ public class UserAreaActivity extends AppCompatActivity
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem)
                 {
-                    return false;
+                    if (!contact.IsContact())
+                        return false;
+
+                    ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
+
+                    final Dialog dialog = new Dialog(UserAreaActivity.this);
+                    dialog.setTitle("Create New Reminder");
+                    dialog.setContentView(R.layout.dialog_create_reminder);
+                    ((TextView) dialog.findViewById(R.id.textView_dialog_cnr_recipient)).setText("Recipient: " + contact.GetFullName());
+                    dialog.show();
+
+                    Button button = (Button) dialog.findViewById(R.id.button_dialog_cnr_send);
+                    button.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            String message = ((EditText)dialog.findViewById(R.id.editText_dialog_cnr_message)).getText().toString();
+                            boolean important = ((Switch)dialog.findViewById(R.id.switch_dialog_cnr_message)).isChecked();
+                            Date date = new Date();
+
+                            if (message.length() < 3)
+                            {
+                                return;
+                            }
+
+                            if (date.before(new Date()))
+                            {
+                                return;
+                            }
+
+                            Reminder.CreateReminder(UserProfile.PROFILE.GetUserID(), contact.GetID(), message, important, date, UserAreaActivity.this);
+
+                            dialog.cancel();
+                        }
+                    });
+
+                    return true;
                 }
             });
         }

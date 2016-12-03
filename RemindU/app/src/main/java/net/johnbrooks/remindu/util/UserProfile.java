@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.LoginActivity;
 import net.johnbrooks.remindu.UserAreaActivity;
+import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.LoginRequest;
 
 import org.json.JSONException;
@@ -61,10 +62,6 @@ public class UserProfile implements Parcelable
 
         Reminders = new ArrayList<>();
         Contacts = new ArrayList<>();
-
-        Reminder.CreateReminder("This is a test reminder.", false);
-        Reminder.CreateReminder("Make sure to take out the trash. ", true);
-        Reminder.CreateReminder("This is a test reminder.", false);
     }
 
     public final int IsActive() { return Active; }
@@ -119,12 +116,10 @@ public class UserProfile implements Parcelable
         writeToLinearLayout((Activity) r.GetParent().getContext(), r.GetParent());
     }
 
-    public void addReminder(Reminder r)
+    public void AddReminder(Reminder r)
     {
-        //TODO: SAVE TO SERVER
-
         Reminders.add(r);
-        writeToLinearLayout((Activity) r.GetParent().getContext(), r.GetParent());
+        //writeToLinearLayout((Activity) r.GetParent().getContext(), r.GetParent());
     }
 
     public void pushReminder(Reminder r)
@@ -163,11 +158,14 @@ public class UserProfile implements Parcelable
     public void Pull(Activity activity)
     {
         Log.d("INFO", "Pulling profile from server...");
-        Response.Listener<String> responseListener = GetPullResponseListener();
+        Response.Listener<String> profileResponseListener = GetPullResponseListener();
+        Response.Listener<String> reminderResponseListener = Reminder.GetReceivedResponseListener();
 
-        LoginRequest request = new LoginRequest(Email, Password, responseListener);
+        LoginRequest request = new LoginRequest(Email, Password, profileResponseListener);
+        GetRemindersRequest request1 = new GetRemindersRequest(reminderResponseListener);
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
+        queue.add(request1);
     }
 
     private Response.Listener<String> GetPullResponseListener()
