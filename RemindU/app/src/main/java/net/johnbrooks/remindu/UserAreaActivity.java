@@ -58,10 +58,7 @@ public class UserAreaActivity extends AppCompatActivity
             {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
-                Dialog dialog = new Dialog(UserAreaActivity.this);
-                dialog.setTitle("Send Reminder");
-                dialog.setContentView(R.layout.dialog_create_reminder);
-                dialog.show();
+
             }
         });
 
@@ -201,40 +198,6 @@ public class UserAreaActivity extends AppCompatActivity
                     Intent intent = new Intent(UserAreaActivity.this, CreateReminderActivity.class);
                     intent.putExtra("user_id_to", contact.GetID());
                     UserAreaActivity.this.startActivity(intent);
-
-                    /*((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
-
-                    final Dialog dialog = new Dialog(UserAreaActivity.this);
-                    dialog.setTitle("Create New Reminder");
-                    dialog.setContentView(R.layout.dialog_create_reminder);
-                    ((TextView) dialog.findViewById(R.id.textView_dialog_cnr_recipient)).setText("Recipient: " + contact.GetFullName());
-                    dialog.show();
-
-                    Button button = (Button) dialog.findViewById(R.id.button_dialog_cnr_send);
-                    button.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            String message = ((EditText)dialog.findViewById(R.id.editText_dialog_cnr_message)).getText().toString();
-                            boolean important = ((Switch)dialog.findViewById(R.id.switch_dialog_cnr_message)).isChecked();
-                            Date date = new Date();
-
-                            if (message.length() < 3)
-                            {
-                                return;
-                            }
-
-                            if (date.before(new Date()))
-                            {
-                                return;
-                            }
-
-                            Reminder.CreateReminder(UserProfile.PROFILE.GetUserID(), contact.GetID(), message, important, date, UserAreaActivity.this);
-
-                            dialog.cancel();
-                        }
-                    });*/
 
                     return true;
                 }
