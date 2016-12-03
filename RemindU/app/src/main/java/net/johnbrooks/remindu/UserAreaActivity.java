@@ -197,6 +197,7 @@ public class UserAreaActivity extends AppCompatActivity
 
                     Intent intent = new Intent(UserAreaActivity.this, CreateReminderActivity.class);
                     intent.putExtra("user_id_to", contact.GetID());
+                    intent.putExtra("user_to_fullname", contact.GetFullName());
                     UserAreaActivity.this.startActivity(intent);
 
                     return true;

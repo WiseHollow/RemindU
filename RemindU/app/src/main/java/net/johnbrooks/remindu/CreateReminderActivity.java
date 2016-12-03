@@ -52,6 +52,8 @@ public class CreateReminderActivity extends AppCompatActivity
         b_date = (Button) findViewById(R.id.button_cnr_pick_date);
         b_send = (Button) findViewById(R.id.button_cnr_send);
 
+        tv_recipient.setText("Recipient: " + getIntent().getStringExtra("user_to_fullname"));
+
         calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
@@ -141,7 +143,6 @@ public class CreateReminderActivity extends AppCompatActivity
             {
                 String message = et_message.getText().toString();
                 boolean important = s_important.isChecked();
-                int recipient_id;
 
                 int user_id_to = getIntent().getIntExtra("user_id_to", 0);
                 if (user_id_to == 0)
