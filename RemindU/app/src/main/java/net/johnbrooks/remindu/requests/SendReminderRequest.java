@@ -3,6 +3,8 @@ package net.johnbrooks.remindu.requests;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +28,9 @@ public class SendReminderRequest extends StringRequest
         params.put("password", password);
         params.put("message", message);
         params.put("important", String.valueOf((important) ? 1 : 0));
-        params.put("date", new java.sql.Date(date.getTime()).toString());
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String dateString = formatter.format(date);
+        params.put("date", dateString);
     }
 
     @Override

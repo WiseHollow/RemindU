@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_create_reminder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="net.johnbrooks.remindu.CreateReminderActivity">
+
+    <TextView
+        android:text="Recipient: Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_cnr_recipient"
+        android:textAlignment="viewStart"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_weight="0.30" />
+
+    <Button
+        android:text="Pick Time"
+        android:layout_width="169dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_cnr_pick_time"
+        android:layout_alignBaseline="@+id/button_cnr_pick_date"
+        android:layout_alignBottom="@+id/button_cnr_pick_date"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:ems="10"
+        android:id="@+id/editText_cnr_message"
+        android:hint="Reminder Message"
+        android:layout_weight="0.30"
+        android:inputType="textMultiLine"
+        android:lines="8"
+        android:minLines="6"
+        android:gravity="top|left"
+        android:maxLines="10"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        android:textAlignment="viewStart"
+        android:layout_below="@+id/textView_cnr_recipient"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="12dp" />
+
+    <Switch
+        android:text="Important"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch_cnr_important"
+        android:layout_weight="0.30"
+        android:layout_below="@+id/editText_cnr_message"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Date Due: Tomorrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_cnr_date"
+        android:layout_below="@+id/switch_cnr_important"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:text="Time Due: 12:00am"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_cnr_date"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:id="@+id/textView_cnr_time" />
+
+    <Button
+        android:text="Pick Date"
+        android:layout_width="169dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_cnr_pick_date"
+        android:layout_below="@+id/textView_cnr_time"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="13dp" />
+
+    <Button
+        android:text="Send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_cnr_send"
+        android:layout_weight="0.30"
+        android:layout_below="@+id/button_cnr_pick_time"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

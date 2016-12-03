@@ -1,5 +1,6 @@
 package net.johnbrooks.remindu;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -196,7 +198,11 @@ public class UserAreaActivity extends AppCompatActivity
                     if (!contact.IsContact())
                         return false;
 
-                    ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
+                    Intent intent = new Intent(UserAreaActivity.this, CreateReminderActivity.class);
+                    intent.putExtra("user_id_to", contact.GetID());
+                    UserAreaActivity.this.startActivity(intent);
+
+                    /*((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
 
                     final Dialog dialog = new Dialog(UserAreaActivity.this);
                     dialog.setTitle("Create New Reminder");
@@ -228,7 +234,7 @@ public class UserAreaActivity extends AppCompatActivity
 
                             dialog.cancel();
                         }
-                    });
+                    });*/
 
                     return true;
                 }

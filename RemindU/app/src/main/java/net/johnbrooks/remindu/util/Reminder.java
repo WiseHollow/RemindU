@@ -70,7 +70,7 @@ public class Reminder
                             int state = jsonResponse.getJSONObject(String.valueOf(i)).getInt("state");
                             int important = jsonResponse.getJSONObject(String.valueOf(i)).getInt("important");
                             String dateString = jsonResponse.getJSONObject(String.valueOf(i)).getString("date");
-                            DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
                             Date date = formatter.parse(dateString);
 
                             int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
@@ -94,13 +94,13 @@ public class Reminder
     }
 
     /** Insert a reminder into memory, and upload the request to the user's online records. */
-    public static Reminder CreateReminder(int user_id_from, int user_id_to, String message, boolean important, Date date, Activity activity)
+    public static Reminder CreateReminder(int user_id_to, String message, boolean important, Date date, Activity activity)
     {
-        Reminder reminder = new Reminder(message, user_id_from, user_id_to);
+        Reminder reminder = new Reminder(message, UserProfile.PROFILE.GetUserID(), user_id_to);
         reminder.SetImportant(important);
         UserProfile.PROFILE.AddReminder(reminder);
 
-        SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), message, important, date, reminder.GetSendResponseListener());
+        SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), message, important, date, reminder.GetSendResponseListener(activity));
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
 
@@ -262,7 +262,7 @@ public class Reminder
         return eta;
     }
 
-    private Response.Listener<String> GetSendResponseListener()
+    private Response.Listener<String> GetSendResponseListener(final Activity activity)
     {
         return new Response.Listener<String>()
         {
@@ -280,6 +280,7 @@ public class Reminder
                     if (success)
                     {
                         //TODO: Pull Reminders from server and refresh user area.
+                        activity.finish();
                     }
                     else
                     {
