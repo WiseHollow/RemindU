@@ -6,6 +6,14 @@ package net.johnbrooks.remindu.util;
 
 public class ContactProfile
 {
+    public static ContactProfile GetProfile(int user_id)
+    {
+        for (ContactProfile cp : UserProfile.PROFILE.GetContacts())
+            if (cp.GetID() == user_id)
+                return cp;
+        return null;
+    }
+
     private int ID;
     private String Email;
 

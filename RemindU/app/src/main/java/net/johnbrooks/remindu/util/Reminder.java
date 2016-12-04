@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -121,6 +123,7 @@ public class Reminder
 
     private int User_ID_From;
     private int User_ID_To;
+    private String FullName = null;
     private LinearLayout Parent;
     private TextView Widget;
     private String Message;
@@ -133,6 +136,19 @@ public class Reminder
     {
         User_ID_From = user_id_from;
         User_ID_To = user_id_to;
+
+        try
+        {
+            if (user_id_from == UserProfile.PROFILE.GetUserID())
+                FullName = ContactProfile.GetProfile(user_id_to).GetFullName();
+            else
+                FullName = ContactProfile.GetProfile(user_id_from).GetFullName();
+        }
+        catch(Exception ex)
+        {
+            FullName = "N/A";
+        }
+
         Message = message;
         Date = date;
         Important = false;
@@ -147,6 +163,7 @@ public class Reminder
 
     public int GetFrom() { return User_ID_From; }
     public int GetTo() { return User_ID_To; }
+    public String GetFullName() { return FullName; }
     public String GetMessage() { return Message; }
     public Date GetDate() { return Date; }
     public boolean GetImportant() { return Important; }
@@ -166,32 +183,60 @@ public class Reminder
         final Reminder reminder = this;
         TextView view = new TextView(activity);
         view.setMovementMethod(LinkMovementMethod.getInstance());
-        Bitmap bCheckMark = BitmapFactory.decodeResource( activity.getResources(), R.drawable.checkmark_48 );
-        Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_48 );
-        Bitmap bClock = BitmapFactory.decodeResource( activity.getResources(), R.drawable.clock_48 );
-        Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48 );
+        Bitmap bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96 );
+        Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_96 );
+        Bitmap bMute = BitmapFactory.decodeResource( activity.getResources(), R.drawable.mute_96 );
+        Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_54 );
+        Bitmap bBack = BitmapFactory.decodeResource( activity.getResources(), R.drawable.back_arrow_48 );
+        Bitmap bForward = BitmapFactory.decodeResource( activity.getResources(), R.drawable.forward_arrow_48 );
         int messageLength = GetMessage().toCharArray().length;
         if (GetImportant())
             messageLength+=3;
 
-        //Log.d("TEST", "Size: " + parent.getChildCount());
         int color = Color.LTGRAY;
         if ((parent.getChildCount()) % 2 != 0)
             color = Color.argb(255, 176, 176, 176);
 
-        SpannableStringBuilder buttonContent = new SpannableStringBuilder();
-        if (Important)
-            buttonContent.append("_  ");
-        buttonContent.append(GetMessage());
-        buttonContent.append("\n");
-        buttonContent.append("_ _ _" + "   " + "Time left: " + GetETA());
-        buttonContent.setSpan(new RelativeSizeSpan(1f), 0, messageLength - 1, 0);
-        buttonContent.setSpan(new RelativeSizeSpan(0.75f), messageLength + 7, buttonContent.length(), 0);
-        buttonContent.setSpan(new ImageSpan(view.getContext(), bCheckMark), messageLength + 1, messageLength + 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        buttonContent.setSpan(new ImageSpan(view.getContext(), bDelete), messageLength + 3, messageLength + 4, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        buttonContent.setSpan(new ImageSpan(view.getContext(), bClock), messageLength + 5, messageLength + 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+
+        String line1 = "";
         if (GetImportant())
-            buttonContent.setSpan(new ImageSpan(view.getContext(), bImportant), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            line1 = "_ ";
+        line1 +=  "_ " + GetFullName() + System.getProperty("line.separator");
+        String line2 = "Message: " + GetMessage() + System.getProperty("line.separator");
+        String line3 = "Time left: " + GetETA() + System.getProperty("line.separator");
+        String line4 = "_ _ _";
+
+        spannableStringBuilder.append(line1);
+        spannableStringBuilder.append(line2);
+        spannableStringBuilder.append(line3);
+        spannableStringBuilder.append(line4);
+
+        /*if (Important)
+            spannableStringBuilder.append("_  ");
+        spannableStringBuilder.append(GetMessage());
+        spannableStringBuilder.append("\n");
+        spannableStringBuilder.append("_ _ _" + "   " + "Time left: " + GetETA());*/
+        spannableStringBuilder.setSpan(new RelativeSizeSpan(1.5f), 0, line1.length() - 1, 0);
+        spannableStringBuilder.setSpan(new RelativeSizeSpan(1f), line1.length(), line1.length() + line2.length() + 1, 0);
+
+        int offset = 0;
+        if (GetImportant())
+            offset = 2;
+        if (GetFrom() == UserProfile.PROFILE.GetUserID())
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bForward), offset, offset + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        else
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bBack), offset, offset + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bState), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bDelete), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bMute), line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        if (GetImportant())
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length(), line1.length() + 9, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length() + line2.length(), line1.length() + line2.length() + 10, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         ClickableSpan checkMarkClick = new ClickableSpan() {
             @Override
@@ -218,11 +263,11 @@ public class Reminder
                 //TODO: Open dialog giving options of progress.
             }
         };
-        buttonContent.setSpan(checkMarkClick, messageLength + 1, messageLength + 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        buttonContent.setSpan(deleteClick, messageLength + 3, messageLength + 4, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        buttonContent.setSpan(clockClick, messageLength + 5, messageLength + 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(checkMarkClick, line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(deleteClick, line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(clockClick, line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        view.setText(buttonContent);
+        view.setText(spannableStringBuilder);
         view.setPadding(10, 12, 10, 12);
         view.setBackgroundColor(color);
 
