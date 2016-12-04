@@ -66,7 +66,6 @@ public class UserAreaActivity extends AppCompatActivity
         // Gets
         //
 
-        final TextView etName = (TextView) findViewById(R.id.textView_Name);
         reminderLayout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
 
         final Menu menu = navigationView.getMenu();
@@ -88,7 +87,6 @@ public class UserAreaActivity extends AppCompatActivity
         // Sets
         //
 
-        etName.setText(UserProfile.PROFILE.GetFullName());
         UserProfile.PROFILE.RefreshReminderLayout();
         SetupContacts();
 

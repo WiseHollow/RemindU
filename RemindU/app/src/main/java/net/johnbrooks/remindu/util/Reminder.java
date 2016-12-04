@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * Created by John on 11/28/2016.
  */
 
-public class Reminder
+public class Reminder implements Comparable<Reminder>
 {
     public static Response.Listener<String> GetReceivedResponseListener()
     {
@@ -337,6 +337,16 @@ public class Reminder
                 }
             }
         };
+    }
+
+    @Override
+    public int compareTo(Reminder to)
+    {
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String dateString1 = formatter.format(GetDate());
+        String dateString2 = formatter.format(to.GetDate());
+
+        return dateString1.compareTo(dateString2);
     }
 }
 

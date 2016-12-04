@@ -61,9 +61,7 @@ public class UpdateUserAreaScheduler
         else
         {
             final LinearLayout layout = (LinearLayout) Activity.findViewById(R.id.scrollView_Reminders_Layout);
-            TextView tvDisplayName = (TextView) Activity.findViewById(R.id.textView_Name);
-
-            tvDisplayName.setText(UserProfile.PROFILE.GetFullName());
+            
             UserProfile.PROFILE.RefreshReminderLayout();
             Activity.SetupContacts();
         }

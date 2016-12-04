@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -87,11 +88,13 @@ public class UserProfile implements Parcelable
     public void RefreshReminderLayout()
     {
         resetLinearLayout(UserAreaActivity.GetActivity().reminderLayout);
+        Collections.sort(GetReminders());
 
         for (Reminder r : GetReminders())
         {
             UserAreaActivity.GetActivity().reminderLayout.addView(r.CreateWidget(UserAreaActivity.GetActivity(), UserAreaActivity.GetActivity().reminderLayout));
         }
+
     }
 
     private void resetLinearLayout(LinearLayout layout)
