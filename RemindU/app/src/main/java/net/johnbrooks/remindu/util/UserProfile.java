@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -88,6 +90,19 @@ public class UserProfile implements Parcelable
     public void RefreshReminderLayout()
     {
         resetLinearLayout(UserAreaActivity.GetActivity().reminderLayout);
+
+        if (GetReminders().isEmpty() && UserAreaActivity.GetActivity() != null)
+        {
+            TextView tv = new TextView(UserAreaActivity.GetActivity());
+            tv.setText("No reminders!");
+            tv.setTextSize(18f);
+            tv.setAllCaps(true);
+            tv.setPadding(5, 15, 5, 15);
+            UserAreaActivity.GetActivity().reminderLayout.addView(tv);
+
+            return;
+        }
+
         Collections.sort(GetReminders());
 
         for (Reminder r : GetReminders())

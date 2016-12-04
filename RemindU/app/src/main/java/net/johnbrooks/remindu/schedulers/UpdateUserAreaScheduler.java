@@ -61,7 +61,7 @@ public class UpdateUserAreaScheduler
         else
         {
             final LinearLayout layout = (LinearLayout) Activity.findViewById(R.id.scrollView_Reminders_Layout);
-            
+
             UserProfile.PROFILE.RefreshReminderLayout();
             Activity.SetupContacts();
         }
