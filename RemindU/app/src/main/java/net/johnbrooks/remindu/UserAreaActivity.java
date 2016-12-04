@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.SubMenu;
@@ -136,7 +137,17 @@ public class UserAreaActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
+            return true;
+        }
+        else if (id == R.id.action_sign_out)
+        {
+            Intent signOutIntent = new Intent(UserAreaActivity.this, LoginActivity.class);
+            signOutIntent.putExtra("signOut", true);
+            UserAreaActivity.this.startActivity(signOutIntent);
+            finish();
+
             return true;
         }
 

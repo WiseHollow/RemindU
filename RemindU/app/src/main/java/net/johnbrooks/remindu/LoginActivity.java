@@ -81,10 +81,21 @@ public class LoginActivity extends AppCompatActivity
     private void AttemptAutoLogin()
     {
         SharedPreferences sharedPref = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
+        if (getIntent().getBooleanExtra("signOut", false) == true)
+        {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("email", "null");
+            editor.putString("password", "null");
+            editor.commit();
+            getIntent().putExtra("SignOut", false);
+            Log.d("INFO", "Removing saved sign in credentials. ");
+            return;
+        }
+
         final String email = sharedPref.getString("email", "null");
         final String password = sharedPref.getString("password", "null");
 
-        if (email != "null" && password != "null")
+        if (!email.equalsIgnoreCase("null") && !password.equalsIgnoreCase("null"))
         {
             Response.Listener<String> responseListener = GetLoginResponseListener(email, password);
 
