@@ -1,10 +1,18 @@
 package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -41,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 /**
  * Created by John on 11/28/2016.
  */
@@ -65,10 +75,21 @@ public class Reminder implements Comparable<Reminder>
                     if (success)
                     {
                         int size = jsonResponse.getInt("size");
-                        UserProfile.PROFILE.GetReminders().clear();
+                        //UserProfile.PROFILE.GetReminders().clear();
+                        /*for (int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
+                        {
+                            Reminder r = UserProfile.PROFILE.GetReminders().get(i);
+                            if (r.GetID() == 0)
+                            {
+                                UserProfile.PROFILE.GetReminders().remove(i);
+                                i--;
+                            }
+                        }*/
 
                         for(int i = 0; i < size; i++)
                         {
+                            int id = jsonResponse.getJSONObject(String.valueOf(i)).getInt("id");
+
                             String message = jsonResponse.getJSONObject(String.valueOf(i)).getString("message");
                             int state = jsonResponse.getJSONObject(String.valueOf(i)).getInt("state");
                             int important = jsonResponse.getJSONObject(String.valueOf(i)).getInt("important");
@@ -79,7 +100,8 @@ public class Reminder implements Comparable<Reminder>
                             int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
                             int to = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_to");
 
-                            Reminder.LoadReminder(from, to, message, important > 0 ? true : false, date);
+                            Reminder r = Reminder.LoadReminder(id, from, to, message, important > 0 ? true : false, date);
+                            r.SetState(ReminderState.values()[state]);
                         }
 
                         UserProfile.PROFILE.RefreshReminderLayout();
@@ -98,12 +120,12 @@ public class Reminder implements Comparable<Reminder>
         };
     }
 
-    /** Insert a reminder into memory, and upload the request to the user's online records. */
+    /** Upload the request to the user's online records. */
     public static Reminder CreateReminder(int user_id_to, String message, boolean important, Date date, Activity activity)
     {
         Reminder reminder = new Reminder(message, UserProfile.PROFILE.GetUserID(), user_id_to, date);
         reminder.SetImportant(important);
-        UserProfile.PROFILE.AddReminder(reminder);
+        //UserProfile.PROFILE.AddReminder(reminder);
 
         SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), message, important, date, reminder.GetSendResponseListener(activity));
         RequestQueue queue = Volley.newRequestQueue(activity);
@@ -112,15 +134,31 @@ public class Reminder implements Comparable<Reminder>
         return reminder;
     }
     /** Insert a reminder into memory (local only). */
-    public static Reminder LoadReminder(int user_id_from, int user_id_to, String message, boolean important, Date date)
+    public static Reminder LoadReminder(int id, int user_id_from, int user_id_to, String message, boolean important, Date date)
     {
         Reminder reminder = new Reminder(message, user_id_from, user_id_to, date);
+        reminder.SetID(id);
         reminder.SetImportant(important);
+
+        // Let's see if we have a Reminder with this ID already.
+        Reminder check = UserProfile.PROFILE.GetReminder(id);
+        if (check != null)
+        {
+            // Already have one, so we should remove that one...
+            UserProfile.PROFILE.GetReminders().remove(check);
+        }
+        else
+        {
+            // New reminder has been added, make a notification
+            reminder.showNotification();
+        }
+
         UserProfile.PROFILE.AddReminder(reminder);
 
         return reminder;
     }
 
+    private int ID;
     private int User_ID_From;
     private int User_ID_To;
     private String FullName = null;
@@ -134,6 +172,7 @@ public class Reminder implements Comparable<Reminder>
 
     private Reminder(String message, int user_id_from, int user_id_to, Date date)
     {
+        ID = 0;
         User_ID_From = user_id_from;
         User_ID_To = user_id_to;
 
@@ -153,14 +192,9 @@ public class Reminder implements Comparable<Reminder>
         Date = date;
         Important = false;
         State = ReminderState.NOT_STARTED;
-
-        Calendar c = Calendar.getInstance();
-        c.setTime(Date);
-        c.add(Calendar.DATE, 1);
-        c.add(Calendar.HOUR, 6);
-        Date = c.getTime();
     }
 
+    public int GetID() { return ID; }
     public int GetFrom() { return User_ID_From; }
     public int GetTo() { return User_ID_To; }
     public String GetFullName() { return FullName; }
@@ -170,13 +204,15 @@ public class Reminder implements Comparable<Reminder>
     public ReminderState GetState() { return State; }
     public LinearLayout GetParent() { return Parent; }
 
-    public void SetImportant(boolean value) { Important = value; }
+    public void SetID(final int id) { ID = id; }
+    public void SetImportant(final boolean value) { Important = value; }
     public void SetState(ReminderState state) { State = state; }
     public void SetWidget(TextView To) { Widget = To; }
     public TextView CreateWidget(final Activity activity, LinearLayout parent)
     {
         if (Widget != null)
             return Widget;
+
 
         Parent = parent;
 
@@ -189,9 +225,6 @@ public class Reminder implements Comparable<Reminder>
         Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_54 );
         Bitmap bBack = BitmapFactory.decodeResource( activity.getResources(), R.drawable.back_arrow_48 );
         Bitmap bForward = BitmapFactory.decodeResource( activity.getResources(), R.drawable.forward_arrow_48 );
-        int messageLength = GetMessage().toCharArray().length;
-        if (GetImportant())
-            messageLength+=3;
 
         int color = Color.LTGRAY;
         if ((parent.getChildCount()) % 2 != 0)
@@ -212,11 +245,6 @@ public class Reminder implements Comparable<Reminder>
         spannableStringBuilder.append(line3);
         spannableStringBuilder.append(line4);
 
-        /*if (Important)
-            spannableStringBuilder.append("_  ");
-        spannableStringBuilder.append(GetMessage());
-        spannableStringBuilder.append("\n");
-        spannableStringBuilder.append("_ _ _" + "   " + "Time left: " + GetETA());*/
         spannableStringBuilder.setSpan(new RelativeSizeSpan(1.5f), 0, line1.length() - 1, 0);
         spannableStringBuilder.setSpan(new RelativeSizeSpan(1f), line1.length(), line1.length() + line2.length() + 1, 0);
 
@@ -325,7 +353,8 @@ public class Reminder implements Comparable<Reminder>
                     if (success)
                     {
                         //TODO: Pull Reminders from server and refresh user area.
-                        activity.finish();
+                        if (activity != null)
+                            activity.finish();
                     }
                     else
                     {
@@ -339,6 +368,25 @@ public class Reminder implements Comparable<Reminder>
         };
     }
 
+    public void showNotification()
+    {
+        //PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, UserAreaActivity.GetActivity().getIntent()), 0);
+        Resources r = UserAreaActivity.GetActivity().getResources();
+        Notification notification = new NotificationCompat.Builder(UserAreaActivity.GetActivity())
+                .setTicker("Reminder Alert!")
+                .setSmallIcon(android.R.drawable.ic_menu_report_image)
+                .setContentTitle("Reminder Alert!")
+                .setContentText(GetMessage())
+                //.setContentIntent(pi)
+                .setAutoCancel(true)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) UserAreaActivity.GetActivity().getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notification);
+        Vibrator v = (Vibrator) UserAreaActivity.GetActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(500);
+    }
+
     @Override
     public int compareTo(Reminder to)
     {
@@ -347,6 +395,21 @@ public class Reminder implements Comparable<Reminder>
         String dateString2 = formatter.format(to.GetDate());
 
         return dateString1.compareTo(dateString2);
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof Reminder)
+        {
+            Reminder r = (Reminder) o;
+            if (r.GetID() == GetID())
+                return true;
+            else
+                return false;
+        }
+        else
+            return false;
     }
 }
 

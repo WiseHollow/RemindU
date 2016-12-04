@@ -87,6 +87,19 @@ public class UserProfile implements Parcelable
         PointsReceived = in.readInt();
     }
 
+    private void Update(final int id, final int active, final String fullName, final String username, final String email, final String password, final Integer pointsRemaining, final Integer pointsReceived, final Integer pointsSent)
+    {
+        UserID = id;
+        Active = active;
+        FullName = fullName;
+        Username = username;
+        Email = email;
+        Password = password;
+        PointsReceived = pointsReceived;
+        PointsRemaining = pointsRemaining;
+        PointsSent = pointsSent;
+    }
+
     public void RefreshReminderLayout()
     {
         resetLinearLayout(UserAreaActivity.GetActivity().reminderLayout);
@@ -133,6 +146,14 @@ public class UserProfile implements Parcelable
     {
         Reminders.add(r);
         //RefreshReminderLayout((Activity) r.GetParent().getContext(), r.GetParent());
+    }
+
+    public Reminder GetReminder(int id)
+    {
+        for (Reminder r : GetReminders())
+            if (r.GetID() == id)
+                return r;
+        return null;
     }
 
     public void pushReminder(Reminder r)
@@ -208,7 +229,11 @@ public class UserProfile implements Parcelable
 
                         final String contacts = jsonResponse.getString("contacts");
 
-                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, Password, pointsTotal, pointsReceived, pointsGiven);
+                        if (UserProfile.PROFILE == null)
+                            UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, Password, pointsTotal, pointsReceived, pointsGiven);
+                        else
+                            UserProfile.PROFILE.Update(id, active, fullName, username, email, Password, pointsTotal, pointsReceived, pointsGiven);
+                        UserProfile.PROFILE.GetContacts().clear();
                         for (String contact : contacts.split("&"))
                         {
                             //Log.d("INFO", contact);
