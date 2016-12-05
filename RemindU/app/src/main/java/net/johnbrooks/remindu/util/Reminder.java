@@ -3,9 +3,7 @@ package net.johnbrooks.remindu.util;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,7 +38,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -282,7 +279,7 @@ public class Reminder implements Comparable<Reminder>
             @Override
             public void onClick(View view)
             {
-                UserProfile.PROFILE.deleteReminder(reminder);
+                UserProfile.PROFILE.DeleteReminder(reminder);
             }
         };
         ClickableSpan clockClick = new ClickableSpan() {
@@ -333,6 +330,17 @@ public class Reminder implements Comparable<Reminder>
             eta += hours + " hours ";
         if (minutes > 0)
             eta += minutes + " minutes ";
+
+        //
+        // TODO: Check if time has expired. If so, do stuff
+        //
+
+        if (days <= 0 && hours <= 0 && minutes <= 0)
+        {
+            //TODO: Display reminder detail dialog. Gives options: Reply Complete, Replay Incomplete, and optional message.
+
+
+        }
 
         return eta;
     }

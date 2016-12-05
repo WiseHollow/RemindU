@@ -116,7 +116,7 @@ public class UserProfile implements Parcelable
 
     public void RefreshReminderLayout()
     {
-        resetLinearLayout(UserAreaActivity.GetActivity().reminderLayout);
+        ResetLinearLayout(UserAreaActivity.GetActivity().reminderLayout);
 
         if (GetReminders().isEmpty() && UserAreaActivity.GetActivity() != null)
         {
@@ -159,7 +159,7 @@ public class UserProfile implements Parcelable
         return set;
     }
 
-    private void resetLinearLayout(LinearLayout layout)
+    private void ResetLinearLayout(LinearLayout layout)
     {
         for (Reminder r : GetReminders())
         {
@@ -168,7 +168,7 @@ public class UserProfile implements Parcelable
         layout.removeAllViews();
     }
 
-    public void deleteReminder(Reminder r)
+    public void DeleteReminder(Reminder r)
     {
         //TODO: Send notification to sender that it was deleted.
 
