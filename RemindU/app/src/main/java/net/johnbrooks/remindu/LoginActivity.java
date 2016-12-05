@@ -19,11 +19,14 @@ import com.android.volley.toolbox.Volley;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.requests.LoginRequest;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity
 {
@@ -95,6 +98,17 @@ public class LoginActivity extends AppCompatActivity
         final String email = sharedPref.getString("email", "null");
         final String password = sharedPref.getString("password", "null");
 
+        if (!Network.IsConnected(LoginActivity.this) && AttemptLoadSavedProfile())
+        {
+
+
+            Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
+            LoginActivity.this.startActivity(intent);
+            finish();
+
+            return;
+        }
+
         if (!email.equalsIgnoreCase("null") && !password.equalsIgnoreCase("null"))
         {
             Response.Listener<String> responseListener = GetLoginResponseListener(email, password);
@@ -103,6 +117,43 @@ public class LoginActivity extends AppCompatActivity
             RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
             queue.add(request);
         }
+    }
+
+    private boolean AttemptLoadSavedProfile()
+    {
+        SharedPreferences sharedPref = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
+        final String email = sharedPref.getString("email", "null");
+        final String password = sharedPref.getString("password", "null");
+        final String fullname = sharedPref.getString("fullname", "null");
+        final String username = sharedPref.getString("username", "null");
+        final int id = sharedPref.getInt("id", 0);
+        final boolean active = sharedPref.getBoolean("active", false);
+        final int pointsTotal = sharedPref.getInt("pointsTotal", 0);
+        final int pointsSent = sharedPref.getInt("pointsSent", 0);
+        final int pointsReceived = sharedPref.getInt("pointsReceived", 0);
+        final Set<String> contactsString = sharedPref.getStringSet("contacts", null);
+
+        if (email.equalsIgnoreCase("null") || password.equalsIgnoreCase("null") || fullname.equalsIgnoreCase("null") ||
+                username.equalsIgnoreCase("null") || id == 0 || email.equalsIgnoreCase("null"))
+            return false;
+
+        UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, pointsTotal, pointsReceived, pointsSent);
+        for(String s : contactsString)
+        {
+            String[] element = s.split("%");
+            int cID = Integer.parseInt(element[0]);
+            String cEmail = element[1];
+            String cUsername = element[2];
+            String cFullName = element[3];
+            String cContacts = element[4];
+
+            if (cFullName.equalsIgnoreCase("null"))
+                UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
+            else
+                UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts));
+        }
+
+        return true;
     }
 
     @Deprecated
@@ -129,14 +180,14 @@ public class LoginActivity extends AppCompatActivity
                         final String username = jsonResponse.getString("username");
 
                         final int pointsTotal = jsonResponse.getInt("pointsRemaining");
-                        final int pointsGiven = jsonResponse.getInt("pointsSent");
+                        final int pointsSent = jsonResponse.getInt("pointsSent");
                         final int pointsReceived = jsonResponse.getInt("pointsReceived");
 
                         final String contacts = jsonResponse.getString("contacts");
 
                         // Using pulled information, we can create a profile for the user.
 
-                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, pointsTotal, pointsReceived, pointsGiven);
+                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, pointsTotal, pointsReceived, pointsSent);
 
                         // Next, lets make sense of the contacts string given by the server.
                         // It will pass either a AcceptedContactProfile info, or just limited information used to make a ContactProfile.
@@ -170,6 +221,15 @@ public class LoginActivity extends AppCompatActivity
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("email", email);
                         editor.putString("password", password);
+                        editor.putString("fullname", fullName);
+                        editor.putString("username", username);
+                        editor.putInt("id", id);
+                        editor.putBoolean("active", (active > 0) ? true : false);
+                        editor.putInt("pointsTotal", pointsTotal);
+                        editor.putInt("pointsSent", pointsSent);
+                        editor.putInt("pointsReceived", pointsReceived);
+                        editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
+
                         editor.commit();
 
                         //

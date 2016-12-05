@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -136,6 +137,26 @@ public class UserProfile implements Parcelable
             UserAreaActivity.GetActivity().reminderLayout.addView(r.CreateWidget(UserAreaActivity.GetActivity(), UserAreaActivity.GetActivity().reminderLayout));
         }
 
+    }
+
+    public Set<ContactProfile> GetContactSet()
+    {
+        Set<ContactProfile> set = new HashSet<>();
+        for (ContactProfile contact : GetContacts())
+        {
+            set.add(contact);
+        }
+        return set;
+    }
+
+    public Set<String> GetContactStringSet()
+    {
+        Set<String> set = new HashSet<>();
+        for (ContactProfile contact : GetContacts())
+        {
+            set.add(contact.toString());
+        }
+        return set;
     }
 
     private void resetLinearLayout(LinearLayout layout)

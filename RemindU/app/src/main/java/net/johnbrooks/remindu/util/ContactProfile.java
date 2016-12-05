@@ -24,12 +24,20 @@ public class ContactProfile
     }
     public final int GetID() { return ID; }
     public final String GetEmail() { return Email; }
-    public String GetFullName() { return Email; }
+    public String GetUsername() { return "null"; }
+    public String GetFullName() { return "null"; }
+    public String GetDisplayName() { return Email; }
+    public String GetContacts() { return "null"; }
     public boolean IsContact()
     {
         if (this.getClass() == AcceptedContactProfile.class)
             return true;
         else
             return false;
+    }
+    @Override
+    public String toString()
+    {
+        return GetID() + "%" + GetEmail() + "%" + GetUsername() + "%" + GetFullName() + "%" + GetContacts();
     }
 }

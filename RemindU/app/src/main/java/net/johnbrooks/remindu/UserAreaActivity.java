@@ -185,7 +185,7 @@ public class UserAreaActivity extends AppCompatActivity
         contactsSubMenu.clear();
         for(final ContactProfile contact : UserProfile.PROFILE.GetContacts())
         {
-            MenuItem item = contactsSubMenu.add(contact.GetFullName());
+            MenuItem item = contactsSubMenu.add(contact.GetDisplayName());
             item.setIcon(R.drawable.user_48);
             item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
             {

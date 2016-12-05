@@ -17,7 +17,12 @@ public class AcceptedContactProfile extends ContactProfile
     }
     @Override
     public final String GetFullName() { return FullName; }
+    @Override
     public final String GetUsername() { return Username; }
+    @Override
+    public String GetDisplayName() { return FullName; }
+    @Override
+    public String GetContacts() { return Contacts; }
     @Override
     public final boolean IsContact()
     {
