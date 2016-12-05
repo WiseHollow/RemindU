@@ -20,6 +20,7 @@ import com.baoyz.widget.PullRefreshLayout;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class UserAreaActivity extends AppCompatActivity
@@ -42,13 +43,15 @@ public class UserAreaActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View view)
             {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
-
+                if (!Network.IsConnected(UserAreaActivity.this))
+                    return;
             }
         });
 
@@ -100,14 +103,21 @@ public class UserAreaActivity extends AppCompatActivity
             @Override
             public void onRefresh()
             {
-                PullScheduler.Call();
-                pullRefreshLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run()
+                if (!Network.IsConnected(UserAreaActivity.this))
+                    pullRefreshLayout.setRefreshing(false);
+                else
+                {
+                    PullScheduler.Call();
+                    pullRefreshLayout.postDelayed(new Runnable()
                     {
-                        pullRefreshLayout.setRefreshing(false);
-                    }
-                }, 1500);
+                        @Override
+                        public void run()
+                        {
+                            pullRefreshLayout.setRefreshing(false);
+                        }
+                    }, 1500);
+                }
+
             }
         });
     }
@@ -192,6 +202,9 @@ public class UserAreaActivity extends AppCompatActivity
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem)
                 {
+                    if (!Network.IsConnected(UserAreaActivity.this))
+                        return false;
+
                     if (!contact.IsContact())
                         return false;
 
