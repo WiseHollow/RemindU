@@ -338,7 +338,7 @@ public class Reminder implements Comparable<Reminder>
         if (days <= 0 && hours <= 0 && minutes <= 0)
         {
             //TODO: Display reminder detail dialog. Gives options: Reply Complete, Replay Incomplete, and optional message.
-
+            eta = "NOW";
 
         }
 
@@ -365,6 +365,37 @@ public class Reminder implements Comparable<Reminder>
                         //TODO: Pull Reminders from server and refresh user area.
                         if (activity != null)
                             activity.finish();
+                    }
+                    else
+                    {
+                        Log.d("ERROR", "Message: " + message);
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    public Response.Listener<String> GetDeleteResponseListener(final Activity activity)
+    {
+        return new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                try
+                {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    Log.d("INFO", "Received response: " + success);
+
+                    if (success)
+                    {
+                        UserProfile.PROFILE.Pull(activity);
                     }
                     else
                     {

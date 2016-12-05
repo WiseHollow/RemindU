@@ -12,6 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.UserAreaActivity;
+import net.johnbrooks.remindu.requests.DeleteReminderRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.LoginRequest;
 
@@ -170,7 +171,17 @@ public class UserProfile implements Parcelable
 
     public void DeleteReminder(Reminder r)
     {
-        //TODO: Send notification to sender that it was deleted.
+        Log.d("INFO", "Deleting reminder...");
+        if (UserAreaActivity.GetActivity() == null)
+        {
+            Log.d("SEVERE", "UserAreaActivity is NULL...");
+            return;
+        }
+        Response.Listener<String> responseListener = r.GetDeleteResponseListener(UserAreaActivity.GetActivity());
+
+        DeleteReminderRequest request = new DeleteReminderRequest(GetUserID(), GetPassword(), r.GetID(), responseListener);
+        RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.GetActivity());
+        queue.add(request);
 
         Reminders.remove(r);
         RefreshReminderLayout();
