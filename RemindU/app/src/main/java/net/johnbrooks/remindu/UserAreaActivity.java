@@ -1,7 +1,6 @@
 package net.johnbrooks.remindu;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.SubMenu;
@@ -15,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
 
@@ -81,8 +79,10 @@ public class UserAreaActivity extends AppCompatActivity
         // Run schedules
         //
 
+        UserProfile.PROFILE.LoadRemindersFromFile(UserAreaActivity.this);
         PullScheduler.Initialize(UserAreaActivity.this);
         UpdateUserAreaScheduler.Initialize(UserAreaActivity.this);
+
 
         //
         // Sets

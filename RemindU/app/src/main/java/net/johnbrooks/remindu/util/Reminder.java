@@ -100,11 +100,12 @@ public class Reminder implements Comparable<Reminder>
                             int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
                             int to = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_to");
 
-                            Reminder r = Reminder.LoadReminder(id, from, to, message, important > 0 ? true : false, date);
+                            Reminder r = Reminder.LoadReminder(false, id, from, to, message, important > 0 ? true : false, date);
                             r.SetState(ReminderState.values()[state]);
                         }
 
                         UserProfile.PROFILE.RefreshReminderLayout();
+                        UserProfile.PROFILE.SaveRemindersToFile(UserAreaActivity.GetActivity());
                     }
                     else
                     {
@@ -134,7 +135,7 @@ public class Reminder implements Comparable<Reminder>
         return reminder;
     }
     /** Insert a reminder into memory (local only). */
-    public static Reminder LoadReminder(int id, int user_id_from, int user_id_to, String message, boolean important, Date date)
+    public static Reminder LoadReminder(boolean silentLoad, int id, int user_id_from, int user_id_to, String message, boolean important, Date date)
     {
         Reminder reminder = new Reminder(message, user_id_from, user_id_to, date);
         reminder.SetID(id);
@@ -150,7 +151,8 @@ public class Reminder implements Comparable<Reminder>
         else
         {
             // New reminder has been added, make a notification
-            reminder.showNotification();
+            if (!silentLoad)
+                reminder.showNotification();
         }
 
         UserProfile.PROFILE.AddReminder(reminder);
@@ -410,6 +412,27 @@ public class Reminder implements Comparable<Reminder>
         }
         else
             return false;
+    }
+
+    @Override
+    public String toString()
+    {
+        return super.toString();
+    }
+
+    public String[] toArray()
+    {
+        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+        String[] array = {
+                String.valueOf(GetID()),
+                String.valueOf(GetFrom()),
+                String.valueOf(GetTo()),
+                GetMessage(),
+                formatter.format(GetDate()),
+                String.valueOf((GetImportant() == true) ? 1 : 0),
+                String.valueOf(GetState().ordinal())
+        };
+        return array;
     }
 }
 

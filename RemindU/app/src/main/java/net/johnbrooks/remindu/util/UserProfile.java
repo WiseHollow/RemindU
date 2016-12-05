@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,10 +17,24 @@ import net.johnbrooks.remindu.requests.LoginRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by John on 11/24/2016.
@@ -309,5 +322,80 @@ public class UserProfile implements Parcelable
         parcel.writeInt(PointsRemaining);
         parcel.writeInt(PointsSent);
         parcel.writeInt(PointsReceived);
+    }
+
+    public void LoadRemindersFromFile(Activity activity)
+    {
+        final String filename = "reminders.yml";
+
+        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+        File file = new File(activity.getBaseContext().getFilesDir(), filename);
+        Map<String, ArrayList<String>> data;
+
+        if (!file.exists())
+            return;
+
+        try
+        {
+
+            InputStream input = new FileInputStream(file);
+            Yaml config = new Yaml();
+            for (Object o : config.loadAll(input))
+            {
+                data = (Map) o;
+                for (String key : data.keySet())
+                {
+                    String[] rArray = data.get(key).toArray(new String[data.get(key).size()]);
+                    int id = Integer.parseInt(rArray[0]);
+                    int from = Integer.parseInt(rArray[1]);
+                    int to = Integer.parseInt(rArray[2]);
+                    String message = rArray[3];
+                    Date date = formatter.parse(rArray[4]);
+                    boolean important = (rArray[5].equalsIgnoreCase("1")) ? true : false;
+                    ReminderState rState = ReminderState.values()[Integer.parseInt(rArray[6])];
+                    Log.d("TEST", "" + rArray[5]);
+
+                    Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date);
+                    r.SetState(rState);
+                }
+            }
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public  void SaveRemindersToFile(Activity activity)
+    {
+        final String filename = "reminders.yml";
+
+        File file = new File(activity.getBaseContext().getFilesDir(), filename);
+
+        if (file.exists())
+            file.delete();
+
+        Map<String, String[]> data = new HashMap<>();
+        for (Reminder r : GetReminders())
+        {
+            data.put("id-" + r.GetID(), r.toArray());
+        }
+
+        Yaml config = new Yaml();
+        FileWriter writer;
+        try
+        {
+            writer = new FileWriter(file);
+            config.dump(data, writer);
+            writer.close();
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        }
+
+
     }
 }
