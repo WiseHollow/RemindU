@@ -89,6 +89,14 @@ public class LoginActivity extends AppCompatActivity
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("email", "null");
             editor.putString("password", "null");
+            editor.putString("fullname", "null");
+            editor.putString("username", "null");
+            editor.putInt("id", 0);
+            editor.putBoolean("active", false);
+            editor.putInt("pointsTotal", 0);
+            editor.putInt("pointsSent", 0);
+            editor.putInt("pointsReceived", 0);
+            editor.putStringSet("contacts", null);
             editor.commit();
             getIntent().putExtra("SignOut", false);
             Log.d("INFO", "Removing saved sign in credentials. ");
