@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -633,14 +635,14 @@ public class Reminder implements Comparable<Reminder>
         if (UserProfile.PROFILE.IsIgnoring(GetID()))
             return;
 
-        //PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, UserAreaActivity.GetActivity().getIntent()), 0);
-        Resources r = UserAreaActivity.GetActivity().getResources();
+        PendingIntent pi = PendingIntent.getActivity(UserAreaActivity.GetActivity(), 0, new Intent(UserAreaActivity.GetActivity().getBaseContext(), UserAreaActivity.class), 0);
+        //Resources r = UserAreaActivity.GetActivity().getResources();
         Notification notification = new NotificationCompat.Builder(UserAreaActivity.GetActivity())
                 .setTicker(title)
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
                 .setContentTitle(title)
                 .setContentText(message)
-                //.setContentIntent(pi)
+                .setContentIntent(pi)
                 .setAutoCancel(true)
                 .build();
 
