@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.baoyz.widget.PullRefreshLayout;
 
+import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
@@ -83,8 +84,9 @@ public class UserAreaActivity extends AppCompatActivity
         //
 
         UserProfile.PROFILE.LoadRemindersFromFile(UserAreaActivity.this);
-        PullScheduler.Initialize(UserAreaActivity.this);
-        UpdateUserAreaScheduler.Initialize(UserAreaActivity.this);
+        PullScheduler.Initialize();
+        UpdateUserAreaScheduler.Initialize();
+        ProcessRemindersScheduler.Initialize();
 
 
         //

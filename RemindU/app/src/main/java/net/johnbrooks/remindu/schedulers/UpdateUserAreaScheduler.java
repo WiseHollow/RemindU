@@ -12,10 +12,10 @@ import net.johnbrooks.remindu.util.UserProfile;
 public class UpdateUserAreaScheduler
 {
     private static UpdateUserAreaScheduler scheduler = null;
-    public static void Initialize(UserAreaActivity activity)
+    public static void Initialize()
     {
         if (scheduler == null)
-            scheduler = new UpdateUserAreaScheduler(activity);
+            scheduler = new UpdateUserAreaScheduler();
     }
     public static void Cancel()
     {
@@ -26,7 +26,7 @@ public class UpdateUserAreaScheduler
     private final int mInterval = 5000; // milliseconds
     private Handler mHandler;
 
-    public UpdateUserAreaScheduler(UserAreaActivity activity)
+    public UpdateUserAreaScheduler()
     {
         mHandler = new Handler();
         startRepeatingTask();

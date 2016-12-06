@@ -13,7 +13,7 @@ import net.johnbrooks.remindu.util.UserProfile;
 public class ProcessRemindersScheduler
 {
     private static ProcessRemindersScheduler scheduler;
-    public static void Initialize(UserAreaActivity activity)
+    public static void Initialize()
     {
         if (scheduler == null)
             scheduler = new ProcessRemindersScheduler();
@@ -24,7 +24,7 @@ public class ProcessRemindersScheduler
         scheduler = null;
     }
 
-    private final int mInterval = 5000; // milliseconds
+    private final int mInterval = 60000; // 1 minute
     private Handler mHandler;
 
     public ProcessRemindersScheduler()

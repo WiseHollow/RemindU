@@ -3,6 +3,7 @@ package net.johnbrooks.remindu.schedulers;
 import android.app.Activity;
 import android.os.Handler;
 
+import net.johnbrooks.remindu.UserAreaActivity;
 import net.johnbrooks.remindu.util.UserProfile;
 
 /**
@@ -12,12 +13,10 @@ import net.johnbrooks.remindu.util.UserProfile;
 public class PullScheduler
 {
     private static PullScheduler scheduler = null;
-    private static Activity sActivity;
-    public static void Initialize(Activity activity)
+    public static void Initialize()
     {
-        sActivity = activity;
         if (scheduler == null)
-            scheduler = new PullScheduler(activity);
+            scheduler = new PullScheduler(UserAreaActivity.GetActivity());
     }
     public static void Cancel()
     {
@@ -26,9 +25,8 @@ public class PullScheduler
     }
     public static void Call()
     {
-        Activity a = sActivity;
         Cancel();
-        Initialize(a);
+        Initialize();
     }
 
     private final int mInterval = 60000; // milliseconds. 60 seconds
