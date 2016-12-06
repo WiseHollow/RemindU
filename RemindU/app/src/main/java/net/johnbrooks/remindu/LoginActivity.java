@@ -20,12 +20,12 @@ import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.requests.LoginRequest;
 import net.johnbrooks.remindu.util.Network;
-import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity
@@ -108,8 +108,6 @@ public class LoginActivity extends AppCompatActivity
 
         if (!Network.IsConnected(LoginActivity.this) && AttemptLoadSavedProfile())
         {
-
-
             Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
             LoginActivity.this.startActivity(intent);
             finish();
@@ -141,11 +139,14 @@ public class LoginActivity extends AppCompatActivity
         final int pointsReceived = sharedPref.getInt("pointsReceived", 0);
         final Set<String> contactsString = sharedPref.getStringSet("contacts", null);
 
+
         if (email.equalsIgnoreCase("null") || password.equalsIgnoreCase("null") || fullname.equalsIgnoreCase("null") ||
                 username.equalsIgnoreCase("null") || id == 0 || email.equalsIgnoreCase("null"))
             return false;
 
         UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, pointsTotal, pointsReceived, pointsSent);
+        UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
+
         for(String s : contactsString)
         {
             String[] element = s.split("%");
@@ -196,6 +197,7 @@ public class LoginActivity extends AppCompatActivity
                         // Using pulled information, we can create a profile for the user.
 
                         UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, pointsTotal, pointsReceived, pointsSent);
+                        UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
 
                         // Next, lets make sense of the contacts string given by the server.
                         // It will pass either a AcceptedContactProfile info, or just limited information used to make a ContactProfile.

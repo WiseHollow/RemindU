@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -60,8 +61,9 @@ public class UserProfile implements Parcelable
 
     private List<ContactProfile> Contacts;
     private List<Reminder> Reminders;
+    private List<Integer> ReminderIgnores;
 
-    public UserProfile(final int id, final int active, final String fullName, final String username, final String email, final String password, final Integer pointsRemaining, final Integer pointsReceived, final Integer pointsSent)
+    public UserProfile(int id, final int active, final String fullName, final String username, final String email, final String password, final Integer pointsRemaining, final Integer pointsReceived, final Integer pointsSent)
     {
         UserID = id;
         Active = active;
@@ -75,6 +77,9 @@ public class UserProfile implements Parcelable
 
         Reminders = new ArrayList<>();
         Contacts = new ArrayList<>();
+        ReminderIgnores = new ArrayList<>();
+
+
     }
 
     public final int IsActive() { return Active; }
@@ -86,9 +91,25 @@ public class UserProfile implements Parcelable
     public final int GetPointsRemaining() { return PointsRemaining; }
     public final int GetPointsSent() { return PointsSent; }
     public final int GetPointsReceived() { return PointsReceived; }
+    public final boolean IsIgnoring(int id) { return ReminderIgnores.contains(id); }
 
     public List<Reminder> GetReminders() { return Reminders; }
     public List<ContactProfile> GetContacts() { return Contacts; }
+    public void SetIgnoreReminder(int id, boolean value)
+    {
+        if (value)
+        {
+            if (!ReminderIgnores.contains(id))
+                ReminderIgnores.add(id);
+        }
+        else
+        {
+            if (ReminderIgnores.contains(id))
+                ReminderIgnores.remove(Integer.valueOf(id));
+        }
+
+        SaveReminderIgnoresToFile(UserAreaActivity.GetActivity());
+    }
 
     protected UserProfile(Parcel in)
     {
@@ -429,5 +450,60 @@ public class UserProfile implements Parcelable
         }
 
 
+    }
+
+    public void SaveReminderIgnoresToFile(Activity activity)
+    {
+        final String filename = "ignores.yml";
+
+        File file = new File(activity.getBaseContext().getFilesDir(), filename);
+
+        if (file.exists())
+            file.delete();
+
+        Integer[] ignores = ReminderIgnores.toArray(new Integer[ReminderIgnores.size()]);
+
+        Yaml config = new Yaml();
+        FileWriter writer;
+        try
+        {
+            writer = new FileWriter(file);
+            config.dump(ignores, writer);
+            writer.close();
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public void LoadReminderIgnoresFromFile(Activity activity)
+    {
+        final String filename = "ignores.yml";
+
+        File file = new File(activity.getBaseContext().getFilesDir(), filename);
+        List<Integer> ignores;
+
+        if (!file.exists())
+            return;
+
+        try
+        {
+
+            InputStream input = new FileInputStream(file);
+            Yaml config = new Yaml();
+            for (Object o : config.loadAll(input))
+            {
+                ignores = (ArrayList) o;
+
+                for (Integer i : ignores)
+                {
+                    ReminderIgnores.add(i);
+                }
+            }
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

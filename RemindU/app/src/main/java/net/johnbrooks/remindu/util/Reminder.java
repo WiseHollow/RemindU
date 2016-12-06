@@ -221,7 +221,11 @@ public class Reminder implements Comparable<Reminder>
         view.setMovementMethod(LinkMovementMethod.getInstance());
         Bitmap bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96 );
         Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_96 );
-        Bitmap bMute = BitmapFactory.decodeResource( activity.getResources(), R.drawable.mute_96 );
+        Bitmap bMute;
+        if (!UserProfile.PROFILE.IsIgnoring(GetID()))
+            bMute = BitmapFactory.decodeResource( activity.getResources(), R.drawable.mute_96 );
+        else
+            bMute = BitmapFactory.decodeResource( activity.getResources(), R.drawable.mute_96_red );
         Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_54 );
         Bitmap bBack = BitmapFactory.decodeResource( activity.getResources(), R.drawable.back_arrow_48 );
         Bitmap bForward = BitmapFactory.decodeResource( activity.getResources(), R.drawable.forward_arrow_48 );
@@ -266,7 +270,7 @@ public class Reminder implements Comparable<Reminder>
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length(), line1.length() + 9, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length() + line2.length(), line1.length() + line2.length() + 10, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        ClickableSpan checkMarkClick = new ClickableSpan() {
+        ClickableSpan stateClick = new ClickableSpan() {
             @Override
             public void onClick(View view)
             {
@@ -283,17 +287,17 @@ public class Reminder implements Comparable<Reminder>
                 UserProfile.PROFILE.DeleteReminder(reminder);
             }
         };
-        ClickableSpan clockClick = new ClickableSpan() {
+        ClickableSpan muteClick = new ClickableSpan() {
             @Override
             public void onClick(View view)
             {
-                //TODO: Mark as complete
-                //TODO: Open dialog giving options of progress.
+                UserProfile.PROFILE.SetIgnoreReminder(GetID(), !UserProfile.PROFILE.IsIgnoring(GetID()));
+                UserProfile.PROFILE.RefreshReminderLayout();
             }
         };
-        spannableStringBuilder.setSpan(checkMarkClick, line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(stateClick, line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         spannableStringBuilder.setSpan(deleteClick, line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        spannableStringBuilder.setSpan(clockClick, line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(muteClick, line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         view.setText(spannableStringBuilder);
         view.setPadding(10, 12, 10, 12);
@@ -434,6 +438,9 @@ public class Reminder implements Comparable<Reminder>
 
     public void showNotification()
     {
+        if (UserProfile.PROFILE.IsIgnoring(GetID()))
+            return;
+
         //PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, UserAreaActivity.GetActivity().getIntent()), 0);
         Resources r = UserAreaActivity.GetActivity().getResources();
         Notification notification = new NotificationCompat.Builder(UserAreaActivity.GetActivity())
