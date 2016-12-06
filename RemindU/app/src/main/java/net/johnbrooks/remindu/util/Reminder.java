@@ -423,6 +423,7 @@ public class Reminder implements Comparable<Reminder>
         //
         // TODO: Make times to notify customizable on the settings of the app.
         //
+
         final Reminder myReminder = this;
 
         int[] timeLeft = GetTimeLeft();
@@ -490,7 +491,7 @@ public class Reminder implements Comparable<Reminder>
                 }
             });
         }
-        else if (timeLeft[0] <= 1 && timeLeft[1] <= 0 && timeLeft[2] <= 0)
+        else if (timeLeft[0] == 1 && timeLeft[1] == 0 && timeLeft[2] == 0)
         {
             //
             // One day is left
@@ -498,7 +499,7 @@ public class Reminder implements Comparable<Reminder>
 
             ShowNotification(false, "Reminder from " + GetFullName(), "Due in 1 day.");
         }
-        else if (timeLeft[0] <= 0 && timeLeft[1] <= 1 && timeLeft[2] <= 0)
+        else if (timeLeft[0] == 0 && timeLeft[1] == 1 && timeLeft[2] == 0)
         {
             //
             // 1 hours left
