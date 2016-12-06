@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -151,7 +152,7 @@ public class Reminder implements Comparable<Reminder>
         {
             // New reminder has been added, make a notification
             if (!silentLoad)
-                reminder.ShowNotification(true);
+                reminder.ShowNotification(true, "Reminder Alert!", reminder.GetMessage());
         }
 
         UserProfile.PROFILE.AddReminder(reminder);
@@ -416,9 +417,13 @@ public class Reminder implements Comparable<Reminder>
     }
     public boolean Remind()
     {
+        if (UserProfile.PROFILE.GetUserID() != GetTo() || GetState() == ReminderState.COMPLETE)
+            return false;
+
         //
         // TODO: Make times to notify customizable on the settings of the app.
         //
+        final Reminder myReminder = this;
 
         int[] timeLeft = GetTimeLeft();
         if (timeLeft[0] <= 0 && timeLeft[1] <= 0 && timeLeft[2] <= 0)
@@ -426,18 +431,80 @@ public class Reminder implements Comparable<Reminder>
             //
             // Time is over.
             //
+
+            final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
+            dialog.setTitle("Reminder due; finalize state");
+            dialog.setContentView(R.layout.dialog_reminder_finalize);
+            dialog.show();
+
+            TextView tv_who = (TextView) dialog.findViewById(R.id.textView_rf_who);
+            TextView tv_message = (TextView) dialog.findViewById(R.id.textView_rf_message);
+
+            tv_who.setText("Reminder from: " + myReminder.GetFullName());
+            tv_message.setText("Message: " + myReminder.GetMessage());
+
+            (dialog.findViewById(R.id.button_rf_not_started)).setOnClickListener(new View.OnClickListener()
+            {
+
+
+                @Override
+                public void onClick(View view)
+                {
+                    SetState(ReminderState.NOT_STARTED);
+                    UserProfile.PROFILE.RefreshReminderLayout();
+                    UserProfile.PROFILE.pushReminder(myReminder);
+                    dialog.cancel();
+                }
+            });
+
+            (dialog.findViewById(R.id.button_rf_in_progress)).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    SetState(ReminderState.IN_PROGRESS);
+                    UserProfile.PROFILE.RefreshReminderLayout();
+                    UserProfile.PROFILE.pushReminder(myReminder);
+                    dialog.cancel();
+                }
+            });
+
+            (dialog.findViewById(R.id.button_rf_complete)).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    SetState(ReminderState.COMPLETE);
+                    UserProfile.PROFILE.RefreshReminderLayout();
+                    UserProfile.PROFILE.pushReminder(myReminder);
+                    dialog.cancel();
+                }
+            });
+
+            dialog.setOnCancelListener(new DialogInterface.OnCancelListener()
+            {
+                @Override
+                public void onCancel(DialogInterface dialogInterface)
+                {
+                    //TODO: Finish finalizing. Send changes to sender.
+                }
+            });
         }
         else if (timeLeft[0] <= 1 && timeLeft[1] <= 0 && timeLeft[2] <= 0)
         {
             //
             // One day is left
             //
+
+            ShowNotification(false, "Reminder from " + GetFullName(), "Due in 1 day.");
         }
         else if (timeLeft[0] <= 0 && timeLeft[1] <= 1 && timeLeft[2] <= 0)
         {
             //
             // 1 hours left
             //
+
+            ShowNotification(false, "Reminder from " + GetFullName(), "Due in 1 hour.");
         }
 
         return true;
@@ -560,7 +627,7 @@ public class Reminder implements Comparable<Reminder>
         };
     }
 
-    public void ShowNotification(boolean vibrate)
+    public void ShowNotification(boolean vibrate, String title, String message)
     {
         if (UserProfile.PROFILE.IsIgnoring(GetID()))
             return;
@@ -568,10 +635,10 @@ public class Reminder implements Comparable<Reminder>
         //PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, UserAreaActivity.GetActivity().getIntent()), 0);
         Resources r = UserAreaActivity.GetActivity().getResources();
         Notification notification = new NotificationCompat.Builder(UserAreaActivity.GetActivity())
-                .setTicker("Reminder Alert!")
+                .setTicker(title)
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
-                .setContentTitle("Reminder Alert!")
-                .setContentText(GetMessage())
+                .setContentTitle(title)
+                .setContentText(message)
                 //.setContentIntent(pi)
                 .setAutoCancel(true)
                 .build();
