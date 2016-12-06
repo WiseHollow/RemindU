@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -20,6 +21,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -219,7 +221,11 @@ public class Reminder implements Comparable<Reminder>
         final Reminder reminder = this;
         TextView view = new TextView(activity);
         view.setMovementMethod(LinkMovementMethod.getInstance());
-        Bitmap bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96 );
+        Bitmap bState;
+        if (GetState() == ReminderState.IN_PROGRESS)
+            bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_green );
+        else
+            bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96 );
         Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_96 );
         Bitmap bMute;
         if (!UserProfile.PROFILE.IsIgnoring(GetID()))
@@ -274,9 +280,61 @@ public class Reminder implements Comparable<Reminder>
             @Override
             public void onClick(View view)
             {
-                //TODO: Mark as complete
-                //TODO: Open dialog giving options of progress.
-                SetState(ReminderState.COMPLETE);
+                if (UserProfile.PROFILE.GetUserID() == GetFrom())
+                    return;
+
+                final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
+                dialog.setTitle("Select Reminder State");
+                dialog.setContentView(R.layout.dialog_reminder_state_picker);
+                dialog.show();
+
+                (dialog.findViewById(R.id.button_rsp_not_started)).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        SetState(ReminderState.NOT_STARTED);
+                        UserProfile.PROFILE.RefreshReminderLayout();
+                        //TODO: Tell server, and tell sender.
+                        //TODO: Change icon to black
+                        dialog.cancel();
+                    }
+                });
+
+                (dialog.findViewById(R.id.button_rsp_in_progress)).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        SetState(ReminderState.IN_PROGRESS);
+                        UserProfile.PROFILE.RefreshReminderLayout();
+                        //TODO: Tell server, and tell sender.
+                        //TODO: Change icon to green
+                        dialog.cancel();
+                    }
+                });
+
+                (dialog.findViewById(R.id.button_rsp_complete)).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        SetState(ReminderState.COMPLETE);
+                        UserProfile.PROFILE.RefreshReminderLayout();
+                        //TODO: Tell server, and tell sender.
+                        //TODO: Change icon to green OR just remove
+                        dialog.cancel();
+                    }
+                });
+
+                (dialog.findViewById(R.id.button_rsp_cancel)).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        dialog.cancel();
+                    }
+                });
             }
         };
         ClickableSpan deleteClick = new ClickableSpan()
