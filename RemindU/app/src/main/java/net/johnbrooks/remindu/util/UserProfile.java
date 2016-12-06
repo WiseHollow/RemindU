@@ -360,7 +360,7 @@ public class UserProfile implements Parcelable
     {
         final String filename = "reminders.yml";
 
-        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         File file = new File(activity.getBaseContext().getFilesDir(), filename);
         Map<String, ArrayList<String>> data;
 

@@ -1,11 +1,14 @@
 package net.johnbrooks.remindu;
 
 import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
@@ -71,12 +74,29 @@ public class CreateReminderActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                final Dialog dialog = new Dialog(CreateReminderActivity.this);
+                final TimePickerDialog tpDialog = new TimePickerDialog(CreateReminderActivity.this, 0, new TimePickerDialog.OnTimeSetListener()
+                {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hours, int minutes)
+                    {
+                        calendar.set(Calendar.HOUR, hours);
+                        calendar.set(Calendar.MINUTE, minutes);
+                        calendar.set(Calendar.SECOND, 0);
+                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+                        String suffix = "am";
+                        if (hours > 12)
+                            suffix = "pm";
+                        tv_time.setText("Time Due: " + dateFormat.format(calendar.getTime()) + suffix);
+                    }
+                }, 0, 0, false);
+                tpDialog.show();
+
+                /*final Dialog dialog = new Dialog(CreateReminderActivity.this);
                 dialog.setTitle("Pick Reminder Time Due");
                 dialog.setContentView(R.layout.dialog_time_picker);
                 dialog.show();
 
-                TimePicker tp = (TimePicker) dialog.findViewById(R.id.timePicker_cnr);
+                final TimePicker tp = (TimePicker) dialog.findViewById(R.id.timePicker_cnr);
                 Button finished = (Button) dialog.findViewById(R.id.button_cnr_time_picker);
 
                 Calendar now = Calendar.getInstance();
@@ -95,7 +115,7 @@ public class CreateReminderActivity extends AppCompatActivity
                 tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener()
                 {
                     @Override
-                    public void onTimeChanged(TimePicker timePicker, int hours, int minutes)
+                    public void onTimeChanged(final TimePicker timePicker, int hours, int minutes)
                     {
                         calendar.set(Calendar.HOUR, hours);
                         calendar.set(Calendar.MINUTE, minutes);
@@ -104,9 +124,11 @@ public class CreateReminderActivity extends AppCompatActivity
                         String suffix = "am";
                         if (hours > 12)
                             suffix = "pm";
+                        Log.d("TIME", "Hours: " + hours);
                         tv_time.setText("Time Due: " + dateFormat.format(calendar.getTime()) + suffix);
                     }
-                });
+                });*/
+
             }
         });
 

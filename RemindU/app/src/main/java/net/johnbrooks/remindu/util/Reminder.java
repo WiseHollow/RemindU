@@ -30,6 +30,7 @@ import com.android.volley.toolbox.Volley;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.UserAreaActivity;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
+import net.johnbrooks.remindu.schedulers.PullScheduler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,7 +92,7 @@ public class Reminder implements Comparable<Reminder>
                             int state = jsonResponse.getJSONObject(String.valueOf(i)).getInt("state");
                             int important = jsonResponse.getJSONObject(String.valueOf(i)).getInt("important");
                             String dateString = jsonResponse.getJSONObject(String.valueOf(i)).getString("date");
-                            DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+                            DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
                             Date date = formatter.parse(dateString);
 
                             int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
@@ -362,7 +363,29 @@ public class Reminder implements Comparable<Reminder>
 
                     if (success)
                     {
-                        //TODO: Pull Reminders from server and refresh user area.
+                        //TODO: get reminder data from send, so we can add it locally.
+
+                        JSONObject reminderJsonResponse = jsonResponse.getJSONObject("reminder");
+                        int id = Integer.parseInt(reminderJsonResponse.getString("id"));
+                        int from = Integer.parseInt(reminderJsonResponse.getString("id_from"));
+                        int to = Integer.parseInt(reminderJsonResponse.getString("id_to"));
+                        int important = Integer.parseInt(reminderJsonResponse.getString("important"));
+                        String rMessage = reminderJsonResponse.getString("message");
+                        String dateString = reminderJsonResponse.getString("date");
+                        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                        Date date;
+                        try
+                        {
+                            date = formatter.parse(dateString);
+                            Reminder.LoadReminder(true, id, from, to, rMessage, (important > 0) ? true : false, date);
+                        } catch (ParseException e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                        Log.d("INFO", "Reminder ID: " + id);
+
+                        PullScheduler.Call();
                         if (activity != null)
                             activity.finish();
                     }
@@ -461,7 +484,7 @@ public class Reminder implements Comparable<Reminder>
 
     public String[] toArray()
     {
-        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         String[] array = {
                 String.valueOf(GetID()),
                 String.valueOf(GetFrom()),
