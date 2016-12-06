@@ -21,7 +21,6 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -152,7 +151,7 @@ public class Reminder implements Comparable<Reminder>
         {
             // New reminder has been added, make a notification
             if (!silentLoad)
-                reminder.showNotification();
+                reminder.ShowNotification(true);
         }
 
         UserProfile.PROFILE.AddReminder(reminder);
@@ -223,6 +222,8 @@ public class Reminder implements Comparable<Reminder>
         TextView view = new TextView(activity);
         view.setMovementMethod(LinkMovementMethod.getInstance());
         Bitmap bState;
+        /*if (GetTo() != UserProfile.PROFILE.GetUserID())
+            bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_white );*/
         if (GetState() == ReminderState.IN_PROGRESS)
             bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_green );
         else
@@ -370,10 +371,11 @@ public class Reminder implements Comparable<Reminder>
         Widget = view;
         return view;
     }
-    private String GetETA()
+    public int[] GetTimeLeft()
     {
+        int[] time = new int[3];
+
         Date now = new Date();
-        String eta = "";
 
         long differenceInMilliseconds = Date.getTime() - now.getTime();
         List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
@@ -391,25 +393,54 @@ public class Reminder implements Comparable<Reminder>
         long hours = result.get(TimeUnit.HOURS);
         long minutes = result.get(TimeUnit.MINUTES);
 
-        if (days > 0)
-            eta += days + " days ";
-        if (hours > 0)
-            eta += hours + " hours ";
-        if (minutes > 0)
-            eta += minutes + " minutes ";
+        time[0] = (int) days;
+        time[1] = (int) hours;
+        time[2] = (int) minutes;
 
-        //
-        // TODO: Check if time has expired. If so, do stuff
-        //
+        return time;
+    }
+    private String GetETA()
+    {
+        String eta = "";
 
-        if (days <= 0 && hours <= 0 && minutes <= 0)
-        {
-            //TODO: Display reminder detail dialog. Gives options: Reply Complete, Replay Incomplete, and optional message.
-            eta = "NOW";
+        int[] timeLeft = GetTimeLeft();
 
-        }
+        if (timeLeft[0] > 0)
+            eta += timeLeft[0] + " days ";
+        if (timeLeft[1] > 0)
+            eta += timeLeft[1] + " hours ";
+        if (timeLeft[2] > 0)
+            eta += timeLeft[2] + " minutes ";
 
         return eta;
+    }
+    public boolean Remind()
+    {
+        //
+        // TODO: Make times to notify customizable on the settings of the app.
+        //
+
+        int[] timeLeft = GetTimeLeft();
+        if (timeLeft[0] <= 0 && timeLeft[1] <= 0 && timeLeft[2] <= 0)
+        {
+            //
+            // Time is over.
+            //
+        }
+        else if (timeLeft[0] <= 1 && timeLeft[1] <= 0 && timeLeft[2] <= 0)
+        {
+            //
+            // One day is left
+            //
+        }
+        else if (timeLeft[0] <= 0 && timeLeft[1] <= 1 && timeLeft[2] <= 0)
+        {
+            //
+            // 1 hours left
+            //
+        }
+
+        return true;
     }
 
     private Response.Listener<String> GetSendResponseListener(final Activity activity)
@@ -529,7 +560,7 @@ public class Reminder implements Comparable<Reminder>
         };
     }
 
-    public void showNotification()
+    public void ShowNotification(boolean vibrate)
     {
         if (UserProfile.PROFILE.IsIgnoring(GetID()))
             return;
@@ -545,10 +576,14 @@ public class Reminder implements Comparable<Reminder>
                 .setAutoCancel(true)
                 .build();
 
-        NotificationManager notificationManager = (NotificationManager) UserAreaActivity.GetActivity().getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notification);
-        Vibrator v = (Vibrator) UserAreaActivity.GetActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(500);
+        if (vibrate)
+        {
+            NotificationManager notificationManager = (NotificationManager) UserAreaActivity.GetActivity().getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(0, notification);
+            Vibrator v = (Vibrator) UserAreaActivity.GetActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(500);
+        }
+
     }
 
     @Override

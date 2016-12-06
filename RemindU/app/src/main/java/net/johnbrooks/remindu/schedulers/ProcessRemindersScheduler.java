@@ -3,19 +3,20 @@ package net.johnbrooks.remindu.schedulers;
 import android.os.Handler;
 
 import net.johnbrooks.remindu.UserAreaActivity;
+import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
 /**
- * Created by John on 11/30/2016.
+ * Created by ieatl on 12/6/2016.
  */
 
-public class UpdateUserAreaScheduler
+public class ProcessRemindersScheduler
 {
-    private static UpdateUserAreaScheduler scheduler = null;
+    private static ProcessRemindersScheduler scheduler;
     public static void Initialize(UserAreaActivity activity)
     {
         if (scheduler == null)
-            scheduler = new UpdateUserAreaScheduler(activity);
+            scheduler = new ProcessRemindersScheduler();
     }
     public static void Cancel()
     {
@@ -26,7 +27,7 @@ public class UpdateUserAreaScheduler
     private final int mInterval = 5000; // milliseconds
     private Handler mHandler;
 
-    public UpdateUserAreaScheduler(UserAreaActivity activity)
+    public ProcessRemindersScheduler()
     {
         mHandler = new Handler();
         startRepeatingTask();
@@ -54,8 +55,10 @@ public class UpdateUserAreaScheduler
         }
         else
         {
-            UserProfile.PROFILE.RefreshReminderLayout();
-            UserAreaActivity.GetActivity().SetupContacts();
+            for (Reminder r : UserProfile.PROFILE.GetReminders())
+            {
+                r.Remind();
+            }
         }
     }
 
