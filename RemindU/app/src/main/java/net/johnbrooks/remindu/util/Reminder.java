@@ -204,6 +204,7 @@ public class Reminder implements Comparable<Reminder>
     public Date GetDate() { return Date; }
     public boolean GetImportant() { return Important; }
     public ReminderState GetState() { return State; }
+    public final int GetStateOrdinal() { return State.ordinal(); }
     public LinearLayout GetParent() { return Parent; }
 
     public void SetID(final int id) { ID = id; }
@@ -276,11 +277,13 @@ public class Reminder implements Comparable<Reminder>
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length(), line1.length() + 9, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length() + line2.length(), line1.length() + line2.length() + 10, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
+        final Reminder myReminder = this;
+
         ClickableSpan stateClick = new ClickableSpan() {
             @Override
             public void onClick(View view)
             {
-                if (UserProfile.PROFILE.GetUserID() == GetFrom())
+                if (UserProfile.PROFILE.GetUserID() == GetFrom() || !Network.IsConnected(UserAreaActivity.GetActivity()))
                     return;
 
                 final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
@@ -290,13 +293,14 @@ public class Reminder implements Comparable<Reminder>
 
                 (dialog.findViewById(R.id.button_rsp_not_started)).setOnClickListener(new View.OnClickListener()
                 {
+
+
                     @Override
                     public void onClick(View view)
                     {
                         SetState(ReminderState.NOT_STARTED);
                         UserProfile.PROFILE.RefreshReminderLayout();
-                        //TODO: Tell server, and tell sender.
-                        //TODO: Change icon to black
+                        UserProfile.PROFILE.pushReminder(myReminder);
                         dialog.cancel();
                     }
                 });
@@ -308,8 +312,7 @@ public class Reminder implements Comparable<Reminder>
                     {
                         SetState(ReminderState.IN_PROGRESS);
                         UserProfile.PROFILE.RefreshReminderLayout();
-                        //TODO: Tell server, and tell sender.
-                        //TODO: Change icon to green
+                        UserProfile.PROFILE.pushReminder(myReminder);
                         dialog.cancel();
                     }
                 });
@@ -321,8 +324,7 @@ public class Reminder implements Comparable<Reminder>
                     {
                         SetState(ReminderState.COMPLETE);
                         UserProfile.PROFILE.RefreshReminderLayout();
-                        //TODO: Tell server, and tell sender.
-                        //TODO: Change icon to green OR just remove
+                        UserProfile.PROFILE.pushReminder(myReminder);
                         dialog.cancel();
                     }
                 });
@@ -342,6 +344,8 @@ public class Reminder implements Comparable<Reminder>
             @Override
             public void onClick(View view)
             {
+                if (!Network.IsConnected(UserAreaActivity.GetActivity()))
+                    return;
                 UserProfile.PROFILE.DeleteReminder(reminder);
             }
         };
@@ -464,6 +468,37 @@ public class Reminder implements Comparable<Reminder>
     }
 
     public Response.Listener<String> GetDeleteResponseListener(final Activity activity)
+    {
+        return new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                try
+                {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    Log.d("INFO", "Received response: " + success);
+
+                    if (success)
+                    {
+                        UserProfile.PROFILE.Pull(activity);
+                    }
+                    else
+                    {
+                        Log.d("ERROR", "Message: " + message);
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    public Response.Listener<String> GetUpdateResponseListener(final Activity activity)
     {
         return new Response.Listener<String>()
         {

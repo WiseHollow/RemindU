@@ -16,6 +16,7 @@ import net.johnbrooks.remindu.UserAreaActivity;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.LoginRequest;
+import net.johnbrooks.remindu.requests.UpdateReminderRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -225,6 +226,10 @@ public class UserProfile implements Parcelable
     public void pushReminder(Reminder r)
     {
         //TODO: Send changes to server.
+        Response.Listener<String> responseListener = r.GetUpdateResponseListener(UserAreaActivity.GetActivity());
+        UpdateReminderRequest request = new UpdateReminderRequest(r, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.GetActivity());
+        queue.add(request);
     }
 
     public void AddContact(ContactProfile profile)
