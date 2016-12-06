@@ -15,13 +15,13 @@ import java.util.Map;
 
 public class SendReminderRequest extends StringRequest
 {
-    private static final String LOGIN_REQUEST_URL = "http://johnbrooks.net/remindu/scripts/sendReminder.php";
+    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/sendReminder.php";
     private Map<String, String> params;
 
     public SendReminderRequest(int user_id_from, int user_id_to, String password, String message, boolean important, Date date, Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
-        super(Method.POST, LOGIN_REQUEST_URL, listener, null);
+        super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("user_id_from", String.valueOf(user_id_from));
         params.put("user_id_to", String.valueOf(user_id_to));

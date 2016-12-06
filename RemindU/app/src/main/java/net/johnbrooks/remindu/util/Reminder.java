@@ -166,7 +166,6 @@ public class Reminder implements Comparable<Reminder>
     private int User_ID_From;
     private int User_ID_To;
     private String FullName = null;
-    private LinearLayout Parent;
     private TextView Widget;
     private String Message;
     private Date Date;
@@ -207,7 +206,6 @@ public class Reminder implements Comparable<Reminder>
     public boolean GetImportant() { return Important; }
     public ReminderState GetState() { return State; }
     public final int GetStateOrdinal() { return State.ordinal(); }
-    public LinearLayout GetParent() { return Parent; }
 
     public void SetID(final int id) { ID = id; }
     public void SetImportant(final boolean value) { Important = value; }
@@ -217,9 +215,6 @@ public class Reminder implements Comparable<Reminder>
     {
         if (Widget != null)
             return Widget;
-
-
-        Parent = parent;
 
         final Reminder reminder = this;
         TextView view = new TextView(activity);

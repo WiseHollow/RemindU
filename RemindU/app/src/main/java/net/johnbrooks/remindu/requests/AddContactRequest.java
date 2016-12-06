@@ -12,14 +12,14 @@ import java.util.Map;
 
 public class AddContactRequest extends StringRequest
 {
-    private static final String LOGIN_REQUEST_URL = "http://johnbrooks.net/remindu/scripts/addContact.php";
+    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/addContact.php";
     //private static final String LOGIN_REQUEST_URL = "http://127.0.0.1/remindu/scripts/removeContact.php";
     private Map<String, String> params;
 
     public AddContactRequest(String email, String password, String targetID, Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
-        super(Method.POST, LOGIN_REQUEST_URL, listener, null);
+        super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);

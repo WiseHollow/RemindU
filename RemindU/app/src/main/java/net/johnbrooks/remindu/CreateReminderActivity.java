@@ -91,44 +91,6 @@ public class CreateReminderActivity extends AppCompatActivity
                 }, 0, 0, false);
                 tpDialog.show();
 
-                /*final Dialog dialog = new Dialog(CreateReminderActivity.this);
-                dialog.setTitle("Pick Reminder Time Due");
-                dialog.setContentView(R.layout.dialog_time_picker);
-                dialog.show();
-
-                final TimePicker tp = (TimePicker) dialog.findViewById(R.id.timePicker_cnr);
-                Button finished = (Button) dialog.findViewById(R.id.button_cnr_time_picker);
-
-                Calendar now = Calendar.getInstance();
-                calendar.set(Calendar.HOUR, now.get(Calendar.HOUR_OF_DAY));
-                calendar.set(Calendar.MINUTE, now.get(Calendar.MINUTE));
-                calendar.set(Calendar.SECOND, 0);
-
-                finished.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        dialog.cancel();
-                    }
-                });
-                tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener()
-                {
-                    @Override
-                    public void onTimeChanged(final TimePicker timePicker, int hours, int minutes)
-                    {
-                        calendar.set(Calendar.HOUR, hours);
-                        calendar.set(Calendar.MINUTE, minutes);
-                        calendar.set(Calendar.SECOND, 0);
-                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
-                        String suffix = "am";
-                        if (hours > 12)
-                            suffix = "pm";
-                        Log.d("TIME", "Hours: " + hours);
-                        tv_time.setText("Time Due: " + dateFormat.format(calendar.getTime()) + suffix);
-                    }
-                });*/
-
             }
         });
 

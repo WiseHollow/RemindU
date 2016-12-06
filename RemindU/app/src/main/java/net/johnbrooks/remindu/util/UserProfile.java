@@ -253,13 +253,6 @@ public class UserProfile implements Parcelable
                 RemoveContact(p);
     }
 
-    public void RemoveContact(String _email)
-    {
-        for (ContactProfile p : GetContacts())
-            if (p.GetEmail().equalsIgnoreCase(_email))
-                RemoveContact(p);
-    }
-
     public void Pull(Activity activity)
     {
         Log.d("INFO", "Pulling profile from server...");
@@ -307,24 +300,15 @@ public class UserProfile implements Parcelable
                         UserProfile.PROFILE.GetContacts().clear();
                         for (String contact : contacts.split("&"))
                         {
-                            //Log.d("INFO", contact);
                             if (contact == "" || contact == " ")
                                 continue;
                             String[] key = contact.split("%");
-                            /*if (key.length < 4)
-                            {
-                                Log.d("INFO", "Contact request is still pending.");
-                                continue;
-                            }*/
-
-                            //Log.d("TEST", "Key[0] = '" + key[0] + "'");
                             if (key[0].equalsIgnoreCase("0"))
                             {
                                 UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[1]), key[2]));
                             }
                             else if (key[0].equalsIgnoreCase("1"))
                             {
-                                //Log.d("INFO", "HIT " + key.length);
                                 if (key.length >= 6)
                                     UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], key[5]));
                                 else if (key.length == 5)
@@ -411,7 +395,6 @@ public class UserProfile implements Parcelable
                     Date date = formatter.parse(rArray[4]);
                     boolean important = (rArray[5].equalsIgnoreCase("1")) ? true : false;
                     ReminderState rState = ReminderState.values()[Integer.parseInt(rArray[6])];
-                    Log.d("TEST", "" + rArray[5]);
 
                     Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date);
                     r.SetState(rState);

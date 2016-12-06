@@ -13,13 +13,13 @@ import java.util.Map;
 
 public class DeleteContactRequest extends StringRequest
 {
-    private static final String LOGIN_REQUEST_URL = "http://johnbrooks.net/remindu/scripts/removeContact.php";
+    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/removeContact.php";
     private Map<String, String> params;
 
     public DeleteContactRequest(String email, String password, String targetID, Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
-        super(Request.Method.POST, LOGIN_REQUEST_URL, listener, null);
+        super(Request.Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
