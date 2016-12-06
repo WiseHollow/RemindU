@@ -64,6 +64,8 @@ public class UserProfile implements Parcelable
     private List<Reminder> Reminders;
     private List<Integer> ReminderIgnores;
 
+    private Reminder activeReminder;
+
     public UserProfile(int id, final int active, final String fullName, final String username, final String email, final String password, final Integer pointsRemaining, final Integer pointsReceived, final Integer pointsSent)
     {
         UserID = id;
@@ -80,7 +82,7 @@ public class UserProfile implements Parcelable
         Contacts = new ArrayList<>();
         ReminderIgnores = new ArrayList<>();
 
-
+        activeReminder = null;
     }
 
     public final int IsActive() { return Active; }
@@ -93,9 +95,15 @@ public class UserProfile implements Parcelable
     public final int GetPointsSent() { return PointsSent; }
     public final int GetPointsReceived() { return PointsReceived; }
     public final boolean IsIgnoring(int id) { return ReminderIgnores.contains(id); }
+    public final Reminder GetActiveReminder() { return activeReminder; }
 
     public List<Reminder> GetReminders() { return Reminders; }
     public List<ContactProfile> GetContacts() { return Contacts; }
+
+    public void SetActiveReminder(Reminder reminder)
+    {
+        activeReminder = reminder;
+    }
     public void SetIgnoreReminder(int id, boolean value)
     {
         if (value)

@@ -161,7 +161,7 @@ public class Reminder implements Comparable<Reminder>
 
         return reminder;
     }
-
+    
     private int ID;
     private int User_ID_From;
     private int User_ID_To;
@@ -218,6 +218,17 @@ public class Reminder implements Comparable<Reminder>
 
         final Reminder reminder = this;
         TextView view = new TextView(activity);
+
+        view.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                UserProfile.PROFILE.SetActiveReminder(reminder);
+                UserProfile.PROFILE.RefreshReminderLayout();
+            }
+        });
+
         view.setMovementMethod(LinkMovementMethod.getInstance());
         Bitmap bState;
         /*if (GetTo() != UserProfile.PROFILE.GetUserID())
@@ -248,7 +259,9 @@ public class Reminder implements Comparable<Reminder>
         line1 +=  "_ " + GetFullName() + System.getProperty("line.separator");
         String line2 = "Message: " + GetMessage() + System.getProperty("line.separator");
         String line3 = "Time left: " + GetETA() + System.getProperty("line.separator");
-        String line4 = "_ _ _";
+        String line4 = "";
+        if (UserProfile.PROFILE.GetActiveReminder() == this)
+            line4 = "_ _ _";
 
         spannableStringBuilder.append(line1);
         spannableStringBuilder.append(line2);
@@ -266,9 +279,14 @@ public class Reminder implements Comparable<Reminder>
         else
             spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bBack), offset, offset + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bState), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bDelete), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bMute), line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        if (UserProfile.PROFILE.GetActiveReminder() == this)
+        {
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bState), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bDelete), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bMute), line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        }
+
         if (GetImportant())
             spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
@@ -276,89 +294,93 @@ public class Reminder implements Comparable<Reminder>
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length(), line1.length() + 9, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length() + line2.length(), line1.length() + line2.length() + 10, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        final Reminder myReminder = this;
-
-        ClickableSpan stateClick = new ClickableSpan() {
-            @Override
-            public void onClick(View view)
-            {
-                if (UserProfile.PROFILE.GetUserID() == GetFrom() || !Network.IsConnected(UserAreaActivity.GetActivity()))
-                    return;
-
-                final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
-                dialog.setTitle("Select Reminder State");
-                dialog.setContentView(R.layout.dialog_reminder_state_picker);
-                dialog.show();
-
-                (dialog.findViewById(R.id.button_rsp_not_started)).setOnClickListener(new View.OnClickListener()
-                {
-
-
-                    @Override
-                    public void onClick(View view)
-                    {
-                        SetState(ReminderState.NOT_STARTED);
-                        UserProfile.PROFILE.RefreshReminderLayout();
-                        UserProfile.PROFILE.pushReminder(myReminder);
-                        dialog.cancel();
-                    }
-                });
-
-                (dialog.findViewById(R.id.button_rsp_in_progress)).setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        SetState(ReminderState.IN_PROGRESS);
-                        UserProfile.PROFILE.RefreshReminderLayout();
-                        UserProfile.PROFILE.pushReminder(myReminder);
-                        dialog.cancel();
-                    }
-                });
-
-                (dialog.findViewById(R.id.button_rsp_complete)).setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        SetState(ReminderState.COMPLETE);
-                        UserProfile.PROFILE.RefreshReminderLayout();
-                        UserProfile.PROFILE.pushReminder(myReminder);
-                        dialog.cancel();
-                    }
-                });
-
-                (dialog.findViewById(R.id.button_rsp_cancel)).setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        dialog.cancel();
-                    }
-                });
-            }
-        };
-        ClickableSpan deleteClick = new ClickableSpan()
+        if (UserProfile.PROFILE.GetActiveReminder() == this)
         {
-            @Override
-            public void onClick(View view)
+            final Reminder myReminder = this;
+
+            ClickableSpan stateClick = new ClickableSpan() {
+                @Override
+                public void onClick(View view)
+                {
+                    if (UserProfile.PROFILE.GetUserID() == GetFrom() || !Network.IsConnected(UserAreaActivity.GetActivity()))
+                        return;
+
+                    final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
+                    dialog.setTitle("Select Reminder State");
+                    dialog.setContentView(R.layout.dialog_reminder_state_picker);
+                    dialog.show();
+
+                    (dialog.findViewById(R.id.button_rsp_not_started)).setOnClickListener(new View.OnClickListener()
+                    {
+
+
+                        @Override
+                        public void onClick(View view)
+                        {
+                            SetState(ReminderState.NOT_STARTED);
+                            UserProfile.PROFILE.RefreshReminderLayout();
+                            UserProfile.PROFILE.pushReminder(myReminder);
+                            dialog.cancel();
+                        }
+                    });
+
+                    (dialog.findViewById(R.id.button_rsp_in_progress)).setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            SetState(ReminderState.IN_PROGRESS);
+                            UserProfile.PROFILE.RefreshReminderLayout();
+                            UserProfile.PROFILE.pushReminder(myReminder);
+                            dialog.cancel();
+                        }
+                    });
+
+                    (dialog.findViewById(R.id.button_rsp_complete)).setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            SetState(ReminderState.COMPLETE);
+                            UserProfile.PROFILE.RefreshReminderLayout();
+                            UserProfile.PROFILE.pushReminder(myReminder);
+                            dialog.cancel();
+                        }
+                    });
+
+                    (dialog.findViewById(R.id.button_rsp_cancel)).setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            dialog.cancel();
+                        }
+                    });
+                }
+            };
+            ClickableSpan deleteClick = new ClickableSpan()
             {
-                if (!Network.IsConnected(UserAreaActivity.GetActivity()))
-                    return;
-                UserProfile.PROFILE.DeleteReminder(reminder);
-            }
-        };
-        ClickableSpan muteClick = new ClickableSpan() {
-            @Override
-            public void onClick(View view)
-            {
-                UserProfile.PROFILE.SetIgnoreReminder(GetID(), !UserProfile.PROFILE.IsIgnoring(GetID()));
-                UserProfile.PROFILE.RefreshReminderLayout();
-            }
-        };
-        spannableStringBuilder.setSpan(stateClick, line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        spannableStringBuilder.setSpan(deleteClick, line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        spannableStringBuilder.setSpan(muteClick, line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                @Override
+                public void onClick(View view)
+                {
+                    if (!Network.IsConnected(UserAreaActivity.GetActivity()))
+                        return;
+                    UserProfile.PROFILE.DeleteReminder(reminder);
+                }
+            };
+            ClickableSpan muteClick = new ClickableSpan() {
+                @Override
+                public void onClick(View view)
+                {
+                    UserProfile.PROFILE.SetIgnoreReminder(GetID(), !UserProfile.PROFILE.IsIgnoring(GetID()));
+                    UserProfile.PROFILE.RefreshReminderLayout();
+                }
+            };
+            spannableStringBuilder.setSpan(stateClick, line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(deleteClick, line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(muteClick, line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        }
 
         view.setText(spannableStringBuilder);
         view.setPadding(10, 12, 10, 12);
