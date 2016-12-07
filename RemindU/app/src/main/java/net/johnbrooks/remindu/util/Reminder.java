@@ -102,8 +102,7 @@ public class Reminder implements Comparable<Reminder>
                             int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
                             int to = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_to");
 
-                            Reminder r = Reminder.LoadReminder(false, id, from, to, message, important > 0 ? true : false, date);
-                            r.SetState(ReminderState.values()[state]);
+                            Reminder.LoadReminder(false, id, from, to, message, important > 0 ? true : false, date, ReminderState.values()[state]);
                         }
 
                         UserProfile.PROFILE.RefreshReminderLayout();
@@ -137,21 +136,30 @@ public class Reminder implements Comparable<Reminder>
         return reminder;
     }
     /** Insert a reminder into memory (local only). */
-    public static Reminder LoadReminder(boolean silentLoad, int id, int user_id_from, int user_id_to, String message, boolean important, Date date)
+    public static Reminder LoadReminder(boolean silentLoad, int id, int user_id_from, int user_id_to, String message, boolean important, Date date, ReminderState state)
     {
+        // Create a new reminder with the passed data.
         Reminder reminder = new Reminder(message, user_id_from, user_id_to, date);
+        reminder.SetState(state);
         reminder.SetID(id);
         reminder.SetImportant(important);
 
+        // Create a boolean to verify whether or not the active reminder is related to the created one.
         boolean selected = false;
 
         // Let's see if we have a Reminder with this ID already.
         Reminder check = UserProfile.PROFILE.GetReminder(id);
         if (check != null)
         {
+            // Is the one checked equal to the active reminder
             if (UserProfile.PROFILE.GetActiveReminder() == check)
                 selected = true;
             // Already have one, so we should remove that one...
+            if (reminder.GetState() != check.GetState() && reminder.GetFrom() == UserProfile.PROFILE.GetUserID())
+            {
+                // Change in state, and we are the sender. Notify the user.
+                reminder.ShowNotification(true, "Reminder Alert!", "Reminder has been marked: " + reminder.GetState().toString());
+            }
             UserProfile.PROFILE.GetReminders().remove(check);
         }
         else
@@ -161,6 +169,7 @@ public class Reminder implements Comparable<Reminder>
                 reminder.ShowNotification(true, "Reminder Alert!", reminder.GetMessage());
         }
 
+        // Add the reminder to memory
         UserProfile.PROFILE.AddReminder(reminder);
         if (selected)
             UserProfile.PROFILE.SetActiveReminder(reminder);
@@ -567,7 +576,7 @@ public class Reminder implements Comparable<Reminder>
                         try
                         {
                             date = formatter.parse(dateString);
-                            Reminder.LoadReminder(true, id, from, to, rMessage, (important > 0) ? true : false, date);
+                            Reminder.LoadReminder(true, id, from, to, rMessage, (important > 0) ? true : false, date, ReminderState.NOT_STARTED);
                         } catch (ParseException e)
                         {
                             e.printStackTrace();
@@ -728,5 +737,18 @@ public class Reminder implements Comparable<Reminder>
 
 enum ReminderState
 {
-    NOT_STARTED, IN_PROGRESS, COMPLETE
+    NOT_STARTED, IN_PROGRESS, COMPLETE;
+
+    @Override
+    public String toString()
+    {
+        if (ordinal() == 0)
+            return "Not Started";
+        else if (ordinal() == 1)
+            return "In Progress";
+        else if (ordinal() == 2)
+            return "Completed";
+        else
+            return super.toString();
+    }
 }

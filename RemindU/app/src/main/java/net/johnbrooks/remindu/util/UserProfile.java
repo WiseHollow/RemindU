@@ -404,8 +404,7 @@ public class UserProfile implements Parcelable
                     boolean important = (rArray[5].equalsIgnoreCase("1")) ? true : false;
                     ReminderState rState = ReminderState.values()[Integer.parseInt(rArray[6])];
 
-                    Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date);
-                    r.SetState(rState);
+                    Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
                 }
             }
         } catch (FileNotFoundException e)
