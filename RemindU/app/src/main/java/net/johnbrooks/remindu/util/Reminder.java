@@ -143,10 +143,14 @@ public class Reminder implements Comparable<Reminder>
         reminder.SetID(id);
         reminder.SetImportant(important);
 
+        boolean selected = false;
+
         // Let's see if we have a Reminder with this ID already.
         Reminder check = UserProfile.PROFILE.GetReminder(id);
         if (check != null)
         {
+            if (UserProfile.PROFILE.GetActiveReminder() == check)
+                selected = true;
             // Already have one, so we should remove that one...
             UserProfile.PROFILE.GetReminders().remove(check);
         }
@@ -158,6 +162,8 @@ public class Reminder implements Comparable<Reminder>
         }
 
         UserProfile.PROFILE.AddReminder(reminder);
+        if (selected)
+            UserProfile.PROFILE.SetActiveReminder(reminder);
 
         return reminder;
     }
