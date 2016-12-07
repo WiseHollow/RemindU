@@ -88,6 +88,8 @@ public class Reminder implements Comparable<Reminder>
                             }
                         }*/
 
+                        List<Reminder> loadedReminders = new ArrayList<>();
+
                         for(int i = 0; i < size; i++)
                         {
                             int id = jsonResponse.getJSONObject(String.valueOf(i)).getInt("id");
@@ -102,7 +104,18 @@ public class Reminder implements Comparable<Reminder>
                             int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
                             int to = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_to");
 
-                            Reminder.LoadReminder(false, id, from, to, message, important > 0 ? true : false, date, ReminderState.values()[state]);
+                            Reminder r = Reminder.LoadReminder(false, id, from, to, message, important > 0 ? true : false, date, ReminderState.values()[state]);
+                            loadedReminders.add(r);
+                        }
+
+                        for(int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
+                        {
+                            Reminder reminder = UserProfile.PROFILE.GetReminders().get(i);
+                            if (!loadedReminders.contains(reminder) && reminder.GetID() != 0)
+                            {
+                                UserProfile.PROFILE.GetReminders().remove(reminder);
+                                i--;
+                            }
                         }
 
                         UserProfile.PROFILE.RefreshReminderLayout();
