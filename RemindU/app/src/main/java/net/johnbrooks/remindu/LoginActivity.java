@@ -25,6 +25,7 @@ import net.johnbrooks.remindu.util.UserProfile;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -99,6 +100,15 @@ public class LoginActivity extends AppCompatActivity
             editor.putStringSet("contacts", null);
             editor.commit();
             getIntent().putExtra("SignOut", false);
+
+            File fileReminders = new File(getBaseContext().getFilesDir(), "reminders.yml");
+            File fileIgnores = new File(getBaseContext().getFilesDir(), "ignores.yml");
+            if (fileReminders.exists())
+                fileReminders.delete();
+            if (fileIgnores.exists())
+                fileIgnores.delete();
+
+
             Log.d("INFO", "Removing saved sign in credentials. ");
             return;
         }
