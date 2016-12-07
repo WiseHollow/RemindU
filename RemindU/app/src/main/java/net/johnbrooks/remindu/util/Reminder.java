@@ -8,7 +8,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -43,6 +42,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -104,8 +104,15 @@ public class Reminder implements Comparable<Reminder>
                             int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
                             int to = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_to");
 
+                            String dateInProgress = jsonResponse.getJSONObject(String.valueOf(i)).getString("date_in_progress");
+                            String dateComplete = jsonResponse.getJSONObject(String.valueOf(i)).getString("date_complete");
+
                             Reminder r = Reminder.LoadReminder(false, id, from, to, message, important > 0 ? true : false, date, ReminderState.values()[state]);
                             loadedReminders.add(r);
+                            if (!dateInProgress.equalsIgnoreCase("null"))
+                                r.SetDateInProgress(dateInProgress);
+                            if (!dateComplete.equalsIgnoreCase("null"))
+                                r.SetDateComplete(dateComplete);
                         }
 
                         for(int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
@@ -201,11 +208,17 @@ public class Reminder implements Comparable<Reminder>
 
     private ReminderState State;
 
+    private String DateInProgress;
+    private String DateComplete;
+
     private Reminder(String message, int user_id_from, int user_id_to, Date date)
     {
         ID = 0;
         User_ID_From = user_id_from;
         User_ID_To = user_id_to;
+
+        DateInProgress = null;
+        DateComplete = null;
 
         try
         {
@@ -228,17 +241,30 @@ public class Reminder implements Comparable<Reminder>
     public int GetID() { return ID; }
     public int GetFrom() { return User_ID_From; }
     public int GetTo() { return User_ID_To; }
-    public String GetFullName() { return FullName; }
-    public String GetMessage() { return Message; }
-    public Date GetDate() { return Date; }
+    public final String GetFullName() { return FullName; }
+    public final String GetMessage() { return Message; }
+    public final Date GetDate() { return Date; }
     public boolean GetImportant() { return Important; }
-    public ReminderState GetState() { return State; }
+    public final ReminderState GetState() { return State; }
     public final int GetStateOrdinal() { return State.ordinal(); }
+    public final String GetDateInProgress() { return DateInProgress; }
+    public final String GetDateComplete() { return DateComplete; }
 
     public void SetID(final int id) { ID = id; }
     public void SetImportant(final boolean value) { Important = value; }
     public void SetState(ReminderState state) { State = state; }
     public void SetWidget(TextView To) { Widget = To; }
+
+    public void SetDateInProgress(final String date)
+    {
+        DateInProgress = date;
+    }
+
+    public void SetDateComplete(final String date)
+    {
+        DateComplete = date;
+    }
+
     public TextView CreateWidget(final Activity activity, LinearLayout parent)
     {
         if (Widget != null)
@@ -262,9 +288,20 @@ public class Reminder implements Comparable<Reminder>
         /*if (GetTo() != UserProfile.PROFILE.GetUserID())
             bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_white );*/
         if (GetState() == ReminderState.IN_PROGRESS)
-            bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_green );
+            if (GetTo() == UserProfile.PROFILE.GetUserID())
+                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_blue );
+            else
+                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.document_96_blue );
+        else if (GetState() == ReminderState.COMPLETE)
+            if (GetTo() == UserProfile.PROFILE.GetUserID())
+                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_green );
+            else
+                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.document_96_green );
         else
-            bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96 );
+            if (GetTo() == UserProfile.PROFILE.GetUserID())
+                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96 );
+            else
+                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.document_96 );
         Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_96 );
         Bitmap bMute;
         if (!UserProfile.PROFILE.IsIgnoring(GetID()))
@@ -330,8 +367,79 @@ public class Reminder implements Comparable<Reminder>
                 @Override
                 public void onClick(View view)
                 {
-                    if (UserProfile.PROFILE.GetUserID() == GetFrom() || !Network.IsConnected(UserAreaActivity.GetActivity()))
+                    if (!Network.IsConnected(UserAreaActivity.GetActivity()))
                         return;
+                    //
+                    if (UserProfile.PROFILE.GetUserID() == GetFrom())
+                    {
+                        final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
+                        dialog.setTitle("Reminder Log");
+                        dialog.setContentView(R.layout.dialog_reminder_log);
+                        dialog.show();
+
+                        LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.reminder_log);
+
+                        if (GetDateInProgress() == null && GetDateComplete() == null)
+                        {
+                            TextView tv = new TextView(dialog.getContext());
+                            tv.setText("No activity.");
+                            tv.setTextColor(Color.BLACK);
+                            tv.setTextSize(18f);
+                            layout.addView(tv);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                final DateFormat formatter24Hour = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                                final DateFormat formatter12Hour = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+
+                                if (GetDateInProgress() != null)
+                                {
+                                    Date date = formatter24Hour.parse(GetDateInProgress());
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTime(date);
+
+                                    int hours = cal.get(Calendar.HOUR_OF_DAY);
+
+                                    String suffix = "am";
+                                    if (hours > 12)
+                                        suffix = "pm";
+
+                                    TextView tv = new TextView(dialog.getContext());
+                                    tv.setText("'In Progress' at " + formatter12Hour.format(formatter12Hour.parse(GetDateInProgress())) + " " + suffix);
+                                    tv.setTextColor(Color.BLACK);
+                                    tv.setTextSize(16f);
+                                    layout.addView(tv);
+                                }
+                                if (GetDateComplete() != null)
+                                {
+                                    Date date = formatter24Hour.parse(GetDateComplete());
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTime(date);
+
+                                    int hours = cal.get(Calendar.HOUR_OF_DAY);
+
+                                    String suffix = "am";
+                                    if (hours > 12)
+                                        suffix = "pm";
+
+                                    TextView tv = new TextView(dialog.getContext());
+                                    tv.setText("'Complete' at " + formatter12Hour.format(formatter12Hour.parse(GetDateComplete())) + " " + suffix);
+                                    tv.setTextColor(Color.BLACK);
+                                    tv.setTextSize(16f);
+                                    layout.addView(tv);
+                                }
+                            } catch (ParseException e)
+                            {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+
+                        return;
+                    }
 
                     final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
                     dialog.setTitle("Select Reminder State");

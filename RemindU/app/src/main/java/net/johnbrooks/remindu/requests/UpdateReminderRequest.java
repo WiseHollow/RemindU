@@ -30,6 +30,11 @@ public class UpdateReminderRequest extends StringRequest
         params.put("password", UserProfile.PROFILE.GetPassword());
         params.put("reminder_id", String.valueOf(reminder.GetID()));
         params.put("state", String.valueOf(reminder.GetStateOrdinal()));
+
+        final Date now = new Date();
+        final DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        final String dateString = formatter.format(now);
+        params.put("date", dateString);
     }
 
     @Override
