@@ -161,7 +161,7 @@ public class Reminder implements Comparable<Reminder>
 
         return reminder;
     }
-    
+
     private int ID;
     private int User_ID_From;
     private int User_ID_To;

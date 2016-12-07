@@ -118,7 +118,9 @@ public class ManageContactsActivity extends AppCompatActivity
         //
         for (ContactProfile profile : UserProfile.PROFILE.GetContacts())
         {
-            final int targetID = profile.GetID();
+            layout.addView(profile.CreateWidget(ManageContactsActivity.this));
+
+            /*final int targetID = profile.GetID();
             final String targetEmail = profile.GetEmail();
 
             TextView view = new TextView(ManageContactsActivity.this);
@@ -173,47 +175,47 @@ public class ManageContactsActivity extends AppCompatActivity
             view.setTextSize(16f);
             view.setText(builder);
 
-            layout.addView(view);
+            layout.addView(view);*/
         }
     }
 
     private Response.Listener<String> GetResponseListener(final int target)
+{
+    Response.Listener<String> responseListener = new Response.Listener<String>()
     {
-        Response.Listener<String> responseListener = new Response.Listener<String>()
+        @Override
+        public void onResponse(String response)
         {
-            @Override
-            public void onResponse(String response)
+            try
             {
-                try
-                {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
+                JSONObject jsonResponse = new JSONObject(response);
+                boolean success = jsonResponse.getBoolean("success");
 
-                    Log.d("INFO", "Received response: " + success);
+                Log.d("INFO", "Received response: " + success);
 
-                    if (success)
-                    {
-                        UserProfile.PROFILE.RemoveContact(target);
-                        PullScheduler.Call();
-                        UpdateContactsList();
-                    }
-                    else
-                    {
-                        AlertDialog.Builder errorDialog = new AlertDialog.Builder(ManageContactsActivity.this);
-                        errorDialog.setMessage("Server not reached. Error!")
-                                .setNegativeButton("Close", null)
-                                .create()
-                                .show();
-                    }
-                } catch (JSONException e)
+                if (success)
                 {
-                    e.printStackTrace();
+                    UserProfile.PROFILE.RemoveContact(target);
+                    PullScheduler.Call();
+                    UpdateContactsList();
                 }
+                else
+                {
+                    AlertDialog.Builder errorDialog = new AlertDialog.Builder(ManageContactsActivity.this);
+                    errorDialog.setMessage("Server not reached. Error!")
+                            .setNegativeButton("Close", null)
+                            .create()
+                            .show();
+                }
+            } catch (JSONException e)
+            {
+                e.printStackTrace();
             }
-        };
+        }
+    };
 
-        return responseListener;
-    }
+    return responseListener;
+}
 
     private Response.Listener<String> GetResponseListener(final String target)
     {
