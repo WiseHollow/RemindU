@@ -16,9 +16,11 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
+import android.text.style.AlignmentSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
@@ -288,8 +290,6 @@ public class Reminder implements Comparable<Reminder>
 
         view.setMovementMethod(LinkMovementMethod.getInstance());
         Bitmap bState;
-        /*if (GetTo() != UserProfile.PROFILE.GetUserID())
-            bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_white );*/
         if (GetState() == ReminderState.IN_PROGRESS)
             if (GetTo() == UserProfile.PROFILE.GetUserID())
                 bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_blue );
@@ -311,7 +311,7 @@ public class Reminder implements Comparable<Reminder>
             bMute = BitmapFactory.decodeResource( activity.getResources(), R.drawable.mute_96 );
         else
             bMute = BitmapFactory.decodeResource( activity.getResources(), R.drawable.mute_96_red );
-        Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_54 );
+        Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48 );
         Bitmap bBack = BitmapFactory.decodeResource( activity.getResources(), R.drawable.back_arrow_48 );
         Bitmap bForward = BitmapFactory.decodeResource( activity.getResources(), R.drawable.forward_arrow_48 );
 
@@ -321,42 +321,49 @@ public class Reminder implements Comparable<Reminder>
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
 
-        String line1 = "";
+        String line1 =  "_ " + GetFullName() + System.getProperty("line.separator"); // Who
+        String line2 = "Message: " + GetMessage() + System.getProperty("line.separator"); // What
+        String line3 = "Deadline in: " + GetETA() + System.getProperty("line.separator"); // When
+        String line4 = System.getProperty("line.separator");
         if (GetImportant())
-            line1 = "_ ";
-        line1 +=  "_ " + GetFullName() + System.getProperty("line.separator");
-        String line2 = "Message: " + GetMessage() + System.getProperty("line.separator");
-        String line3 = "Deadline in: " + GetETA() + System.getProperty("line.separator");
-        String line4 = "";
+            line4 = "_" + System.getProperty("line.separator"); // warnings
+        String line5 = "";
         if (UserProfile.PROFILE.GetActiveReminder() == this)
-            line4 = "_ _ _";
+            line5 = "_ _ _"; // actions
+
 
         spannableStringBuilder.append(line1);
         spannableStringBuilder.append(line2);
         spannableStringBuilder.append(line3);
         spannableStringBuilder.append(line4);
+        if (UserProfile.PROFILE.GetActiveReminder() == this)
+            spannableStringBuilder.append(line5);
 
         spannableStringBuilder.setSpan(new RelativeSizeSpan(1.5f), 0, line1.length() - 1, 0);
         spannableStringBuilder.setSpan(new RelativeSizeSpan(1f), line1.length(), line1.length() + line2.length() + 1, 0);
 
-        int offset = 0;
-        if (GetImportant())
-            offset = 2;
         if (GetFrom() == UserProfile.PROFILE.GetUserID())
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bForward), offset, offset + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bForward), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         else
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bBack), offset, offset + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bBack), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         if (UserProfile.PROFILE.GetActiveReminder() == this)
         {
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bState), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bDelete), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bMute), line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bState), line1.length() + line2.length() + line3.length() + line4.length(), line1.length() + line2.length() + line3.length() + line4.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bDelete), line1.length() + line2.length() + line3.length() + line4.length() + 2, line1.length() + line2.length() + line3.length() + line4.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bMute), line1.length() + line2.length() + line3.length() + line4.length() + 4, line1.length() + line2.length() + line3.length() + line4.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         }
 
+        //
+        // If the reminder is marked as important, create an exclamation mark at the top right of the reminder.
+        //
         if (GetImportant())
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        {
+            //spannableStringBuilder.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), 0, line1.length() - 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            //spannableStringBuilder.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        }
 
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length(), line1.length() + 9, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -449,6 +456,7 @@ public class Reminder implements Comparable<Reminder>
                                         @Override
                                         public void onClick(View view)
                                         {
+                                            //TODO: Lots and lots
                                             //Check if user has enough coins.
                                             //SendCoinsRequest
                                             //After receive response, if successful... delete local reminder
@@ -551,7 +559,10 @@ public class Reminder implements Comparable<Reminder>
         }
 
         view.setText(spannableStringBuilder);
-        view.setPadding(10, 12, 10, 12);
+        if (!GetImportant())
+            view.setPadding(10, 12, 10, 12);
+        else
+            view.setPadding(10, 12, 10, 0);
         view.setBackgroundColor(color);
 
 

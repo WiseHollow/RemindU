@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.schedulers.UpdateMyProfileScheduler;
+import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class MyProfileActivity extends AppCompatActivity
@@ -30,6 +31,23 @@ public class MyProfileActivity extends AppCompatActivity
         // This activity is the home of our personal information.
 
         //
+        // Get needed information
+        //
+
+        //TODO: If you go in MyProfile quickly after the app starts, these values are 0. :(
+
+        int activeReceivedReminders = 0;
+        int activeSentReminders = 0;
+
+        for (Reminder r : UserProfile.PROFILE.GetReminders())
+        {
+            if (r.GetFrom() == UserProfile.PROFILE.GetUserID())
+                activeSentReminders++;
+            else if (r.GetTo() == UserProfile.PROFILE.GetUserID())
+                activeReceivedReminders++;
+        }
+
+        //
         // Get TextViews
         //
 
@@ -52,8 +70,8 @@ public class MyProfileActivity extends AppCompatActivity
         tvUsername.setText("Username: " + UserProfile.PROFILE.GetUsername());
         tvEmail.setText("Email: " + UserProfile.PROFILE.GetEmail());
 
-        tvActiveSentReminders.setText("Active Sent Reminders: 0");
-        tvPendingReceivedReminders.setText("Active Received Reminders: 0");
+        tvActiveSentReminders.setText("Active Sent Reminders: " + activeSentReminders);
+        tvPendingReceivedReminders.setText("Active Received Reminders: " + activeReceivedReminders);
 
         tvPointsRemaining.setText("Points Remaining: " + UserProfile.PROFILE.GetPointsRemaining());
         tvPointsReceived.setText("Points Received: " + UserProfile.PROFILE.GetPointsReceived());
