@@ -25,6 +25,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -433,6 +434,27 @@ public class Reminder implements Comparable<Reminder>
                                     tv.setTextSize(16f);
                                     layout.addView(tv);
                                 }
+
+                                if (GetDateComplete() != null && GetDateInProgress() != null)
+                                {
+                                    Button btn_thank = new Button(UserAreaActivity.GetActivity());
+                                    btn_thank.setText("Send two coins!");
+                                    layout.addView(btn_thank);
+
+                                    if (UserProfile.PROFILE.GetPointsRemaining() < 2)
+                                        btn_thank.setEnabled(false);
+
+                                    btn_thank.setOnClickListener(new View.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(View view)
+                                        {
+                                            //Check if user has enough coins.
+                                            //SendCoinsRequest
+                                            //After receive response, if successful... delete local reminder
+                                        }
+                                    });
+                                }
                             } catch (ParseException e)
                             {
                                 e.printStackTrace();
@@ -449,10 +471,17 @@ public class Reminder implements Comparable<Reminder>
                     dialog.setContentView(R.layout.dialog_reminder_state_picker);
                     dialog.show();
 
-                    (dialog.findViewById(R.id.button_rsp_not_started)).setOnClickListener(new View.OnClickListener()
+                    Button btn_not_started = (Button) dialog.findViewById(R.id.button_rsp_not_started);
+                    Button btn_in_progress = (Button) dialog.findViewById(R.id.button_rsp_in_progress);
+                    Button btn_complete = (Button) dialog.findViewById(R.id.button_rsp_complete);
+
+                    if (GetDateInProgress() != null)
+                        btn_not_started.setEnabled(false);
+                    if (GetDateComplete() != null)
+                        btn_in_progress.setEnabled(false);
+
+                    btn_not_started.setOnClickListener(new View.OnClickListener()
                     {
-
-
                         @Override
                         public void onClick(View view)
                         {
@@ -463,7 +492,7 @@ public class Reminder implements Comparable<Reminder>
                         }
                     });
 
-                    (dialog.findViewById(R.id.button_rsp_in_progress)).setOnClickListener(new View.OnClickListener()
+                    btn_in_progress.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View view)
@@ -475,7 +504,7 @@ public class Reminder implements Comparable<Reminder>
                         }
                     });
 
-                    (dialog.findViewById(R.id.button_rsp_complete)).setOnClickListener(new View.OnClickListener()
+                    btn_complete.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View view)
