@@ -14,6 +14,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -323,7 +325,7 @@ public class Reminder implements Comparable<Reminder>
             line1 = "_ ";
         line1 +=  "_ " + GetFullName() + System.getProperty("line.separator");
         String line2 = "Message: " + GetMessage() + System.getProperty("line.separator");
-        String line3 = "Time left: " + GetETA() + System.getProperty("line.separator");
+        String line3 = "Deadline in: " + GetETA() + System.getProperty("line.separator");
         String line4 = "";
         if (UserProfile.PROFILE.GetActiveReminder() == this)
             line4 = "_ _ _";
@@ -357,7 +359,7 @@ public class Reminder implements Comparable<Reminder>
 
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length(), line1.length() + 9, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length() + line2.length(), line1.length() + line2.length() + 10, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length() + line2.length(), line1.length() + line2.length() + 12, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         if (UserProfile.PROFILE.GetActiveReminder() == this)
         {
@@ -367,6 +369,7 @@ public class Reminder implements Comparable<Reminder>
                 @Override
                 public void onClick(View view)
                 {
+
                     if (!Network.IsConnected(UserAreaActivity.GetActivity()))
                         return;
                     //

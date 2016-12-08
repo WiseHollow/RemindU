@@ -204,6 +204,8 @@ public class UserAreaActivity extends AppCompatActivity
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem)
                 {
+                    DrawerLayout drawer = (DrawerLayout) UserAreaActivity.GetActivity().findViewById(R.id.drawer_layout);
+                    drawer.closeDrawer(GravityCompat.START);
                     if (!Network.IsConnected(UserAreaActivity.this))
                         return false;
 
