@@ -552,9 +552,14 @@ public class Reminder implements Comparable<Reminder>
                     UserProfile.PROFILE.RefreshReminderLayout();
                 }
             };
-            spannableStringBuilder.setSpan(stateClick, line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spannableStringBuilder.setSpan(deleteClick, line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spannableStringBuilder.setSpan(muteClick, line1.length() + line2.length() + line3.length() + 4, line1.length() + line2.length() + line3.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+            //line1.length() + line2.length() + line3.length() + line4.length(), line1.length() + line2.length() + line3.length() + line4.length() + 1, Spannable.SPAN_INCLUSIVE_INC
+            //, line1.length() + line2.length() + line3.length() + line4.length() + 2, line1.length() + line2.length() + line3.length() + line4.length() + 3, Spannable.SPAN_INCLUSIV
+            //line1.length() + line2.length() + line3.length() + line4.length() + 4, line1.length() + line2.length() + line3.length() + line4.length() + 5, Spannable.SPAN_INCLUSIVE_
+
+            spannableStringBuilder.setSpan(stateClick, line1.length() + line2.length() + line3.length() + line4.length(), line1.length() + line2.length() + line3.length() + line4.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(deleteClick, line1.length() + line2.length() + line3.length() + line4.length() + 2, line1.length() + line2.length() + line3.length() + line4.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(muteClick, line1.length() + line2.length() + line3.length() + line4.length() + 4, line1.length() + line2.length() + line3.length() + line4.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         }
 
