@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Vibrator;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,6 +29,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,6 +39,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.UserAreaActivity;
+import net.johnbrooks.remindu.requests.SendCoinsRequest;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 
@@ -299,7 +302,15 @@ public class Reminder implements Comparable<Reminder>
                 bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96 );
             else
                 bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.document_96 );
-        Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_96 );
+        Bitmap bDelete;
+        if (reminder.GetState() != ReminderState.COMPLETE || reminder.GetFrom() != UserProfile.PROFILE.GetUserID())
+        {
+            bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_96 );
+        }
+        else
+        {
+            bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.coins_96_blue );
+        }
         Bitmap bMute;
         if (!UserProfile.PROFILE.IsIgnoring(GetID()))
             bMute = BitmapFactory.decodeResource( activity.getResources(), R.drawable.mute_96 );
@@ -309,6 +320,7 @@ public class Reminder implements Comparable<Reminder>
         Bitmap bBack = BitmapFactory.decodeResource( activity.getResources(), R.drawable.back_arrow_48 );
         Bitmap bForward = BitmapFactory.decodeResource( activity.getResources(), R.drawable.forward_arrow_48 );
         Bitmap bUpdate = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48_blue);
+        Bitmap bComplete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.checkmark_48_blue);
 
         int color = Color.LTGRAY;
         if ((parent.getChildCount()) % 2 != 0)
@@ -320,9 +332,11 @@ public class Reminder implements Comparable<Reminder>
         String line2 = "Message: " + GetMessage() + System.getProperty("line.separator"); // What
         String line3 = "Deadline in: " + GetETA() + System.getProperty("line.separator"); // When
         String line4 = System.getProperty("line.separator");
-        if (!IsUpToDate() && GetImportant())
+        if ((!IsUpToDate() && GetImportant()) || (GetImportant() && State == ReminderState.COMPLETE))
+        {
             line4 = "_ _" + System.getProperty("line.separator");
-        else if (GetImportant() || !IsUpToDate())
+        }
+        else if (GetImportant() || !IsUpToDate() || State == ReminderState.COMPLETE)
             line4 = "_" + System.getProperty("line.separator"); // warnings
         String line5 = "";
         if (UserProfile.PROFILE.GetActiveReminder() == this)
@@ -366,7 +380,14 @@ public class Reminder implements Comparable<Reminder>
         }
         else if (!IsUpToDate())
         {
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bUpdate), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            if (State != ReminderState.COMPLETE)
+                spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bUpdate), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            else
+                spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bComplete), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+        else if (State == ReminderState.COMPLETE)
+        {
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bComplete), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -446,7 +467,7 @@ public class Reminder implements Comparable<Reminder>
                                     layout.addView(tv);
                                 }
 
-                                if (GetDateComplete() != null && GetDateInProgress() != null)
+                                /*if (GetDateComplete() != null && GetDateInProgress() != null)
                                 {
                                     Button btn_thank = new Button(UserAreaActivity.GetActivity());
                                     btn_thank.setText("Send two coins!");
@@ -466,7 +487,7 @@ public class Reminder implements Comparable<Reminder>
                                             //After receive response, if successful... delete local reminder
                                         }
                                     });
-                                }
+                                }*/
                             } catch (ParseException e)
                             {
                                 e.printStackTrace();
@@ -545,7 +566,62 @@ public class Reminder implements Comparable<Reminder>
                 {
                     if (!Network.IsConnected(UserAreaActivity.GetActivity()))
                         return;
-                    UserProfile.PROFILE.DeleteReminder(reminder);
+                    //TODO: If completed task, give send coin dialog. or not, just delete.
+
+                    if (reminder.GetState() != ReminderState.COMPLETE || reminder.GetFrom() != UserProfile.PROFILE.GetUserID())
+                        UserProfile.PROFILE.DeleteReminder(reminder);
+                    else
+                    {
+                        final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
+                        dialog.setTitle("Send User Coins");
+                        dialog.setContentView(R.layout.dialog_send_coins);
+                        dialog.show();
+
+                        TextView tv_recipient = (TextView) dialog.findViewById(R.id.textView_sc_recipient);
+                        Button button_send = (Button) dialog.findViewById(R.id.button_sc_send);
+                        final EditText et_coins = (EditText) dialog.findViewById(R.id.editText_sc_coins);
+
+                        tv_recipient.setText("Recipient: " + reminder.GetFullName());
+
+                        button_send.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                int coins;
+                                try
+                                {
+                                    coins = Integer.parseInt(et_coins.getText().toString());
+                                }
+                                catch (NumberFormatException ex)
+                                {
+                                    ex.printStackTrace();
+                                    dialog.cancel();
+                                    return;
+                                }
+
+                                if (coins > UserProfile.PROFILE.GetCoins())
+                                {
+                                    Snackbar.make(UserAreaActivity.GetActivity().reminderLayout, "Insufficient coins!", Snackbar.LENGTH_LONG)
+                                            .setAction("Action", null).show();
+                                    dialog.cancel();
+                                    return;
+                                }
+
+                                if (coins == 0)
+                                {
+                                    UserProfile.PROFILE.DeleteReminder(reminder);
+                                    dialog.cancel();
+                                    return;
+                                }
+
+                                SendCoinsRequest.SendRequest(UserAreaActivity.GetActivity(), reminder.GetTo(), coins);
+                                UserProfile.PROFILE.DeleteReminder(reminder);
+                                dialog.cancel();
+                            }
+                        });
+                    }
+
                 }
             };
             ClickableSpan muteClick = new ClickableSpan() {
@@ -556,10 +632,6 @@ public class Reminder implements Comparable<Reminder>
                     UserProfile.PROFILE.RefreshReminderLayout();
                 }
             };
-
-            //line1.length() + line2.length() + line3.length() + line4.length(), line1.length() + line2.length() + line3.length() + line4.length() + 1, Spannable.SPAN_INCLUSIVE_INC
-            //, line1.length() + line2.length() + line3.length() + line4.length() + 2, line1.length() + line2.length() + line3.length() + line4.length() + 3, Spannable.SPAN_INCLUSIV
-            //line1.length() + line2.length() + line3.length() + line4.length() + 4, line1.length() + line2.length() + line3.length() + line4.length() + 5, Spannable.SPAN_INCLUSIVE_
 
             spannableStringBuilder.setSpan(stateClick, line1.length() + line2.length() + line3.length() + line4.length(), line1.length() + line2.length() + line3.length() + line4.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             spannableStringBuilder.setSpan(deleteClick, line1.length() + line2.length() + line3.length() + line4.length() + 2, line1.length() + line2.length() + line3.length() + line4.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
