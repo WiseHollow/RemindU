@@ -579,9 +579,20 @@ public class Reminder implements Comparable<Reminder>
 
                         TextView tv_recipient = (TextView) dialog.findViewById(R.id.textView_sc_recipient);
                         Button button_send = (Button) dialog.findViewById(R.id.button_sc_send);
+                        Button button_skip = (Button) dialog.findViewById(R.id.button_sc_skip);
                         final EditText et_coins = (EditText) dialog.findViewById(R.id.editText_sc_coins);
 
                         tv_recipient.setText("Recipient: " + reminder.GetFullName());
+
+                        button_skip.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                UserProfile.PROFILE.DeleteReminder(reminder);
+                                dialog.cancel();
+                            }
+                        });
 
                         button_send.setOnClickListener(new View.OnClickListener()
                         {
