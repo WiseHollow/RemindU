@@ -214,6 +214,7 @@ public class UserProfile implements Parcelable
         queue.add(request);
 
         Reminders.remove(r);
+
         RefreshReminderLayout();
     }
 

@@ -73,6 +73,8 @@ public class Reminder implements Comparable<Reminder>
             {
                 try
                 {
+                    for (Reminder r : UserProfile.PROFILE.GetReminders())
+                        r.Old = true;
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
                     String errorMessage = jsonResponse.getString("message");
@@ -82,18 +84,6 @@ public class Reminder implements Comparable<Reminder>
                     if (success)
                     {
                         int size = jsonResponse.getInt("size");
-                        //UserProfile.PROFILE.GetReminders().clear();
-                        /*for (int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
-                        {
-                            Reminder r = UserProfile.PROFILE.GetReminders().get(i);
-                            if (r.GetID() == 0)
-                            {
-                                UserProfile.PROFILE.GetReminders().remove(i);
-                                i--;
-                            }
-                        }*/
-
-                        List<Reminder> loadedReminders = new ArrayList<>();
 
                         for(int i = 0; i < size; i++)
                         {
@@ -113,21 +103,10 @@ public class Reminder implements Comparable<Reminder>
                             String dateComplete = jsonResponse.getJSONObject(String.valueOf(i)).getString("date_complete");
 
                             Reminder r = Reminder.LoadReminder(false, id, from, to, message, important > 0 ? true : false, date, ReminderState.values()[state]);
-                            loadedReminders.add(r);
                             if (!dateInProgress.equalsIgnoreCase("null"))
                                 r.SetDateInProgress(dateInProgress);
                             if (!dateComplete.equalsIgnoreCase("null"))
                                 r.SetDateComplete(dateComplete);
-                        }
-
-                        for(int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
-                        {
-                            Reminder reminder = UserProfile.PROFILE.GetReminders().get(i);
-                            if (!loadedReminders.contains(reminder) && reminder.GetID() != 0)
-                            {
-                                UserProfile.PROFILE.GetReminders().remove(reminder);
-                                i--;
-                            }
                         }
 
                         UserProfile.PROFILE.RefreshReminderLayout();
@@ -137,6 +116,10 @@ public class Reminder implements Comparable<Reminder>
                     {
                         Log.d("ERROR", "Message: " + errorMessage);
                     }
+
+                    for (Reminder r : UserProfile.PROFILE.GetReminders())
+                        if (r.Old == true && r.GetID() != 0)
+                            UserProfile.PROFILE.DeleteReminder(r);
                 } catch (JSONException e)
                 {
                     e.printStackTrace();
@@ -184,6 +167,7 @@ public class Reminder implements Comparable<Reminder>
             {
                 // Change in state, and we are the sender. Notify the user.
                 reminder.ShowNotification(true, "Reminder Alert!", "Reminder has been marked: " + reminder.GetState().toString());
+                reminder.SetUpToDate(false);
             }
             UserProfile.PROFILE.GetReminders().remove(check);
         }
@@ -192,6 +176,7 @@ public class Reminder implements Comparable<Reminder>
             // New reminder has been added, make a notification
             if (!silentLoad)
                 reminder.ShowNotification(true, "Reminder Alert!", reminder.GetMessage());
+            reminder.SetUpToDate(false);
         }
 
         // Add the reminder to memory
@@ -211,6 +196,9 @@ public class Reminder implements Comparable<Reminder>
     private Date Date;
     private boolean Important;
 
+    private boolean UpToDate;
+    private boolean Old;
+
     private ReminderState State;
 
     private String DateInProgress;
@@ -218,6 +206,7 @@ public class Reminder implements Comparable<Reminder>
 
     private Reminder(String message, int user_id_from, int user_id_to, Date date)
     {
+        Old = false;
         ID = 0;
         User_ID_From = user_id_from;
         User_ID_To = user_id_to;
@@ -240,25 +229,28 @@ public class Reminder implements Comparable<Reminder>
         Message = message;
         Date = date;
         Important = false;
+        UpToDate = true;
         State = ReminderState.NOT_STARTED;
     }
 
-    public int GetID() { return ID; }
-    public int GetFrom() { return User_ID_From; }
-    public int GetTo() { return User_ID_To; }
+    public final int GetID() { return ID; }
+    public final int GetFrom() { return User_ID_From; }
+    public final int GetTo() { return User_ID_To; }
     public final String GetFullName() { return FullName; }
     public final String GetMessage() { return Message; }
     public final Date GetDate() { return Date; }
-    public boolean GetImportant() { return Important; }
+    public final boolean GetImportant() { return Important; }
     public final ReminderState GetState() { return State; }
     public final int GetStateOrdinal() { return State.ordinal(); }
     public final String GetDateInProgress() { return DateInProgress; }
     public final String GetDateComplete() { return DateComplete; }
+    public final boolean IsUpToDate() { return UpToDate; }
 
     public void SetID(final int id) { ID = id; }
     public void SetImportant(final boolean value) { Important = value; }
     public void SetState(ReminderState state) { State = state; }
     public void SetWidget(TextView To) { Widget = To; }
+    public void SetUpToDate(final boolean value) { UpToDate = value; }
 
     public void SetDateInProgress(final String date)
     {
@@ -283,6 +275,8 @@ public class Reminder implements Comparable<Reminder>
             @Override
             public void onClick(View view)
             {
+                if (!IsUpToDate())
+                    SetUpToDate(true);
                 UserProfile.PROFILE.SetActiveReminder(reminder);
                 UserProfile.PROFILE.RefreshReminderLayout();
             }
@@ -314,6 +308,7 @@ public class Reminder implements Comparable<Reminder>
         Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48 );
         Bitmap bBack = BitmapFactory.decodeResource( activity.getResources(), R.drawable.back_arrow_48 );
         Bitmap bForward = BitmapFactory.decodeResource( activity.getResources(), R.drawable.forward_arrow_48 );
+        Bitmap bUpdate = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48_blue);
 
         int color = Color.LTGRAY;
         if ((parent.getChildCount()) % 2 != 0)
@@ -325,7 +320,9 @@ public class Reminder implements Comparable<Reminder>
         String line2 = "Message: " + GetMessage() + System.getProperty("line.separator"); // What
         String line3 = "Deadline in: " + GetETA() + System.getProperty("line.separator"); // When
         String line4 = System.getProperty("line.separator");
-        if (GetImportant())
+        if (!IsUpToDate() && GetImportant())
+            line4 = "_ _" + System.getProperty("line.separator");
+        else if (GetImportant() || !IsUpToDate())
             line4 = "_" + System.getProperty("line.separator"); // warnings
         String line5 = "";
         if (UserProfile.PROFILE.GetActiveReminder() == this)
@@ -358,11 +355,18 @@ public class Reminder implements Comparable<Reminder>
         //
         // If the reminder is marked as important, create an exclamation mark at the top right of the reminder.
         //
-        if (GetImportant())
+        if (GetImportant() && !IsUpToDate())
         {
-            //spannableStringBuilder.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), 0, line1.length() - 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            //spannableStringBuilder.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bUpdate), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+        else if (GetImportant())
+        {
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+        else if (!IsUpToDate())
+        {
+            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bUpdate), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
