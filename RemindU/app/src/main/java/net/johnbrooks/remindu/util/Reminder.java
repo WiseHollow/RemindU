@@ -695,6 +695,9 @@ public class Reminder implements Comparable<Reminder>
         if (timeLeft[2] > 0)
             eta += timeLeft[2] + " minutes ";
 
+        if (eta.equalsIgnoreCase(""))
+            eta = "Past Due";
+
         return eta;
     }
     public boolean Remind()
@@ -709,7 +712,7 @@ public class Reminder implements Comparable<Reminder>
         final Reminder myReminder = this;
 
         int[] timeLeft = GetTimeLeft();
-        if (timeLeft[0] <= 0 && timeLeft[1] <= 0 && timeLeft[2] <= 0)
+        if (timeLeft[0] == 0 && timeLeft[1] == 0 && timeLeft[2] == 0)
         {
             //
             // Time is over.
