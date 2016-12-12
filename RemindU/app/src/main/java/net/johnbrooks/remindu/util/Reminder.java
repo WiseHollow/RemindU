@@ -452,7 +452,7 @@ public class Reminder implements Comparable<Reminder>
                                     btn_thank.setText("Send two coins!");
                                     layout.addView(btn_thank);
 
-                                    if (UserProfile.PROFILE.GetPointsRemaining() < 2)
+                                    if (UserProfile.PROFILE.GetCoins() < 2)
                                         btn_thank.setEnabled(false);
 
                                     btn_thank.setOnClickListener(new View.OnClickListener()

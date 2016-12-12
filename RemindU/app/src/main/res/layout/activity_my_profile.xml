@@ -83,23 +83,4 @@
         android:layout_alignLeft="@+id/textView_Profile_ActiveSentReminders"
         android:layout_alignStart="@+id/textView_Profile_ActiveSentReminders" />
 
-    <TextView
-        android:text="Points Sent: "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:id="@+id/textView_Profile_PointsSent"
-        android:layout_below="@+id/textView_Profile_PointsRemaining"
-        android:layout_alignLeft="@+id/textView_Profile_PointsRemaining"
-        android:layout_alignStart="@+id/textView_Profile_PointsRemaining" />
-
-    <TextView
-        android:text="Points Received: "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:id="@+id/textView_Profile_PointsReceived"
-        android:layout_below="@+id/textView_Profile_PointsSent"
-        android:layout_alignLeft="@+id/textView_Profile_PointsSent"
-        android:layout_alignStart="@+id/textView_Profile_PointsSent" />
 </RelativeLayout>

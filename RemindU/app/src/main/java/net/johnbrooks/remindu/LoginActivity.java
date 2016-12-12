@@ -144,9 +144,7 @@ public class LoginActivity extends AppCompatActivity
         final String username = sharedPref.getString("username", "null");
         final int id = sharedPref.getInt("id", 0);
         final boolean active = sharedPref.getBoolean("active", false);
-        final int pointsTotal = sharedPref.getInt("pointsTotal", 0);
-        final int pointsSent = sharedPref.getInt("pointsSent", 0);
-        final int pointsReceived = sharedPref.getInt("pointsReceived", 0);
+        final int coins = sharedPref.getInt("coins", 0);
         final Set<String> contactsString = sharedPref.getStringSet("contacts", null);
 
 
@@ -154,7 +152,7 @@ public class LoginActivity extends AppCompatActivity
                 username.equalsIgnoreCase("null") || id == 0 || email.equalsIgnoreCase("null"))
             return false;
 
-        UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, pointsTotal, pointsReceived, pointsSent);
+        UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins);
         UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
 
         for(String s : contactsString)
@@ -198,15 +196,13 @@ public class LoginActivity extends AppCompatActivity
                         final String email = jsonResponse.getString("email");
                         final String username = jsonResponse.getString("username");
 
-                        final int pointsTotal = jsonResponse.getInt("pointsRemaining");
-                        final int pointsSent = jsonResponse.getInt("pointsSent");
-                        final int pointsReceived = jsonResponse.getInt("pointsReceived");
+                        final int coins = jsonResponse.getInt("coins");
 
                         final String contacts = jsonResponse.getString("contacts");
 
                         // Using pulled information, we can create a profile for the user.
 
-                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, pointsTotal, pointsReceived, pointsSent);
+                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins);
                         UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
 
                         // Next, lets make sense of the contacts string given by the server.
@@ -245,9 +241,7 @@ public class LoginActivity extends AppCompatActivity
                         editor.putString("username", username);
                         editor.putInt("id", id);
                         editor.putBoolean("active", (active > 0) ? true : false);
-                        editor.putInt("pointsTotal", pointsTotal);
-                        editor.putInt("pointsSent", pointsSent);
-                        editor.putInt("pointsReceived", pointsReceived);
+                        editor.putInt("coins", coins);
                         editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
 
                         editor.commit();

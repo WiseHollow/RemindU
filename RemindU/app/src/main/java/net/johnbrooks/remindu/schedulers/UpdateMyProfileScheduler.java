@@ -71,9 +71,7 @@ public class UpdateMyProfileScheduler
             Activity.tvActiveSentReminders.setText("Active Sent Reminders: 0");
             Activity.tvPendingReceivedReminders.setText("Active Received Reminders: 0");
 
-            Activity.tvPointsRemaining.setText("Points Remaining: " + UserProfile.PROFILE.GetPointsRemaining());
-            Activity.tvPointsReceived.setText("Points Received: " + UserProfile.PROFILE.GetPointsReceived());
-            Activity.tvPointsSent.setText("Points Sent: " + UserProfile.PROFILE.GetPointsSent());
+            Activity.tvPointsRemaining.setText("Coins Remaining: " + UserProfile.PROFILE.GetCoins());
         }
     }
 

@@ -19,8 +19,6 @@ public class MyProfileActivity extends AppCompatActivity
     public TextView tvPendingReceivedReminders = null;
 
     public TextView tvPointsRemaining = null;
-    public TextView tvPointsReceived = null;
-    public TextView tvPointsSent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,8 +57,6 @@ public class MyProfileActivity extends AppCompatActivity
         tvPendingReceivedReminders = (TextView) findViewById(R.id.textView_Profile_ActiveReceivedReminders);
 
         tvPointsRemaining = (TextView) findViewById(R.id.textView_Profile_PointsRemaining);
-        tvPointsReceived = (TextView) findViewById(R.id.textView_Profile_PointsReceived);
-        tvPointsSent = (TextView) findViewById(R.id.textView_Profile_PointsSent);
 
         //
         // Fill TextView information
@@ -73,9 +69,7 @@ public class MyProfileActivity extends AppCompatActivity
         tvActiveSentReminders.setText("Active Sent Reminders: " + activeSentReminders);
         tvPendingReceivedReminders.setText("Active Received Reminders: " + activeReceivedReminders);
 
-        tvPointsRemaining.setText("Points Remaining: " + UserProfile.PROFILE.GetPointsRemaining());
-        tvPointsReceived.setText("Points Received: " + UserProfile.PROFILE.GetPointsReceived());
-        tvPointsSent.setText("Points Sent: " + UserProfile.PROFILE.GetPointsSent());
+        tvPointsRemaining.setText("Coins Remaining: " + UserProfile.PROFILE.GetCoins());
 
         //
         // Set scheduler

@@ -56,9 +56,7 @@ public class UserProfile implements Parcelable
     private String Email;
     private String Password;
 
-    private int PointsRemaining;
-    private int PointsSent;
-    private int PointsReceived;
+    private int Coins;
 
     private List<ContactProfile> Contacts;
     private List<Reminder> Reminders;
@@ -66,7 +64,7 @@ public class UserProfile implements Parcelable
 
     private Reminder activeReminder;
 
-    public UserProfile(int id, final int active, final String fullName, final String username, final String email, final String password, final Integer pointsRemaining, final Integer pointsReceived, final Integer pointsSent)
+    public UserProfile(int id, final int active, final String fullName, final String username, final String email, final String password, final Integer coins)
     {
         UserID = id;
         Active = active;
@@ -74,9 +72,7 @@ public class UserProfile implements Parcelable
         Username = username;
         Email = email;
         Password = password;
-        PointsReceived = pointsReceived;
-        PointsRemaining = pointsRemaining;
-        PointsSent = pointsSent;
+        Coins = coins;
 
         Reminders = new ArrayList<>();
         Contacts = new ArrayList<>();
@@ -91,9 +87,7 @@ public class UserProfile implements Parcelable
     public final String GetUsername() { return Username; }
     public final String GetEmail() { return Email; }
     public final String GetPassword() { return Password; }
-    public final int GetPointsRemaining() { return PointsRemaining; }
-    public final int GetPointsSent() { return PointsSent; }
-    public final int GetPointsReceived() { return PointsReceived; }
+    public final int GetCoins() { return Coins; }
     public final boolean IsIgnoring(int id) { return ReminderIgnores.contains(id); }
     public final Reminder GetActiveReminder() { return activeReminder; }
 
@@ -127,12 +121,10 @@ public class UserProfile implements Parcelable
         Username = in.readString();
         Email = in.readString();
         Password = in.readString();
-        PointsRemaining = in.readInt();
-        PointsSent = in.readInt();
-        PointsReceived = in.readInt();
+        Coins = in.readInt();
     }
 
-    private void Update(final int id, final int active, final String fullName, final String username, final String email, final String password, final Integer pointsRemaining, final Integer pointsReceived, final Integer pointsSent)
+    private void Update(final int id, final int active, final String fullName, final String username, final String email, final String password, final Integer coins)
     {
         UserID = id;
         Active = active;
@@ -140,9 +132,7 @@ public class UserProfile implements Parcelable
         Username = username;
         Email = email;
         Password = password;
-        PointsReceived = pointsReceived;
-        PointsRemaining = pointsRemaining;
-        PointsSent = pointsSent;
+        Coins = coins;
     }
 
     public void RefreshReminderLayout()
@@ -296,16 +286,14 @@ public class UserProfile implements Parcelable
                         final String email = jsonResponse.getString("email");
                         final String username = jsonResponse.getString("username");
 
-                        final int pointsTotal = jsonResponse.getInt("pointsRemaining");
-                        final int pointsGiven = jsonResponse.getInt("pointsSent");
-                        final int pointsReceived = jsonResponse.getInt("pointsReceived");
+                        final int coins = jsonResponse.getInt("coins");
 
                         final String contacts = jsonResponse.getString("contacts");
 
                         if (UserProfile.PROFILE == null)
-                            UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, Password, pointsTotal, pointsReceived, pointsGiven);
+                            UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, Password, coins);
                         else
-                            UserProfile.PROFILE.Update(id, active, fullName, username, email, Password, pointsTotal, pointsReceived, pointsGiven);
+                            UserProfile.PROFILE.Update(id, active, fullName, username, email, Password, coins);
                         UserProfile.PROFILE.GetContacts().clear();
                         for (String contact : contacts.split("&"))
                         {
@@ -370,9 +358,7 @@ public class UserProfile implements Parcelable
         parcel.writeString(Username);
         parcel.writeString(Email);
         parcel.writeString(Password);
-        parcel.writeInt(PointsRemaining);
-        parcel.writeInt(PointsSent);
-        parcel.writeInt(PointsReceived);
+        parcel.writeInt(Coins);
     }
 
     public void LoadRemindersFromFile(Activity activity)
