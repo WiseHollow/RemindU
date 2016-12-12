@@ -332,7 +332,7 @@ public class Reminder implements Comparable<Reminder>
         String line2 = "Message: " + GetMessage() + System.getProperty("line.separator"); // What
         String line3 = "Deadline in: " + GetETA() + System.getProperty("line.separator"); // When
         String line4 = System.getProperty("line.separator");
-        if ((!IsUpToDate() && GetImportant()) || (GetImportant() && State == ReminderState.COMPLETE))
+        if ((!IsUpToDate() && GetImportant()) || (GetImportant() && State == ReminderState.COMPLETE && GetFrom() == UserProfile.PROFILE.GetUserID()))
         {
             line4 = "_ _" + System.getProperty("line.separator");
         }
@@ -504,26 +504,18 @@ public class Reminder implements Comparable<Reminder>
                     dialog.setContentView(R.layout.dialog_reminder_state_picker);
                     dialog.show();
 
-                    Button btn_not_started = (Button) dialog.findViewById(R.id.button_rsp_not_started);
                     Button btn_in_progress = (Button) dialog.findViewById(R.id.button_rsp_in_progress);
                     Button btn_complete = (Button) dialog.findViewById(R.id.button_rsp_complete);
 
                     if (GetDateInProgress() != null)
-                        btn_not_started.setEnabled(false);
-                    if (GetDateComplete() != null)
-                        btn_in_progress.setEnabled(false);
-
-                    btn_not_started.setOnClickListener(new View.OnClickListener()
                     {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            SetState(ReminderState.NOT_STARTED);
-                            UserProfile.PROFILE.RefreshReminderLayout();
-                            UserProfile.PROFILE.pushReminder(myReminder);
-                            dialog.cancel();
-                        }
-                    });
+                        btn_in_progress.setEnabled(false);
+                    }
+                    if (GetDateComplete() != null)
+                    {
+                        btn_in_progress.setEnabled(false);
+                        btn_complete.setEnabled(false);
+                    }
 
                     btn_in_progress.setOnClickListener(new View.OnClickListener()
                     {

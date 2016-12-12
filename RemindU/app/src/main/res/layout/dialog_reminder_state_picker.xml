@@ -11,13 +11,6 @@
         android:orientation="horizontal">
 
         <Button
-            android:text="Not Started"
-            android:layout_height="60dp"
-            android:id="@+id/button_rsp_not_started"
-            android:layout_width="0dp"
-            android:layout_weight="0.3"/>
-
-        <Button
             android:text="In Progress"
             android:layout_height="60dp"
             android:id="@+id/button_rsp_in_progress"
