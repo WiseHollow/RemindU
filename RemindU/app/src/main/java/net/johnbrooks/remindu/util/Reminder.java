@@ -12,6 +12,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
@@ -929,12 +933,30 @@ public class Reminder implements Comparable<Reminder>
                 .setAutoCancel(true)
                 .build();
 
-        if (vibrate)
+        NotificationManager notificationManager = (NotificationManager) UserAreaActivity.GetActivity().getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notification);
+
+        if (vibrate && UserAreaActivity.GetActivity() != null)
         {
-            NotificationManager notificationManager = (NotificationManager) UserAreaActivity.GetActivity().getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(0, notification);
-            Vibrator v = (Vibrator) UserAreaActivity.GetActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-            v.vibrate(500);
+            AudioManager am = (AudioManager)UserAreaActivity.GetActivity().getSystemService(Context.AUDIO_SERVICE);
+
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE || am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+            {
+                Vibrator v = (Vibrator) UserAreaActivity.GetActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
+            }
+
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+            {
+                try
+                {
+                    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone r = RingtoneManager.getRingtone(UserAreaActivity.GetActivity().getApplicationContext(), alarmSound);
+                    r.play();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
