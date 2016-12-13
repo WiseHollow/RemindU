@@ -116,9 +116,10 @@ public class Reminder implements Comparable<Reminder>
                         Log.d("ERROR", "Message: " + errorMessage);
                     }
 
-                    for (Reminder r : UserProfile.PROFILE.GetReminders())
-                        if (r.Old == true && r.GetID() != 0)
-                            UserProfile.PROFILE.DeleteReminder(r);
+                    if (UserProfile.PROFILE != null)
+                        for (Reminder r : UserProfile.PROFILE.GetReminders())
+                            if (r.Old == true && r.GetID() != 0)
+                                UserProfile.PROFILE.DeleteReminder(r);
                 } catch (JSONException e)
                 {
                     e.printStackTrace();

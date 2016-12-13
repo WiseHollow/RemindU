@@ -17,8 +17,13 @@ public class ShowCoinGainScheduler
     private static ShowCoinGainScheduler scheduler = null;
     public static void Initialize()
     {
-        if (scheduler == null)
+        if (scheduler == null && UserAreaActivity.GetActivity() != null)
+        {
             scheduler = new ShowCoinGainScheduler();
+            scheduler.startRepeatingTask();
+        }
+
+
     }
     public static void Cancel()
     {
@@ -35,11 +40,8 @@ public class ShowCoinGainScheduler
 
     public ShowCoinGainScheduler()
     {
-        if (UserAreaActivity.GetActivity() == null)
-            return;
         view = (ImageView) UserAreaActivity.GetActivity().findViewById(R.id.coin_changes);
         mHandler = new Handler();
-        startRepeatingTask();
     }
 
     Runnable mStatusChecker = new Runnable()
@@ -51,19 +53,14 @@ public class ShowCoinGainScheduler
                 Update();
             } finally
             {
-                mHandler.postDelayed(mStatusChecker, mInterval);
+                if (scheduler != null)
+                    mHandler.postDelayed(mStatusChecker, mInterval);
             }
         }
     };
 
     private void Update()
     {
-        if (scheduler == null)
-        {
-            //TODO: Make handler cancel the entire schedule.
-            Log.d("SEVERE", "hit");
-            return;
-        }
         index++;
         if (UserAreaActivity.GetActivity() == null || index >= ids.length)
         {
