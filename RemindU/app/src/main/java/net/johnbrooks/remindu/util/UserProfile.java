@@ -18,6 +18,7 @@ import net.johnbrooks.remindu.requests.DeleteReminderRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.LoginRequest;
 import net.johnbrooks.remindu.requests.UpdateReminderRequest;
+import net.johnbrooks.remindu.schedulers.ShowCoinGainScheduler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -291,6 +292,11 @@ public class UserProfile implements Parcelable
                         final int coins = jsonResponse.getInt("coins");
 
                         final String contacts = jsonResponse.getString("contacts");
+
+                        if (UserProfile.PROFILE != null && coins != UserProfile.PROFILE.GetCoins())
+                        {
+                            ShowCoinGainScheduler.Initialize();
+                        }
 
                         if (UserProfile.PROFILE == null)
                             UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, Password, coins);

@@ -124,8 +124,6 @@ public class UserAreaActivity extends AppCompatActivity
 
             }
         });
-
-        ShowCoinGainScheduler.Initialize();
     }
 
     @Override
