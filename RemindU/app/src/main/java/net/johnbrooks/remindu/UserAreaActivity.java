@@ -151,7 +151,7 @@ public class UserAreaActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
-            return true;
+            
         }
         else if (id == R.id.action_sign_out)
         {
@@ -159,8 +159,11 @@ public class UserAreaActivity extends AppCompatActivity
             signOutIntent.putExtra("signOut", true);
             UserAreaActivity.this.startActivity(signOutIntent);
             finish();
-
-            return true;
+        }
+        else if (id == R.id.action_about)
+        {
+            Intent intent = new Intent(UserAreaActivity.this, AboutActivity.class);
+            UserAreaActivity.this.startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

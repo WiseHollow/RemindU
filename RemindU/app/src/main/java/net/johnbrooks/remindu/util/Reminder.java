@@ -332,7 +332,7 @@ public class Reminder implements Comparable<Reminder>
         String line2 = "Message: " + GetMessage() + System.getProperty("line.separator"); // What
         String line3 = "Deadline in: " + GetETA() + System.getProperty("line.separator"); // When
         String line4 = System.getProperty("line.separator");
-        if ((!IsUpToDate() && GetImportant()) || (GetImportant() && State == ReminderState.COMPLETE && GetFrom() == UserProfile.PROFILE.GetUserID()))
+        if ((!IsUpToDate() && GetImportant()) || (GetImportant() && State == ReminderState.COMPLETE))
         {
             line4 = "_ _" + System.getProperty("line.separator");
         }
@@ -373,17 +373,18 @@ public class Reminder implements Comparable<Reminder>
         {
             spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bUpdate), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            if (State == ReminderState.COMPLETE)
+            {
+                spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bComplete), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            }
         }
         else if (GetImportant())
         {
             spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        }
-        else if (!IsUpToDate())
-        {
-            if (State != ReminderState.COMPLETE)
-                spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bUpdate), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            else
-                spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bComplete), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            if (State == ReminderState.COMPLETE)
+            {
+                spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bComplete), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            }
         }
         else if (State == ReminderState.COMPLETE)
         {
@@ -570,11 +571,13 @@ public class Reminder implements Comparable<Reminder>
                         dialog.show();
 
                         TextView tv_recipient = (TextView) dialog.findViewById(R.id.textView_sc_recipient);
+                        TextView tv_coins = (TextView) dialog.findViewById(R.id.textView_sc_coins);
                         Button button_send = (Button) dialog.findViewById(R.id.button_sc_send);
                         Button button_skip = (Button) dialog.findViewById(R.id.button_sc_skip);
                         final EditText et_coins = (EditText) dialog.findViewById(R.id.editText_sc_coins);
 
                         tv_recipient.setText("Recipient: " + reminder.GetFullName());
+                        tv_coins.setText("Coins: " + UserProfile.PROFILE.GetCoins());
 
                         button_skip.setOnClickListener(new View.OnClickListener()
                         {
@@ -661,9 +664,9 @@ public class Reminder implements Comparable<Reminder>
         Date now = new Date();
 
         long differenceInMilliseconds = Date.getTime() - now.getTime();
-        List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
+        List<TimeUnit> units = new ArrayList<>(EnumSet.allOf(TimeUnit.class));
         Collections.reverse(units);
-        Map<TimeUnit,Long> result = new LinkedHashMap<TimeUnit,Long>();
+        Map<TimeUnit,Long> result = new LinkedHashMap<>();
         long millisecondsLeft = differenceInMilliseconds;
         for ( TimeUnit unit : units ) {
             long diff = unit.convert(millisecondsLeft,TimeUnit.MILLISECONDS);
