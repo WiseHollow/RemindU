@@ -151,7 +151,7 @@ public class UserAreaActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
-            
+
         }
         else if (id == R.id.action_sign_out)
         {
