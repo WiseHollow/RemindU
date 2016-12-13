@@ -34,7 +34,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".CreateReminderActivity" />
         <activity android:name=".AboutActivity" />
-        <activity android:name=".ActivateAccountActivity"></activity>
+        <activity android:name=".ActivateAccountActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>
