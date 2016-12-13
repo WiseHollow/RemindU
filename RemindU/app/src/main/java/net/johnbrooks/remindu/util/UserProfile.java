@@ -323,7 +323,7 @@ public class UserProfile implements Parcelable
 
                         }
 
-                        if (active == 0 && !ActivateAccountActivity.IsOpen())
+                        if (active != 1 && !ActivateAccountActivity.IsOpen())
                         {
                             Intent activateIntent = new Intent(UserAreaActivity.GetActivity(), ActivateAccountActivity.class);
                             UserAreaActivity.GetActivity().startActivity(activateIntent);
