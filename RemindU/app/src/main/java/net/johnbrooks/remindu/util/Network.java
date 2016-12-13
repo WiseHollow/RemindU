@@ -7,7 +7,7 @@ import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
 
 import net.johnbrooks.remindu.R;
-import net.johnbrooks.remindu.UserAreaActivity;
+import net.johnbrooks.remindu.activities.UserAreaActivity;
 
 /**
  * Created by John on 12/5/2016.

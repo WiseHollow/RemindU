@@ -1,29 +1,24 @@
-package net.johnbrooks.remindu;
+package net.johnbrooks.remindu.activities;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.util.Reminder;
-import net.johnbrooks.remindu.util.UserProfile;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class CreateReminderActivity extends AppCompatActivity
 {

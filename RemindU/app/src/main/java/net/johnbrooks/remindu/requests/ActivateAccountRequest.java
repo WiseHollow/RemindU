@@ -1,6 +1,5 @@
 package net.johnbrooks.remindu.requests;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -11,9 +10,8 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import net.johnbrooks.remindu.ActivateAccountActivity;
+import net.johnbrooks.remindu.activities.ActivateAccountActivity;
 import net.johnbrooks.remindu.R;
-import net.johnbrooks.remindu.UserAreaActivity;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.UserProfile;
 

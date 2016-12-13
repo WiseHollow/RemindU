@@ -1,4 +1,4 @@
-package net.johnbrooks.remindu;
+package net.johnbrooks.remindu.activities;
 
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.ActivateAccountRequest;
 import net.johnbrooks.remindu.requests.RequestActivationEmailRequest;
 

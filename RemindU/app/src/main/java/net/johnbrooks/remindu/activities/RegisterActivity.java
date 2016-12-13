@@ -1,4 +1,4 @@
-package net.johnbrooks.remindu;
+package net.johnbrooks.remindu.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +12,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
+import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.RegisterRequest;
 
 import org.json.JSONException;

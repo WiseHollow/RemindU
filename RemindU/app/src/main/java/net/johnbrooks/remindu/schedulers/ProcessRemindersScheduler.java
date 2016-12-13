@@ -2,7 +2,7 @@ package net.johnbrooks.remindu.schedulers;
 
 import android.os.Handler;
 
-import net.johnbrooks.remindu.UserAreaActivity;
+import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 

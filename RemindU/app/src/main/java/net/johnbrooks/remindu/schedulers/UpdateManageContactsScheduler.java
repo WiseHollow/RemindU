@@ -1,12 +1,8 @@
 package net.johnbrooks.remindu.schedulers;
 
 import android.os.Handler;
-import android.widget.TextView;
 
-import net.johnbrooks.remindu.ManageContactsActivity;
-import net.johnbrooks.remindu.R;
-import net.johnbrooks.remindu.UserAreaActivity;
-import net.johnbrooks.remindu.util.UserProfile;
+import net.johnbrooks.remindu.activities.ManageContactsActivity;
 
 /**
  * Created by John on 11/30/2016.

@@ -1,4 +1,4 @@
-package net.johnbrooks.remindu;
+package net.johnbrooks.remindu.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

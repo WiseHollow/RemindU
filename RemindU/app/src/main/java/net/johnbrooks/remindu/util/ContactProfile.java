@@ -1,6 +1,5 @@
 package net.johnbrooks.remindu.util;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -20,7 +19,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
-import net.johnbrooks.remindu.ManageContactsActivity;
+import net.johnbrooks.remindu.activities.ManageContactsActivity;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.DeleteContactRequest;
 import net.johnbrooks.remindu.schedulers.PullScheduler;

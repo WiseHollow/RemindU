@@ -1,9 +1,10 @@
-package net.johnbrooks.remindu;
+package net.johnbrooks.remindu.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.schedulers.UpdateMyProfileScheduler;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;

@@ -1,4 +1,4 @@
-package net.johnbrooks.remindu;
+package net.johnbrooks.remindu.activities;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import net.johnbrooks.remindu.R;
 
 public class AboutActivity extends AppCompatActivity {
 

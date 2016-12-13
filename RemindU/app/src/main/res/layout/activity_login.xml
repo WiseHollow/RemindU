@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="net.johnbrooks.remindu.LoginActivity">
+    tools:context="net.johnbrooks.remindu.activities.LoginActivity">
 
     <TextView
         android:text="Register Here"

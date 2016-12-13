@@ -1,4 +1,4 @@
-package net.johnbrooks.remindu;
+package net.johnbrooks.remindu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +17,9 @@ import android.widget.LinearLayout;
 
 import com.baoyz.widget.PullRefreshLayout;
 
+import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
+import net.johnbrooks.remindu.schedulers.ShowCoinGainScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
@@ -122,6 +124,8 @@ public class UserAreaActivity extends AppCompatActivity
 
             }
         });
+
+        ShowCoinGainScheduler.Initialize();
     }
 
     @Override
