@@ -79,7 +79,7 @@ public class CreateReminderActivity extends AppCompatActivity
                         calendar.set(Calendar.SECOND, 0);
                         DateFormat dateFormat = new SimpleDateFormat("hh:mm");
                         String suffix = "am";
-                        if (hours > 12)
+                        if (hours >= 12)
                             suffix = "pm";
                         tv_time.setText("Time Due: " + dateFormat.format(calendar.getTime()) + suffix);
                     }
