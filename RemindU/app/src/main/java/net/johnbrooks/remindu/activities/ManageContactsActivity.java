@@ -110,63 +110,6 @@ public class ManageContactsActivity extends AppCompatActivity
         for (ContactProfile profile : UserProfile.PROFILE.GetContacts())
         {
             layout.addView(profile.CreateWidget(ManageContactsActivity.this));
-
-            /*final int targetID = profile.GetID();
-            final String targetEmail = profile.GetEmail();
-
-            TextView view = new TextView(ManageContactsActivity.this);
-            view.setMovementMethod(LinkMovementMethod.getInstance());
-
-            // Use a spannablestringbuilder to keep control over the color, font size, and images in the string.
-            SpannableStringBuilder builder = new SpannableStringBuilder();
-            builder.append("_ _ ");
-            builder.append(profile.GetFullName());
-            if (!profile.IsContact())
-            {
-                builder.append(" - Waiting...");
-            }
-            else
-            {
-                // We shall make the text black if the contact is mutual.
-                builder.setSpan(new ForegroundColorSpan(Color.BLACK), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            // Insert the images in required positions.
-            builder.setSpan(new ImageSpan(view.getContext(), bDefaultAvatar), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            builder.setSpan(new ImageSpan(view.getContext(), bDelete), 2, 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            //
-            // Span Delete will be placed on top of the image for delete.
-            // Using it will send a request to the server to remove a contact.
-            //
-            ClickableSpan spanDelete = new ClickableSpan()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    if (targetID == -1)
-                    {
-                        //UserProfile.PROFILE.RemoveContact(targetEmail);
-                        //UpdateContactsList();
-                        return;
-                    }
-
-                    //TODO: Pull data from server
-                    Log.d("INFO", "Requesting that contact id=" + targetID + " be removed.");
-                    Response.Listener<String> responseListener = GetResponseListener(targetID);
-
-                    DeleteContactRequest request = new DeleteContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), String.valueOf(targetID), responseListener);
-                    RequestQueue queue = Volley.newRequestQueue(ManageContactsActivity.this);
-                    queue.add(request);
-
-                    //TODO: Refresh contents...
-                }
-            };
-            builder.setSpan(spanDelete, 2, 3, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-            view.setPadding(5, 15, 5, 15);
-            view.setTextSize(16f);
-            view.setText(builder);
-
-            layout.addView(view);*/
         }
     }
 

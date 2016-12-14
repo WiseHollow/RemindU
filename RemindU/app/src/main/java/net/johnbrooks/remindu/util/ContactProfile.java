@@ -10,6 +10,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -80,11 +81,11 @@ public class ContactProfile
 
         String line1 = "_ " + GetDisplayName();
         if (!IsContact())
-            line1 += " Waiting...";
+            line1 += " Request Pending...";
         spannableStringLeft.append(line1);
         TextView textView = new TextView(activity);
         layout.addView(textView);
-        textView.setTextSize(18f);
+        textView.setTextSize(14f);
         textView.setTextColor(Color.BLACK);
         LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams
                 (
@@ -93,6 +94,8 @@ public class ContactProfile
                 );
         textView.setLayoutParams(textViewParams);
         spannableStringLeft.setSpan(new ImageSpan(textView.getContext(), bDefaultAvatar), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        if (!IsContact())
+            spannableStringLeft.setSpan(new RelativeSizeSpan(0.75f), GetDisplayName().length() + 2, line1.length() - 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         textView.setText(spannableStringLeft);
 
         TextView button = new TextView(activity);

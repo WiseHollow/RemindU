@@ -249,9 +249,15 @@ public class UserProfile implements Parcelable
 
     public void RemoveContact(int _id)
     {
-        for (ContactProfile p : GetContacts())
+        for (int i = 0; i < GetContacts().size(); i++)
+        {
+            ContactProfile p = GetContacts().get(i);
             if (p.GetID() == _id)
-                RemoveContact(p);
+            {
+                GetContacts().remove(Integer.valueOf(i));
+                i--;
+            }
+        }
     }
 
     public void Pull(Activity activity)

@@ -32,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity
         final EditText etFullName = (EditText) findViewById(R.id.editText_FullName);
         final EditText etEmail = (EditText) findViewById(R.id.editText_Email);
         final EditText etPassword = (EditText) findViewById(R.id.editText_Password);
+        final EditText etPasswordConfirm = (EditText) findViewById(R.id.editText_Password_Confirm);
 
         final Button bRegister = (Button) findViewById(R.id.button_Register);
 
@@ -46,10 +47,22 @@ public class RegisterActivity extends AppCompatActivity
                 final String username = etUsername.getText().toString();
                 final String email = etEmail.getText().toString();
                 final String password = etPassword.getText().toString();
+                final String passwordConfirm = etPasswordConfirm.getText().toString();
+
+                AlertDialog.Builder errorDialog = new AlertDialog.Builder(RegisterActivity.this);
+                if (!password.equals(passwordConfirm))
+                {
+                    etPassword.setText("");
+                    etPasswordConfirm.setText("");
+                    errorDialog.setMessage("Passwords do not match.")
+                            .setNegativeButton("Retry", null)
+                            .create()
+                            .show();
+                    return;
+                }
 
                 // Next we will create an error dialog to prepare for possible errors in input.
 
-                AlertDialog.Builder errorDialog = new AlertDialog.Builder(RegisterActivity.this);
                 if (!email.contains("@") || !email.contains("."))
                 {
                     errorDialog.setMessage("Invalid email format.")

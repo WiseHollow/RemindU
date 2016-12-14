@@ -10,84 +10,110 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="net.johnbrooks.remindu.activities.RegisterActivity">
 
-    <Button
-        android:text="Register"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_Register"
-        android:layout_width="200dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="66dp" />
-
-    <EditText
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:id="@+id/editText_Email"
-        android:hint="Email Address"
-        android:layout_above="@+id/editText_Password"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:singleLine="true"
-        android:selectAllOnFocus="true" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/editText_FullName"
-        android:hint="Full Name"
-        android:layout_above="@+id/editText_Username"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:singleLine="true"
-        android:selectAllOnFocus="true" />
-
-    <TextView
-        android:text='To get started using RemindU, fill out the information below to create an account. If you already have an account, click "Already Registered" below.'
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/editText_Username"
-        android:hint="Username"
-        android:layout_above="@+id/editText_Email"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:singleLine="true"
-        android:selectAllOnFocus="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-    <TextView
-        android:text="Already Registered"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="37dp"
-        android:id="@+id/textView_AlreadyRegistered"
-        android:fontFamily="sans-serif" />
+            <TextView
+                android:text='To get started using RemindU, fill out the information below to create an account. If you already have an account, click "Already Registered" below.'
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="60dp"
+                android:layout_marginTop="20dp"
+                android:textAlignment="center" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/editText_Password"
-        android:hint="Password"
-        android:singleLine="true"
-        android:selectAllOnFocus="true"
-        android:layout_marginBottom="30dp"
-        android:layout_above="@+id/button_Register"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/editText_FullName"
+                android:hint="Full Name"
+                android:layout_above="@+id/editText_Username"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:singleLine="true"
+                android:selectAllOnFocus="true" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/editText_Username"
+                android:hint="Username"
+                android:layout_above="@+id/editText_Email"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:singleLine="true"
+                android:selectAllOnFocus="true" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:id="@+id/editText_Email"
+                android:hint="Email Address"
+                android:layout_above="@+id/editText_Password"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:singleLine="true"
+                android:selectAllOnFocus="true" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/editText_Password"
+                android:hint="Password"
+                android:singleLine="true"
+                android:selectAllOnFocus="true"
+                android:layout_above="@+id/button_Register"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/editText_Password_Confirm"
+                android:layout_marginBottom="15dp"
+                android:hint="Confirm Password" />
+
+            <Button
+                android:text="Register"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_Register"
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp" />
+
+            <TextView
+                android:text="Already Registered"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="37dp"
+                android:id="@+id/textView_AlreadyRegistered"
+                android:fontFamily="sans-serif"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </ScrollView>
+
 </RelativeLayout>
