@@ -240,13 +240,6 @@ public class UserProfile implements Parcelable
         //TODO: SEND REQUEST TO SERVER
     }
 
-    public void RemoveContact(ContactProfile profile)
-    {
-        GetContacts().remove(profile);
-
-        //TODO: SEND REQUEST TO SERVER
-    }
-
     public void RemoveContact(int _id)
     {
         for (int i = 0; i < GetContacts().size(); i++)

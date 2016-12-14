@@ -111,19 +111,29 @@ public class Reminder implements Comparable<Reminder>
                             if (!dateComplete.equalsIgnoreCase("null"))
                                 r.SetDateComplete(dateComplete);
                         }
-
-                        UserProfile.PROFILE.RefreshReminderLayout();
-                        UserProfile.PROFILE.SaveRemindersToFile(UserAreaActivity.GetActivity());
                     }
                     else
                     {
                         Log.d("ERROR", "Message: " + errorMessage);
                     }
 
-                    if (UserProfile.PROFILE != null && UserProfile.PROFILE.GetReminders() != null && !UserProfile.PROFILE.GetReminders().isEmpty())
+                    for (int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
+                    {
+                        Reminder r = UserProfile.PROFILE.GetReminders().get(i);
+                        if (r.Old == true && r.GetID() != 0)
+                        {
+                            UserProfile.PROFILE.GetReminders().remove(r);
+                            i--;
+                        }
+                    }
+
+                    UserProfile.PROFILE.RefreshReminderLayout();
+                    UserProfile.PROFILE.SaveRemindersToFile(UserAreaActivity.GetActivity());
+
+                    /*if (UserProfile.PROFILE != null && UserProfile.PROFILE.GetReminders() != null && !UserProfile.PROFILE.GetReminders().isEmpty())
                         for (Reminder r : UserProfile.PROFILE.GetReminders())
                             if (r.Old == true && r.GetID() != 0)
-                                UserProfile.PROFILE.DeleteReminder(r);
+                                UserProfile.PROFILE.DeleteReminder(r);*/
                 } catch (JSONException e)
                 {
                     e.printStackTrace();
