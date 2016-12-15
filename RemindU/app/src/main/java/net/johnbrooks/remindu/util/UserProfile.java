@@ -247,7 +247,7 @@ public class UserProfile implements Parcelable
             ContactProfile p = GetContacts().get(i);
             if (p.GetID() == _id)
             {
-                GetContacts().remove(Integer.valueOf(i));
+                GetContacts().remove(p);
                 i--;
             }
         }

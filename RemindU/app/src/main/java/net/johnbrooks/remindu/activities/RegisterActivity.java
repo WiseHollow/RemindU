@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -35,6 +36,16 @@ public class RegisterActivity extends AppCompatActivity
         final EditText etPasswordConfirm = (EditText) findViewById(R.id.editText_Password_Confirm);
 
         final Button bRegister = (Button) findViewById(R.id.button_Register);
+        final TextView tv_alreadyRegistered = (TextView) findViewById(R.id.textView_AlreadyRegistered);
+
+        tv_alreadyRegistered.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                finish();
+            }
+        });
 
         bRegister.setOnClickListener(new View.OnClickListener()
         {
