@@ -732,6 +732,8 @@ public class Reminder implements Comparable<Reminder>
             // Time is over.
             //
 
+            ShowNotification(true, "Reminder from " + GetFullName(), "Passed deadline.");
+
             final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
             dialog.setTitle("Reminder due; finalize state");
             dialog.setContentView(R.layout.dialog_reminder_finalize);
@@ -804,7 +806,7 @@ public class Reminder implements Comparable<Reminder>
             // 1 hours left
             //
 
-            ShowNotification(false, "Reminder from " + GetFullName(), "Due in 1 hour.");
+            ShowNotification(true, "Reminder from " + GetFullName(), "Due in 1 hour.");
         }
 
         return true;
