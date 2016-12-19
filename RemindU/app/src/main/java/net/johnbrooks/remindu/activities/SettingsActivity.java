@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.requests.UpdateSettingsRequest;
 
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(UserAreaActivity.GetActivity());
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putString(preference.getKey(), value.toString());
+
+                UpdateSettingsRequest.SendRequest(null);
             }
 
             /*String stringValue = value.toString();
