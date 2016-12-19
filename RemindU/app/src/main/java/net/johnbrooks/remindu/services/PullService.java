@@ -25,13 +25,12 @@ public class PullService extends Service
     public void onCreate()
     {
         super.onCreate();
-        Log.d("TAG", "Service created.");
+        Log.d("INFO", "Background service created.");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Log.d("TAG", "Service started.");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -39,7 +38,7 @@ public class PullService extends Service
     public void onStart(Intent intent, int startId)
     {
         super.onStart(intent, startId);
-        Log.d("TAG", "Service started.");
+        Log.d("INFO", "Background service started.");
         if (!LoginActivity.AttemptLoadSavedProfile(this))
         {
             Log.d("WARNING", "Could not load reminders from file.");
