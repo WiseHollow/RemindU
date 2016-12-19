@@ -67,82 +67,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Reminder implements Comparable<Reminder>
 {
-    public static Response.Listener<String> GetReceivedResponseListener()
-    {
-        return new Response.Listener<String>()
-        {
-            @Override
-            public void onResponse(String response)
-            {
-                try
-                {
-                    for (Reminder r : UserProfile.PROFILE.GetReminders())
-                        r.Old = true;
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    String errorMessage = jsonResponse.getString("message");
 
-                    Log.d("INFO", "Received response: " + success);
-
-                    if (success)
-                    {
-                        int size = jsonResponse.getInt("size");
-
-                        for(int i = 0; i < size; i++)
-                        {
-                            int id = jsonResponse.getJSONObject(String.valueOf(i)).getInt("id");
-
-                            String message = jsonResponse.getJSONObject(String.valueOf(i)).getString("message");
-                            int state = jsonResponse.getJSONObject(String.valueOf(i)).getInt("state");
-                            int important = jsonResponse.getJSONObject(String.valueOf(i)).getInt("important");
-                            String dateString = jsonResponse.getJSONObject(String.valueOf(i)).getString("date");
-                            DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-                            Date date = formatter.parse(dateString);
-
-                            int from = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_from");
-                            int to = jsonResponse.getJSONObject(String.valueOf(i)).getInt("user_id_to");
-
-                            String dateInProgress = jsonResponse.getJSONObject(String.valueOf(i)).getString("date_in_progress");
-                            String dateComplete = jsonResponse.getJSONObject(String.valueOf(i)).getString("date_complete");
-
-                            Reminder r = Reminder.LoadReminder(false, id, from, to, message, important > 0 ? true : false, date, ReminderState.values()[state]);
-                            if (!dateInProgress.equalsIgnoreCase("null"))
-                                r.SetDateInProgress(dateInProgress);
-                            if (!dateComplete.equalsIgnoreCase("null"))
-                                r.SetDateComplete(dateComplete);
-                        }
-                    }
-                    else
-                    {
-                        Log.d("ERROR", "Message: " + errorMessage);
-                    }
-
-                    for (int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
-                    {
-                        Reminder r = UserProfile.PROFILE.GetReminders().get(i);
-                        if (r.Old == true && r.GetID() != 0)
-                        {
-                            UserProfile.PROFILE.GetReminders().remove(r);
-                            i--;
-                        }
-                    }
-
-                    UserProfile.PROFILE.RefreshReminderLayout();
-                    UserProfile.PROFILE.SaveRemindersToFile(UserAreaActivity.GetActivity());
-
-                    /*if (UserProfile.PROFILE != null && UserProfile.PROFILE.GetReminders() != null && !UserProfile.PROFILE.GetReminders().isEmpty())
-                        for (Reminder r : UserProfile.PROFILE.GetReminders())
-                            if (r.Old == true && r.GetID() != 0)
-                                UserProfile.PROFILE.DeleteReminder(r);*/
-                } catch (JSONException e)
-                {
-                    e.printStackTrace();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-    }
 
     /** Upload the request to the user's online records. */
     public static Reminder CreateReminder(int user_id_to, String message, boolean important, Date date, Activity activity)
@@ -151,9 +76,10 @@ public class Reminder implements Comparable<Reminder>
         reminder.SetImportant(important);
         //UserProfile.PROFILE.AddReminder(reminder);
 
-        SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), message, important, date, reminder.GetSendResponseListener(activity));
+        //SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), message, important, date, reminder.GetSendResponseListener(activity));
+        SendReminderRequest.SendRequest(activity, reminder);
         RequestQueue queue = Volley.newRequestQueue(activity);
-        queue.add(request);
+        //queue.add(request);
 
         return reminder;
     }
@@ -259,7 +185,9 @@ public class Reminder implements Comparable<Reminder>
     public final String GetDateInProgress() { return DateInProgress; }
     public final String GetDateComplete() { return DateComplete; }
     public final boolean IsUpToDate() { return UpToDate; }
+    public final boolean IsOld() { return Old; }
 
+    public void SetOld(boolean value) { Old = value; }
     public void SetID(final int id) { ID = id; }
     public void SetImportant(final boolean value) { Important = value; }
     public void SetState(ReminderState state) { State = state; }
@@ -812,130 +740,12 @@ public class Reminder implements Comparable<Reminder>
         return true;
     }
 
-    private Response.Listener<String> GetSendResponseListener(final Activity activity)
-    {
-        return new Response.Listener<String>()
-        {
-            @Override
-            public void onResponse(String response)
-            {
-                try
-                {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    String message = jsonResponse.getString("message");
-
-                    Log.d("INFO", "Received response: " + success);
-
-                    if (success)
-                    {
-                        //TODO: get reminder data from send, so we can add it locally.
-
-                        JSONObject reminderJsonResponse = jsonResponse.getJSONObject("reminder");
-                        int id = Integer.parseInt(reminderJsonResponse.getString("id"));
-                        int from = Integer.parseInt(reminderJsonResponse.getString("id_from"));
-                        int to = Integer.parseInt(reminderJsonResponse.getString("id_to"));
-                        int important = Integer.parseInt(reminderJsonResponse.getString("important"));
-                        String rMessage = reminderJsonResponse.getString("message");
-                        String dateString = reminderJsonResponse.getString("date");
-                        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-                        Date date;
-                        try
-                        {
-                            date = formatter.parse(dateString);
-                            Reminder.LoadReminder(true, id, from, to, rMessage, (important > 0) ? true : false, date, ReminderState.NOT_STARTED);
-                        } catch (ParseException e)
-                        {
-                            e.printStackTrace();
-                        }
-
-                        Log.d("INFO", "Reminder ID: " + id);
-
-                        PullScheduler.Call();
-                        if (activity != null)
-                            activity.finish();
-                    }
-                    else
-                    {
-                        Log.d("ERROR", "Message: " + message);
-                    }
-                } catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        };
-    }
-
-    public Response.Listener<String> GetDeleteResponseListener(final Activity activity)
-    {
-        return new Response.Listener<String>()
-        {
-            @Override
-            public void onResponse(String response)
-            {
-                try
-                {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    String message = jsonResponse.getString("message");
-
-                    Log.d("INFO", "Received response: " + success);
-
-                    if (success)
-                    {
-                        UserProfile.PROFILE.Pull(activity);
-                    }
-                    else
-                    {
-                        Log.d("ERROR", "Message: " + message);
-                    }
-                } catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        };
-    }
-
-    public Response.Listener<String> GetUpdateResponseListener(final Activity activity)
-    {
-        return new Response.Listener<String>()
-        {
-            @Override
-            public void onResponse(String response)
-            {
-                try
-                {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    String message = jsonResponse.getString("message");
-
-                    Log.d("INFO", "Received response: " + success);
-
-                    if (success)
-                    {
-                        UserProfile.PROFILE.Pull(activity);
-                    }
-                    else
-                    {
-                        Log.d("ERROR", "Message: " + message);
-                    }
-                } catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        };
-    }
-
     public void ShowNotification(boolean vibrate, String title, String message)
     {
         if (UserProfile.PROFILE.IsIgnoring(GetID()))
             return;
 
         PendingIntent pi = PendingIntent.getActivity(UserAreaActivity.GetActivity(), 0, new Intent(UserAreaActivity.GetActivity().getBaseContext(), UserAreaActivity.class), 0);
-        //Resources r = UserAreaActivity.GetActivity().getResources();
         Notification notification = new NotificationCompat.Builder(UserAreaActivity.GetActivity())
                 .setTicker(title)
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
@@ -1018,22 +828,21 @@ public class Reminder implements Comparable<Reminder>
         };
         return array;
     }
-}
-
-enum ReminderState
-{
-    NOT_STARTED, IN_PROGRESS, COMPLETE;
-
-    @Override
-    public String toString()
+    public enum ReminderState
     {
-        if (ordinal() == 0)
-            return "Not Started";
-        else if (ordinal() == 1)
-            return "In Progress";
-        else if (ordinal() == 2)
-            return "Completed";
-        else
-            return super.toString();
+        NOT_STARTED, IN_PROGRESS, COMPLETE;
+
+        @Override
+        public String toString()
+        {
+            if (ordinal() == 0)
+                return "Not Started";
+            else if (ordinal() == 1)
+                return "In Progress";
+            else if (ordinal() == 2)
+                return "Completed";
+            else
+                return super.toString();
+        }
     }
 }

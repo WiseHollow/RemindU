@@ -124,11 +124,8 @@ public class ContactProfile
 
                 //TODO: Pull data from server
                 Log.d("INFO", "Requesting that contact id=" + GetID() + " be removed.");
-                Response.Listener<String> responseListener = GetDeleteResponseListener(activity, GetID());
 
-                DeleteContactRequest request = new DeleteContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), String.valueOf(GetID()), responseListener);
-                RequestQueue queue = Volley.newRequestQueue(activity);
-                queue.add(request);
+                DeleteContactRequest.SendRequest(activity, GetID());
 
                 //TODO: Refresh contents...
             }
@@ -142,42 +139,5 @@ public class ContactProfile
     public String toString()
     {
         return GetID() + "%" + GetEmail() + "%" + GetUsername() + "%" + GetFullName() + "%" + GetContacts();
-    }
-    private Response.Listener<String> GetDeleteResponseListener(final ManageContactsActivity activity, final int target)
-    {
-        Response.Listener<String> responseListener = new Response.Listener<String>()
-        {
-            @Override
-            public void onResponse(String response)
-            {
-                try
-                {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-
-                    Log.d("INFO", "Received response: " + success);
-
-                    if (success)
-                    {
-                        UserProfile.PROFILE.RemoveContact(target);
-                        PullScheduler.Call();
-                        activity.UpdateContactsList();
-                    }
-                    else
-                    {
-                        AlertDialog.Builder errorDialog = new AlertDialog.Builder(activity);
-                        errorDialog.setMessage("Server not reached. Error!")
-                                .setNegativeButton("Close", null)
-                                .create()
-                                .show();
-                    }
-                } catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        return responseListener;
     }
 }

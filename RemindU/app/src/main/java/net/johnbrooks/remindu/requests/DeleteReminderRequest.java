@@ -1,7 +1,19 @@
 package net.johnbrooks.remindu.requests;
 
+import android.app.Activity;
+import android.util.Log;
+
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.util.Reminder;
+import net.johnbrooks.remindu.util.UserProfile;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,5 +41,45 @@ public class DeleteReminderRequest extends StringRequest
     public Map<String, String> getParams()
     {
         return params;
+    }
+
+    private static Response.Listener<String> GetDeleteResponseListener(final Activity activity)
+    {
+        return new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                try
+                {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    Log.d("INFO", "Received response: " + success);
+
+                    if (success)
+                    {
+                        UserProfile.PROFILE.Pull(activity);
+                    }
+                    else
+                    {
+                        Log.d("ERROR", "Message: " + message);
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    public static void SendRequest(Reminder r)
+    {
+        Response.Listener<String> responseListener = GetDeleteResponseListener(UserAreaActivity.GetActivity());
+
+        DeleteReminderRequest request = new DeleteReminderRequest(UserProfile.PROFILE.GetUserID(), UserProfile.PROFILE.GetPassword(), r.GetID(), responseListener);
+        RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.GetActivity());
+        queue.add(request);
     }
 }

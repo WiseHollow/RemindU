@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.AddContactRequest;
+import net.johnbrooks.remindu.requests.DeleteContactRequest;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateManageContactsScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
@@ -32,7 +33,8 @@ import org.json.JSONObject;
 public class ManageContactsActivity extends AppCompatActivity
 {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_contacts);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -68,12 +70,8 @@ public class ManageContactsActivity extends AppCompatActivity
                         String email = et_Email.getText().toString();
 
                         Log.d("INFO", "Requesting that contact email=" + email + " be added.");
-                        Response.Listener<String> responseListener = GetResponseListener(email);
 
-                        // Send request to server for contact adding.
-                        AddContactRequest request = new AddContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), email, responseListener);
-                        RequestQueue queue = Volley.newRequestQueue(ManageContactsActivity.this);
-                        queue.add(request);
+                        AddContactRequest.SendRequest(ManageContactsActivity.this, email);
 
                         dialog.cancel();
                     }
@@ -113,79 +111,5 @@ public class ManageContactsActivity extends AppCompatActivity
         }
     }
 
-    private Response.Listener<String> GetResponseListener(final int target)
-{
-    Response.Listener<String> responseListener = new Response.Listener<String>()
-    {
-        @Override
-        public void onResponse(String response)
-        {
-            try
-            {
-                JSONObject jsonResponse = new JSONObject(response);
-                boolean success = jsonResponse.getBoolean("success");
 
-                Log.d("INFO", "Received response: " + success);
-
-                if (success)
-                {
-                    UserProfile.PROFILE.RemoveContact(target);
-                    PullScheduler.Call();
-                    UpdateContactsList();
-                }
-                else
-                {
-                    AlertDialog.Builder errorDialog = new AlertDialog.Builder(ManageContactsActivity.this);
-                    errorDialog.setMessage("Server not reached. Error!")
-                            .setNegativeButton("Close", null)
-                            .create()
-                            .show();
-                }
-            } catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    return responseListener;
-}
-
-    private Response.Listener<String> GetResponseListener(final String target)
-    {
-        Response.Listener<String> responseListener = new Response.Listener<String>()
-        {
-            @Override
-            public void onResponse(String response)
-            {
-                try
-                {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-
-                    Log.d("INFO", "Received response: " + success);
-
-                    if (success)
-                    {
-                        Snackbar.make(findViewById(R.id.content_manage_contacts), "Added user of email: " + target, Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-
-                        UserProfile.PROFILE.AddContact(new ContactProfile(-1, target));
-                        UpdateContactsList();
-                        PullScheduler.Call();
-                    }
-                    else
-                    {
-                        Snackbar.make(findViewById(R.id.content_manage_contacts), "Email is not registered, or are already added.", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
-                } catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        return responseListener;
-    }
 }

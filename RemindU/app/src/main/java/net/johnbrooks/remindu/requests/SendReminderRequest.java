@@ -1,9 +1,22 @@
 package net.johnbrooks.remindu.requests;
 
+import android.app.Activity;
+import android.util.Log;
+
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.util.Reminder;
+import net.johnbrooks.remindu.util.UserProfile;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,5 +50,67 @@ public class SendReminderRequest extends StringRequest
     public Map<String, String> getParams()
     {
         return params;
+    }
+
+    private static Response.Listener<String> GetSendResponseListener(final Activity activity)
+    {
+        return new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                try
+                {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    Log.d("INFO", "Received response: " + success);
+
+                    if (success)
+                    {
+                        //TODO: get reminder data from send, so we can add it locally.
+
+                        JSONObject reminderJsonResponse = jsonResponse.getJSONObject("reminder");
+                        int id = Integer.parseInt(reminderJsonResponse.getString("id"));
+                        int from = Integer.parseInt(reminderJsonResponse.getString("id_from"));
+                        int to = Integer.parseInt(reminderJsonResponse.getString("id_to"));
+                        int important = Integer.parseInt(reminderJsonResponse.getString("important"));
+                        String rMessage = reminderJsonResponse.getString("message");
+                        String dateString = reminderJsonResponse.getString("date");
+                        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                        Date date;
+                        try
+                        {
+                            date = formatter.parse(dateString);
+                            Reminder.LoadReminder(true, id, from, to, rMessage, (important > 0) ? true : false, date, Reminder.ReminderState.NOT_STARTED);
+                        } catch (ParseException e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                        Log.d("INFO", "Reminder ID: " + id);
+
+                        PullScheduler.Call();
+                        if (activity != null)
+                            activity.finish();
+                    }
+                    else
+                    {
+                        Log.d("ERROR", "Message: " + message);
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    public static void SendRequest(final Activity activity, Reminder reminder)
+    {
+        SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), reminder.GetTo(), UserProfile.PROFILE.GetPassword(), reminder.GetMessage(), reminder.GetImportant(), reminder.GetDate(), GetSendResponseListener(activity));
+        RequestQueue queue = Volley.newRequestQueue(activity);
+        queue.add(request);
     }
 }

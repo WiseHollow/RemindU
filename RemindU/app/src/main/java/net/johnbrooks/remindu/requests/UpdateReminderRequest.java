@@ -1,10 +1,19 @@
 package net.johnbrooks.remindu.requests;
 
+import android.app.Activity;
+import android.util.Log;
+
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
+import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,5 +50,44 @@ public class UpdateReminderRequest extends StringRequest
     public Map<String, String> getParams()
     {
         return params;
+    }
+
+    private static Response.Listener<String> GetUpdateResponseListener(final Activity activity)
+    {
+        return new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                try
+                {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    Log.d("INFO", "Received response: " + success);
+
+                    if (success)
+                    {
+                        UserProfile.PROFILE.Pull(activity);
+                    }
+                    else
+                    {
+                        Log.d("ERROR", "Message: " + message);
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    public static void SendRequest(final Reminder r)
+    {
+        Response.Listener<String> responseListener = GetUpdateResponseListener(UserAreaActivity.GetActivity());
+        UpdateReminderRequest request = new UpdateReminderRequest(r, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.GetActivity());
+        queue.add(request);
     }
 }

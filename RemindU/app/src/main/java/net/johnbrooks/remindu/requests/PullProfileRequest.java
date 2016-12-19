@@ -1,18 +1,17 @@
 package net.johnbrooks.remindu.requests;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import net.johnbrooks.remindu.activities.LoginActivity;
+import net.johnbrooks.remindu.activities.ActivateAccountActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.schedulers.ShowCoinGainScheduler;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -27,15 +26,15 @@ import java.util.Map;
  * Created by John on 11/23/2016.
  */
 
-public class LoginRequest extends StringRequest
+public class PullProfileRequest extends StringRequest
 {
     private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/login.php";
     private Map<String, String> params;
 
-    public LoginRequest(String email, String password, Response.Listener<String> listener)
+    public PullProfileRequest(String email, String password, Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
-        super(Request.Method.POST, REQUEST_URL, listener, null);
+        super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -47,8 +46,9 @@ public class LoginRequest extends StringRequest
         return params;
     }
 
-    private static Response.Listener<String> GetLoginResponseListener(final LoginActivity activity, final String password)
+    private static Response.Listener<String> GetPullResponseListener()
     {
+
         return new Response.Listener<String>()
         {
             @Override
@@ -61,7 +61,6 @@ public class LoginRequest extends StringRequest
 
                     if (success)
                     {
-                        // If we successfully login, lets get all information passed from server.
                         final int id = jsonResponse.getInt("userID");
                         final int active = jsonResponse.getInt("active");
 
@@ -73,68 +72,45 @@ public class LoginRequest extends StringRequest
 
                         final String contacts = jsonResponse.getString("contacts");
 
-                        // Using pulled information, we can create a profile for the user.
+                        if (UserProfile.PROFILE != null && coins != UserProfile.PROFILE.GetCoins())
+                        {
+                            ShowCoinGainScheduler.Initialize();
+                        }
 
-                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins);
-                        UserProfile.PROFILE.LoadReminderIgnoresFromFile(activity);
-
-                        // Next, lets make sense of the contacts string given by the server.
-                        // It will pass either a AcceptedContactProfile info, or just limited information used to make a ContactProfile.
-
+                        if (UserProfile.PROFILE == null)
+                            UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, UserProfile.PROFILE.GetPassword(), coins);
+                        else
+                            UserProfile.PROFILE.Update(id, active, fullName, username, email, UserProfile.PROFILE.GetPassword(), coins);
+                        UserProfile.PROFILE.GetContacts().clear();
                         for (String contact : contacts.split("&"))
                         {
                             if (contact == "" || contact == " ")
                                 continue;
                             String[] key = contact.split("%");
-                            if (key[0].equalsIgnoreCase("0")) // 0 = The contact doesn't have us added.
+                            if (key[0].equalsIgnoreCase("0"))
                             {
                                 UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[1]), key[2]));
                             }
-                            else if (key[0].equalsIgnoreCase("1")) // 1 = mutually contacts.
+                            else if (key[0].equalsIgnoreCase("1"))
                             {
                                 if (key.length >= 6)
                                     UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], key[5]));
                                 else if (key.length == 5)
                                     UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], ""));
-
                             }
 
 
                         }
 
-                        //
-                        // Save login data for instant login next time
-                        //
-
-                        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("email", email);
-                        editor.putString("password", password);
-                        editor.putString("fullname", fullName);
-                        editor.putString("username", username);
-                        editor.putInt("id", id);
-                        editor.putBoolean("active", (active > 0) ? true : false);
-                        editor.putInt("coins", coins);
-                        editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
-
-                        editor.commit();
-
-                        //
-                        // Let's now to to the User Area now that we have logged in.
-                        //
-
-                        Intent intent = new Intent(activity, UserAreaActivity.class);
-
-                        activity.startActivity(intent);
-                        activity.finish();
+                        if (active != 1 && !ActivateAccountActivity.IsOpen())
+                        {
+                            Intent activateIntent = new Intent(UserAreaActivity.GetActivity(), ActivateAccountActivity.class);
+                            UserAreaActivity.GetActivity().startActivity(activateIntent);
+                        }
                     }
                     else
                     {
-                        AlertDialog.Builder errorDialog = new AlertDialog.Builder(activity);
-                        errorDialog.setMessage("Login credential error.")
-                                .setNegativeButton("Retry", null)
-                                .create()
-                                .show();
+                        Log.d("SEVERE", "Profile Pull error.");
                     }
                 } catch (JSONException e)
                 {
@@ -144,11 +120,11 @@ public class LoginRequest extends StringRequest
         };
     }
 
-    public static void SendRequest(final LoginActivity activity, final String email, final String password)
+    public static void SendRequest(final Activity activity)
     {
-        Response.Listener<String> responseListener = GetLoginResponseListener(activity, password);
+        Response.Listener<String> profileResponseListener = GetPullResponseListener();
 
-        LoginRequest request = new LoginRequest(email, password, responseListener);
+        LoginRequest request = new LoginRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), profileResponseListener);
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
     }

@@ -70,11 +70,7 @@ public class LoginActivity extends AppCompatActivity
                 final String email = etEmail.getText().toString();
                 final String password = etPassword.getText().toString();
 
-                Response.Listener<String> responseListener = GetLoginResponseListener(email, password);
-
-                LoginRequest request = new LoginRequest(email, password, responseListener);
-                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-                queue.add(request);
+                LoginRequest.SendRequest(LoginActivity.this, email, password);
             }
         });
     }
@@ -127,11 +123,7 @@ public class LoginActivity extends AppCompatActivity
 
         if (!email.equalsIgnoreCase("null") && !password.equalsIgnoreCase("null"))
         {
-            Response.Listener<String> responseListener = GetLoginResponseListener(email, password);
-
-            LoginRequest request = new LoginRequest(email, password, responseListener);
-            RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-            queue.add(request);
+            LoginRequest.SendRequest(LoginActivity.this, email, password);
         }
     }
 
@@ -172,106 +164,4 @@ public class LoginActivity extends AppCompatActivity
 
         return true;
     }
-
-    @Deprecated
-    private Response.Listener<String> GetLoginResponseListener(final String email, final String password)
-    {
-        Response.Listener<String> responseListener = new Response.Listener<String>()
-        {
-            @Override
-            public void onResponse(String response)
-            {
-                try
-                {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-
-                    if (success)
-                    {
-                        // If we successfully login, lets get all information passed from server.
-                        final int id = jsonResponse.getInt("userID");
-                        final int active = jsonResponse.getInt("active");
-
-                        final String fullName = jsonResponse.getString("fullname");
-                        final String email = jsonResponse.getString("email");
-                        final String username = jsonResponse.getString("username");
-
-                        final int coins = jsonResponse.getInt("coins");
-
-                        final String contacts = jsonResponse.getString("contacts");
-
-                        // Using pulled information, we can create a profile for the user.
-
-                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins);
-                        UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
-
-                        // Next, lets make sense of the contacts string given by the server.
-                        // It will pass either a AcceptedContactProfile info, or just limited information used to make a ContactProfile.
-
-                        for (String contact : contacts.split("&"))
-                        {
-                            if (contact == "" || contact == " ")
-                                continue;
-                            String[] key = contact.split("%");
-                            if (key[0].equalsIgnoreCase("0")) // 0 = The contact doesn't have us added.
-                            {
-                                UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[1]), key[2]));
-                            }
-                            else if (key[0].equalsIgnoreCase("1")) // 1 = mutually contacts.
-                            {
-                                if (key.length >= 6)
-                                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], key[5]));
-                                else if (key.length == 5)
-                                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], ""));
-
-                            }
-
-
-                        }
-
-                        //
-                        // Save login data for instant login next time
-                        //
-
-                        SharedPreferences sharedPref = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("email", email);
-                        editor.putString("password", password);
-                        editor.putString("fullname", fullName);
-                        editor.putString("username", username);
-                        editor.putInt("id", id);
-                        editor.putBoolean("active", (active > 0) ? true : false);
-                        editor.putInt("coins", coins);
-                        editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
-
-                        editor.commit();
-
-                        //
-                        // Let's now to to the User Area now that we have logged in.
-                        //
-
-                        Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
-
-                        LoginActivity.this.startActivity(intent);
-                        finish();
-                    }
-                    else
-                    {
-                        AlertDialog.Builder errorDialog = new AlertDialog.Builder(LoginActivity.this);
-                        errorDialog.setMessage("Login credential error.")
-                                .setNegativeButton("Retry", null)
-                                .create()
-                                .show();
-                    }
-                } catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        return responseListener;
-    }
-
-
 }
