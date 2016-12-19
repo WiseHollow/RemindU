@@ -71,6 +71,7 @@ public class LoginActivity extends AppCompatActivity
     //
     // Checks for saved login data, for instant login. Run this when the activity is created.
     //
+
     private void AttemptAutoLogin()
     {
         SharedPreferences sharedPref = LoginActivity.this.getSharedPreferences("profile", Context.MODE_PRIVATE);
@@ -118,6 +119,46 @@ public class LoginActivity extends AppCompatActivity
         {
             LoginRequest.SendRequest(LoginActivity.this, email, password);
         }
+    }
+
+    public static boolean AttemptLoadSavedProfile(Service service)
+    {
+        SharedPreferences sharedPref = service.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        final String email = sharedPref.getString("email", "null");
+        final String password = sharedPref.getString("password", "null");
+        final String fullname = sharedPref.getString("fullname", "null");
+        final String username = sharedPref.getString("username", "null");
+        final int id = sharedPref.getInt("id", 0);
+        final boolean active = sharedPref.getBoolean("active", false);
+        final int coins = sharedPref.getInt("coins", 0);
+        final Set<String> contactsString = sharedPref.getStringSet("contacts", null);
+
+
+        if (email.equalsIgnoreCase("null") || password.equalsIgnoreCase("null") || fullname.equalsIgnoreCase("null") ||
+                username.equalsIgnoreCase("null") || id == 0 || email.equalsIgnoreCase("null"))
+            return false;
+
+        UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins);
+        UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
+
+        for(String s : contactsString)
+        {
+            String[] element = s.split("%");
+            int cID = Integer.parseInt(element[0]);
+            String cEmail = element[1];
+            String cUsername = element[2];
+            String cFullName = element[3];
+            String cContacts = element[4];
+
+            if (cFullName.equalsIgnoreCase("null"))
+                UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
+            else
+                UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts));
+        }
+
+        UserProfile.PROFILE.LoadRemindersFromFile(service);
+
+        return true;
     }
 
     private boolean AttemptLoadSavedProfile()

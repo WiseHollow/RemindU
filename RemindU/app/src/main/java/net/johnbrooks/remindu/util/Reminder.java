@@ -638,12 +638,10 @@ public class Reminder implements Comparable<Reminder>
 
         return eta;
     }
-    public boolean RemindBackground(Service service)
+    public boolean ProcessReminderNotifications(Service service)
     {
-        Log.d("DEBUG", "processing background tasks to check reminders...");
         if (GetState() == ReminderState.COMPLETE)
             return false;
-        Log.d("DEBUG", "checking...");
         //
         // TODO: Make times to notify customizable on the settings of the app.
         //
@@ -676,7 +674,7 @@ public class Reminder implements Comparable<Reminder>
 
         return true;
     }
-    public boolean Remind()
+    public boolean ProcessReminderDialogs()
     {
         if (UserProfile.PROFILE.GetUserID() != GetTo() || GetState() == ReminderState.COMPLETE)
             return false;

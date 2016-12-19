@@ -109,11 +109,6 @@ public class GetRemindersRequest extends StringRequest
 
                     UserProfile.PROFILE.RefreshReminderLayout();
                     UserProfile.PROFILE.SaveRemindersToFile(UserAreaActivity.GetActivity());
-
-                    /*if (UserProfile.PROFILE != null && UserProfile.PROFILE.GetReminders() != null && !UserProfile.PROFILE.GetReminders().isEmpty())
-                        for (Reminder r : UserProfile.PROFILE.GetReminders())
-                            if (r.Old == true && r.GetID() != 0)
-                                UserProfile.PROFILE.DeleteReminder(r);*/
                 } catch (JSONException e)
                 {
                     e.printStackTrace();

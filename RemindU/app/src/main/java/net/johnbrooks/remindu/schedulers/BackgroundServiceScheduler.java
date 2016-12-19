@@ -4,7 +4,6 @@ import android.app.Service;
 import android.os.Handler;
 import android.util.Log;
 
-import net.johnbrooks.remindu.activities.LoginActivity;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -69,8 +68,7 @@ public class BackgroundServiceScheduler
                 return;
             for (Reminder r : UserProfile.PROFILE.GetReminders())
             {
-                Log.d("TEST", r.GetMessage());
-                r.RemindBackground(service);
+                r.ProcessReminderNotifications(service);
             }
         }
     }

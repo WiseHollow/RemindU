@@ -6,8 +6,9 @@ import android.os.IBinder;
 import android.util.Log;
 
 import net.johnbrooks.remindu.activities.LoginActivity;
-import net.johnbrooks.remindu.requests.LoginRequest;
 import net.johnbrooks.remindu.schedulers.BackgroundServiceScheduler;
+import net.johnbrooks.remindu.util.Reminder;
+import net.johnbrooks.remindu.util.UserProfile;
 
 /**
  * Created by John on 12/19/2016.
@@ -39,7 +40,10 @@ public class PullService extends Service
     {
         super.onStart(intent, startId);
         Log.d("TAG", "Service started.");
-        //TODO: Pull local data
+        if (!LoginActivity.AttemptLoadSavedProfile(this))
+        {
+            Log.d("WARNING", "Could not load reminders from file.");
+        }
         BackgroundServiceScheduler.Initialize(this);
     }
     @Override

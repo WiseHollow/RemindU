@@ -57,7 +57,7 @@ public class ProcessRemindersScheduler
         {
             for (Reminder r : UserProfile.PROFILE.GetReminders())
             {
-                r.Remind();
+                r.ProcessReminderDialogs();
             }
         }
     }
