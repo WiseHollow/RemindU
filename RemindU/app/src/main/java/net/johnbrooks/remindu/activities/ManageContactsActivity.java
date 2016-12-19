@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -15,20 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.Volley;
-
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.AddContactRequest;
-import net.johnbrooks.remindu.requests.DeleteContactRequest;
-import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateManageContactsScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.UserProfile;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class ManageContactsActivity extends AppCompatActivity
 {

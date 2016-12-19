@@ -3,7 +3,6 @@ package net.johnbrooks.remindu.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -16,17 +15,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.Volley;
-
 import net.johnbrooks.remindu.activities.ManageContactsActivity;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.DeleteContactRequest;
-import net.johnbrooks.remindu.schedulers.PullScheduler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by John on 11/29/2016.

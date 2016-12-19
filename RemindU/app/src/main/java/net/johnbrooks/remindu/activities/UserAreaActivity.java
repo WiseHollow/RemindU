@@ -19,7 +19,6 @@ import com.baoyz.widget.PullRefreshLayout;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
-import net.johnbrooks.remindu.schedulers.ShowCoinGainScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;

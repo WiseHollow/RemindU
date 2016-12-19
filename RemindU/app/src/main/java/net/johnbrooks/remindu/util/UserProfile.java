@@ -1,28 +1,18 @@
 package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.Volley;
-
-import net.johnbrooks.remindu.activities.ActivateAccountActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
-import net.johnbrooks.remindu.requests.LoginRequest;
 import net.johnbrooks.remindu.requests.PullProfileRequest;
 import net.johnbrooks.remindu.requests.UpdateReminderRequest;
-import net.johnbrooks.remindu.schedulers.ShowCoinGainScheduler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
