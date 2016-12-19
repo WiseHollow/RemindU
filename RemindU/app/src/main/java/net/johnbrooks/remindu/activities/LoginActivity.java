@@ -1,5 +1,6 @@
 package net.johnbrooks.remindu.activities;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -72,7 +73,7 @@ public class LoginActivity extends AppCompatActivity
     //
     private void AttemptAutoLogin()
     {
-        SharedPreferences sharedPref = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = LoginActivity.this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         if (getIntent().getBooleanExtra("signOut", false) == true)
         {
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -121,7 +122,7 @@ public class LoginActivity extends AppCompatActivity
 
     private boolean AttemptLoadSavedProfile()
     {
-        SharedPreferences sharedPref = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = LoginActivity.this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         final String email = sharedPref.getString("email", "null");
         final String password = sharedPref.getString("password", "null");
         final String fullname = sharedPref.getString("fullname", "null");

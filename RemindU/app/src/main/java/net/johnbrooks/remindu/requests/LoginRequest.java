@@ -1,5 +1,6 @@
 package net.johnbrooks.remindu.requests;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.LoginActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.schedulers.BackgroundServiceScheduler;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -106,7 +108,7 @@ public class LoginRequest extends StringRequest
                         // Save login data for instant login next time
                         //
 
-                        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref = activity.getSharedPreferences("profile", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("email", email);
                         editor.putString("password", password);
@@ -135,6 +137,86 @@ public class LoginRequest extends StringRequest
                                 .setNegativeButton("Retry", null)
                                 .create()
                                 .show();
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    private static Response.Listener<String> GetLoginResponseListener(final Service service, final String password)
+    {
+        return new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                try
+                {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+
+                    if (success)
+                    {
+                        // If we successfully login, lets get all information passed from server.
+                        final int id = jsonResponse.getInt("userID");
+                        final int active = jsonResponse.getInt("active");
+
+                        final String fullName = jsonResponse.getString("fullname");
+                        final String email = jsonResponse.getString("email");
+                        final String username = jsonResponse.getString("username");
+
+                        final int coins = jsonResponse.getInt("coins");
+
+                        final String contacts = jsonResponse.getString("contacts");
+
+                        // Using pulled information, we can create a profile for the user.
+
+                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins);
+                        UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
+
+                        // Next, lets make sense of the contacts string given by the server.
+                        // It will pass either a AcceptedContactProfile info, or just limited information used to make a ContactProfile.
+
+                        for (String contact : contacts.split("&"))
+                        {
+                            if (contact == "" || contact == " ")
+                                continue;
+                            String[] key = contact.split("%");
+                            if (key[0].equalsIgnoreCase("0")) // 0 = The contact doesn't have us added.
+                            {
+                                UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[1]), key[2]));
+                            }
+                            else if (key[0].equalsIgnoreCase("1")) // 1 = mutually contacts.
+                            {
+                                if (key.length >= 6)
+                                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], key[5]));
+                                else if (key.length == 5)
+                                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(Integer.parseInt(key[1]), key[2], key[3], key[4], ""));
+
+                            }
+
+
+                        }
+
+                        //
+                        // Save login data for instant login next time
+                        //
+
+                        SharedPreferences sharedPref = service.getSharedPreferences("profile", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("email", email);
+                        editor.putString("password", password);
+                        editor.putString("fullname", fullName);
+                        editor.putString("username", username);
+                        editor.putInt("id", id);
+                        editor.putBoolean("active", (active > 0) ? true : false);
+                        editor.putInt("coins", coins);
+                        editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
+
+                        editor.commit();
                     }
                 } catch (JSONException e)
                 {

@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -38,6 +40,15 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
+        <service android:name="net.johnbrooks.remindu.services.PullService"
+            android:label="@string/app_name"
+            >
+        </service>
+        <receiver android:name="net.johnbrooks.remindu.services.MyReceiver">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+        </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

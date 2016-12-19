@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
+import android.app.Service;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -39,6 +40,13 @@ import java.util.Set;
 
 public class UserProfile implements Parcelable
 {
+    public static void Pull(Service service)
+    {
+        Log.d("INFO", "Pulling profile from server...");
+        PullProfileRequest.SendRequest(service);
+        GetRemindersRequest.SendRequest(service);
+    }
+
     public static UserProfile PROFILE = null;
 
     private int UserID;
@@ -130,6 +138,9 @@ public class UserProfile implements Parcelable
 
     public void RefreshReminderLayout()
     {
+        if (UserAreaActivity.GetActivity() == null)
+            return;
+
         ResetLinearLayout(UserAreaActivity.GetActivity().reminderLayout);
 
         if (GetReminders().isEmpty() && UserAreaActivity.GetActivity() != null)
@@ -305,8 +316,56 @@ public class UserProfile implements Parcelable
         }
     }
 
+    public void LoadRemindersFromFile(Service service)
+    {
+        final String filename = "reminders.yml";
+
+        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        File file = new File(service.getBaseContext().getFilesDir(), filename);
+        Map<String, ArrayList<String>> data;
+
+        if (!file.exists())
+            return;
+
+        try
+        {
+
+            InputStream input = new FileInputStream(file);
+            Yaml config = new Yaml();
+            for (Object o : config.loadAll(input))
+            {
+                data = (Map) o;
+                for (String key : data.keySet())
+                {
+                    String[] rArray = data.get(key).toArray(new String[data.get(key).size()]);
+                    int id = Integer.parseInt(rArray[0]);
+                    int from = Integer.parseInt(rArray[1]);
+                    int to = Integer.parseInt(rArray[2]);
+                    String message = rArray[3];
+                    Date date = formatter.parse(rArray[4]);
+                    boolean important = (rArray[5].equalsIgnoreCase("1")) ? true : false;
+                    Reminder.ReminderState rState = Reminder.ReminderState.values()[Integer.parseInt(rArray[6])];
+
+                    Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
+                }
+            }
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public  void SaveRemindersToFile(Activity activity)
     {
+        if (UserAreaActivity.GetActivity() == null)
+        {
+            Log.d("INFO", "Attempt to save reminders from service.... skipping.");
+            return;
+        }
+
         final String filename = "reminders.yml";
 
         File file = new File(activity.getBaseContext().getFilesDir(), filename);
@@ -366,6 +425,36 @@ public class UserProfile implements Parcelable
         final String filename = "ignores.yml";
 
         File file = new File(activity.getBaseContext().getFilesDir(), filename);
+        List<Integer> ignores;
+
+        if (!file.exists())
+            return;
+
+        try
+        {
+
+            InputStream input = new FileInputStream(file);
+            Yaml config = new Yaml();
+            for (Object o : config.loadAll(input))
+            {
+                ignores = (ArrayList) o;
+
+                for (Integer i : ignores)
+                {
+                    ReminderIgnores.add(i);
+                }
+            }
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void LoadReminderIgnoresFromFile(Service service)
+    {
+        final String filename = "ignores.yml";
+
+        File file = new File(service.getBaseContext().getFilesDir(), filename);
         List<Integer> ignores;
 
         if (!file.exists())

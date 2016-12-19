@@ -1,7 +1,9 @@
 package net.johnbrooks.remindu.requests;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -46,7 +48,7 @@ public class PullProfileRequest extends StringRequest
         return params;
     }
 
-    private static Response.Listener<String> GetPullResponseListener()
+    private static Response.Listener<String> GetPullResponseListener(final String password)
     {
 
         return new Response.Listener<String>()
@@ -78,7 +80,7 @@ public class PullProfileRequest extends StringRequest
                         }
 
                         if (UserProfile.PROFILE == null)
-                            UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, UserProfile.PROFILE.GetPassword(), coins);
+                            UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins);
                         else
                             UserProfile.PROFILE.Update(id, active, fullName, username, email, UserProfile.PROFILE.GetPassword(), coins);
                         UserProfile.PROFILE.GetContacts().clear();
@@ -122,10 +124,25 @@ public class PullProfileRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
-        Response.Listener<String> profileResponseListener = GetPullResponseListener();
+        Response.Listener<String> profileResponseListener = GetPullResponseListener(UserProfile.PROFILE.GetPassword());
 
         LoginRequest request = new LoginRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), profileResponseListener);
         RequestQueue queue = Volley.newRequestQueue(activity);
+        queue.add(request);
+    }
+
+    public static void SendRequest(final Service service)
+    {
+        SharedPreferences sharedPref = service.getSharedPreferences("profile", service.MODE_PRIVATE);
+
+        String email = sharedPref.getString("email", "null");
+        String password = sharedPref.getString("password", "null");
+        if (email.equals("null") || password.equals("null"))
+            return;
+
+        Response.Listener<String> profileResponseListener = GetPullResponseListener(password);
+        LoginRequest request = new LoginRequest(email, password, profileResponseListener);
+        RequestQueue queue = Volley.newRequestQueue(service);
         queue.add(request);
     }
 }

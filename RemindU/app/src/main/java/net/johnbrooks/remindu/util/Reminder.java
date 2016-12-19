@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -636,6 +638,44 @@ public class Reminder implements Comparable<Reminder>
 
         return eta;
     }
+    public boolean RemindBackground(Service service)
+    {
+        Log.d("DEBUG", "processing background tasks to check reminders...");
+        if (GetState() == ReminderState.COMPLETE)
+            return false;
+        Log.d("DEBUG", "checking...");
+        //
+        // TODO: Make times to notify customizable on the settings of the app.
+        //
+
+        int[] timeLeft = GetTimeLeft();
+        if (timeLeft[0] == 0 && timeLeft[1] == 0 && timeLeft[2] == 0)
+        {
+            //
+            // Time is over.
+            //
+
+            ShowNotification(service, true, "Reminder from " + GetFullName(), "Passed deadline.");
+        }
+        else if (timeLeft[0] == 1 && timeLeft[1] == 0 && timeLeft[2] == 0)
+        {
+            //
+            // One day is left
+            //
+
+            ShowNotification(service, false, "Reminder from " + GetFullName(), "Due in 1 day.");
+        }
+        else if (timeLeft[0] == 0 && timeLeft[1] == 1 && timeLeft[2] == 0)
+        {
+            //
+            // 1 hours left
+            //
+
+            ShowNotification(service, true, "Reminder from " + GetFullName(), "Due in 1 hour.");
+        }
+
+        return true;
+    }
     public boolean Remind()
     {
         if (UserProfile.PROFILE.GetUserID() != GetTo() || GetState() == ReminderState.COMPLETE)
@@ -653,8 +693,6 @@ public class Reminder implements Comparable<Reminder>
             //
             // Time is over.
             //
-
-            ShowNotification(true, "Reminder from " + GetFullName(), "Passed deadline.");
 
             final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
             dialog.setTitle("Reminder due; finalize state");
@@ -714,29 +752,56 @@ public class Reminder implements Comparable<Reminder>
                 }
             });
         }
-        else if (timeLeft[0] == 1 && timeLeft[1] == 0 && timeLeft[2] == 0)
-        {
-            //
-            // One day is left
-            //
-
-            ShowNotification(false, "Reminder from " + GetFullName(), "Due in 1 day.");
-        }
-        else if (timeLeft[0] == 0 && timeLeft[1] == 1 && timeLeft[2] == 0)
-        {
-            //
-            // 1 hours left
-            //
-
-            ShowNotification(true, "Reminder from " + GetFullName(), "Due in 1 hour.");
-        }
 
         return true;
     }
 
-    public void ShowNotification(boolean vibrate, String title, String message)
+    public void ShowNotification(Service service, boolean vibrate, String title, String message)
     {
         if (UserProfile.PROFILE.IsIgnoring(GetID()))
+            return;
+
+        PendingIntent pi = PendingIntent.getActivity(service, 0, new Intent(service.getBaseContext(), UserAreaActivity.class), 0);
+        Notification notification = new NotificationCompat.Builder(service)
+                .setTicker(title)
+                .setSmallIcon(android.R.drawable.ic_menu_report_image)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) service.getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notification);
+
+        if (vibrate && service != null)
+        {
+            AudioManager am = (AudioManager)service.getSystemService(Context.AUDIO_SERVICE);
+
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE || am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+            {
+                Vibrator v = (Vibrator) service.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
+            }
+
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+            {
+                try
+                {
+                    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone r = RingtoneManager.getRingtone(service.getApplicationContext(), alarmSound);
+                    r.play();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public void ShowNotification(boolean vibrate, String title, String message)
+    {
+        if (UserProfile.PROFILE.IsIgnoring(GetID()) || UserAreaActivity.GetActivity() == null)
             return;
 
         PendingIntent pi = PendingIntent.getActivity(UserAreaActivity.GetActivity(), 0, new Intent(UserAreaActivity.GetActivity().getBaseContext(), UserAreaActivity.class), 0);

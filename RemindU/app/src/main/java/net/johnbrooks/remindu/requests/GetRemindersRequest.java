@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.requests;
 
 import android.app.Activity;
+import android.app.Service;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -129,6 +130,16 @@ public class GetRemindersRequest extends StringRequest
         GetRemindersRequest request = new GetRemindersRequest(reminderResponseListener);
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
+    }
 
+    public static void SendRequest(final Service service)
+    {
+        if (UserProfile.PROFILE == null)
+            return;
+
+        Response.Listener<String> reminderResponseListener = GetReceivedResponseListener();
+        GetRemindersRequest request = new GetRemindersRequest(reminderResponseListener);
+        RequestQueue queue = Volley.newRequestQueue(service);
+        queue.add(request);
     }
 }

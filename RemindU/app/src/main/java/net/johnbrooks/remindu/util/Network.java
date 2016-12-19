@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -27,7 +28,24 @@ public class Network
         {
             if (UserAreaActivity.GetActivity() != null)
                 Snackbar.make(UserAreaActivity.GetActivity().findViewById(R.id.fab), "Unable to connect to server...", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+                        .setAction("Action", null).show();
+
+            return false;
+        }
+    }
+    public static final boolean IsConnected(Service service)
+    {
+        ConnectivityManager connectivityManager = (ConnectivityManager)service.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)
+        {
+            return true;
+        }
+        else
+        {
+            if (UserAreaActivity.GetActivity() != null)
+                Snackbar.make(UserAreaActivity.GetActivity().findViewById(R.id.fab), "Unable to connect to server...", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
 
             return false;
         }
