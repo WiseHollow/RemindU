@@ -4,6 +4,7 @@ package net.johnbrooks.remindu.activities;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -18,6 +19,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 
 import net.johnbrooks.remindu.R;
@@ -42,9 +44,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
+        public boolean onPreferenceChange(Preference preference, Object value)
+        {
+            if (UserAreaActivity.GetActivity() != null)
+            {
+                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(UserAreaActivity.GetActivity());
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putString(preference.getKey(), value.toString());
+            }
 
+            /*String stringValue = value.toString();
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.
@@ -83,7 +92,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
-            }
+            }*/
             return true;
         }
     };
@@ -112,10 +121,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         // Trigger the listener immediately with the preference's
         // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+        /*BindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+                        .getBoolean(preference.getKey(), false));*/
+
+        //SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(UserAreaActivity.GetActivity());
+        //SharedPreferences.Editor editor = sharedPrefs.edit();
     }
 
     @Override
@@ -179,8 +191,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            bindPreferenceSummaryToValue(findPreference("boot_switch"));
+            bindPreferenceSummaryToValue(findPreference("receive_emails_switch"));
         }
 
         @Override
@@ -190,6 +202,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
+
             return super.onOptionsItemSelected(item);
         }
     }
