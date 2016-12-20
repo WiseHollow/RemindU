@@ -6,6 +6,10 @@
         android:defaultValue="true"
         android:key="notifications_new_reminder"
         android:title="New reminder notification" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="check_for_updates"
+        android:title="Check for updates on startup" />
 
     <!-- Allows the user to choose a ringtone in the 'notification' category. -->
     <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->

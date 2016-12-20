@@ -1,7 +1,9 @@
 package net.johnbrooks.remindu.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.view.SubMenu;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.LinearLayout;
 import com.baoyz.widget.PullRefreshLayout;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
@@ -70,6 +73,8 @@ public class UserAreaActivity extends AppCompatActivity
         // Gets
         //
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         reminderLayout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
 
         final Menu menu = navigationView.getMenu();
@@ -88,7 +93,8 @@ public class UserAreaActivity extends AppCompatActivity
         PullScheduler.Initialize();
         UpdateUserAreaScheduler.Initialize();
         ProcessRemindersScheduler.Initialize();
-
+        if (sharedPreferences.getBoolean("check_for_updates", true))
+            GetLatestVersionRequest.SendRequest(UserAreaActivity.this);
 
         //
         // Sets
