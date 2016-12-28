@@ -125,78 +125,7 @@ public class ContactProfile
 
         return layout;
     }
-    public LinearLayout CreateWidget(final ManageContactsActivity activity)
-    {
-        // Right now we only use a default avatar for each contact.
-        Bitmap bDefaultAvatar = BitmapFactory.decodeResource( activity.getResources(), R.drawable.user_48 );
-        // Lets get our delete image.
-        Bitmap bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_48);
-        LinearLayout layout = new LinearLayout(activity);
-        layout.setLayoutParams(new LinearLayout.LayoutParams
-                (
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT, 1f
-                ));
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        SpannableStringBuilder spannableStringLeft = new SpannableStringBuilder();
-        SpannableStringBuilder spannableStringRight = new SpannableStringBuilder();
-
-        String line1 = "_ " + GetDisplayName();
-        if (!IsContact())
-            line1 += " Request Pending...";
-        spannableStringLeft.append(line1);
-        TextView textView = new TextView(activity);
-        layout.addView(textView);
-        textView.setTextSize(14f);
-        textView.setTextColor(Color.BLACK);
-        LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams
-                (
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT, 0.85f
-                );
-        textView.setLayoutParams(textViewParams);
-        spannableStringLeft.setSpan(new ImageSpan(textView.getContext(), bDefaultAvatar), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        if (!IsContact())
-            spannableStringLeft.setSpan(new RelativeSizeSpan(0.75f), GetDisplayName().length() + 2, line1.length() - 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        textView.setText(spannableStringLeft);
-
-        TextView button = new TextView(activity);
-        button.setMovementMethod(LinkMovementMethod.getInstance());
-        layout.addView(button);
-        spannableStringRight.append("X");
-        spannableStringRight.setSpan(new ImageSpan(button.getContext(), bDelete), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams
-                (
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT, 0.15f
-                );
-
-        button.setTextColor(Color.BLACK);
-        button.setLayoutParams(buttonParams);
-
-        ClickableSpan spanDelete = new ClickableSpan()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if (GetID() == -1)
-                {
-                    return;
-                }
-
-                //TODO: Pull data from server
-                Log.d("INFO", "Requesting that contact id=" + GetID() + " be removed.");
-
-                DeleteContactRequest.SendRequest(activity, GetID());
-
-                //TODO: Refresh contents...
-            }
-        };
-        spannableStringRight.setSpan(spanDelete, 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        button.setText(spannableStringRight);
-
-        return layout;
-    }
+    
     @Override
     public String toString()
     {
