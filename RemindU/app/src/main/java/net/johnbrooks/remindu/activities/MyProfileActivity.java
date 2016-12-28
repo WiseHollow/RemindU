@@ -38,23 +38,6 @@ public class MyProfileActivity extends AppCompatActivity
         // This activity is the home of our personal information.
 
         //
-        // Get needed information
-        //
-
-        //TODO: If you go in MyProfile quickly after the app starts, these values are 0. :(
-
-        int activeReceivedReminders = 0;
-        int activeSentReminders = 0;
-
-        for (Reminder r : UserProfile.PROFILE.GetReminders())
-        {
-            if (r.GetFrom() == UserProfile.PROFILE.GetUserID())
-                activeSentReminders++;
-            else if (r.GetTo() == UserProfile.PROFILE.GetUserID())
-                activeReceivedReminders++;
-        }
-
-        //
         // Get TextViews
         //
 
@@ -67,20 +50,6 @@ public class MyProfileActivity extends AppCompatActivity
 
         tvPointsRemaining = (TextView) findViewById(R.id.textView_Profile_PointsRemaining);
         avatar = (ImageView) findViewById(R.id.imageView_my_profile_avatar);
-
-
-        //
-        // Fill TextView information
-        //
-
-        tvFullName.setText("Full Name: " + UserProfile.PROFILE.GetFullName());
-        tvUsername.setText("Username: " + UserProfile.PROFILE.GetUsername());
-        tvEmail.setText("Email: " + UserProfile.PROFILE.GetEmail());
-
-        tvActiveSentReminders.setText("Active Sent Reminders: " + activeSentReminders);
-        tvPendingReceivedReminders.setText("Active Received Reminders: " + activeReceivedReminders);
-
-        tvPointsRemaining.setText("Coins Remaining: " + UserProfile.PROFILE.GetCoins());
 
         //
         // Set avatar picture
@@ -103,6 +72,40 @@ public class MyProfileActivity extends AppCompatActivity
         //
 
         UpdateMyProfileScheduler.Initialize(MyProfileActivity.this);
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+
+        //
+        // Get needed information
+        //
+
+        int activeReceivedReminders = 0;
+        int activeSentReminders = 0;
+
+        for (Reminder r : UserProfile.PROFILE.GetReminders())
+        {
+            if (r.GetFrom() == UserProfile.PROFILE.GetUserID())
+                activeSentReminders++;
+            else if (r.GetTo() == UserProfile.PROFILE.GetUserID())
+                activeReceivedReminders++;
+        }
+
+        //
+        // Fill TextView information
+        //
+
+        tvFullName.setText("Full Name: " + UserProfile.PROFILE.GetFullName());
+        tvUsername.setText("Username: " + UserProfile.PROFILE.GetUsername());
+        tvEmail.setText("Email: " + UserProfile.PROFILE.GetEmail());
+
+        tvActiveSentReminders.setText("Active Sent Reminders: " + activeSentReminders);
+        tvPendingReceivedReminders.setText("Active Received Reminders: " + activeReceivedReminders);
+
+        tvPointsRemaining.setText("Coins Remaining: " + UserProfile.PROFILE.GetCoins());
     }
 
     @Override
