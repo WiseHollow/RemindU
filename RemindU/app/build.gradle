@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
-        versionName "1.24 Alpha"
+        versionName "1.26 Alpha"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -16,6 +16,9 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled true
         }
     }
     productFlavors {

@@ -41,6 +41,7 @@ import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.SendCoinsRequest;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
+import net.johnbrooks.remindu.schedulers.BackgroundServiceScheduler;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -800,7 +801,11 @@ public class Reminder implements Comparable<Reminder>
     public void ShowNotification(boolean vibrate, String title, String message)
     {
         if (UserProfile.PROFILE.IsIgnoring(GetID()) || UserAreaActivity.GetActivity() == null)
+        {
+            if (BackgroundServiceScheduler.GetScheduler() != null && BackgroundServiceScheduler.GetScheduler().GetService() != null)
+                ShowNotification(BackgroundServiceScheduler.GetScheduler().GetService(), vibrate, title, message);
             return;
+        }
 
         PendingIntent pi = PendingIntent.getActivity(UserAreaActivity.GetActivity(), 0, new Intent(UserAreaActivity.GetActivity().getBaseContext(), UserAreaActivity.class), 0);
         Notification notification = new NotificationCompat.Builder(UserAreaActivity.GetActivity())

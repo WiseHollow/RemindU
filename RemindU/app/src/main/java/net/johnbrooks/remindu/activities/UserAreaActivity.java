@@ -23,6 +23,7 @@ import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
+import net.johnbrooks.remindu.services.PullService;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.Network;
@@ -95,6 +96,11 @@ public class UserAreaActivity extends AppCompatActivity
         ProcessRemindersScheduler.Initialize();
         if (sharedPreferences.getBoolean("check_for_updates", true))
             GetLatestVersionRequest.SendRequest(UserAreaActivity.this);
+        if (!sharedPreferences.getBoolean("boot_switch", true))
+        {
+            //Intent serviceIntent = new Intent(getBaseContext(), PullService.class);
+            //getBaseContext().startService(serviceIntent);
+        }
 
         //
         // Sets

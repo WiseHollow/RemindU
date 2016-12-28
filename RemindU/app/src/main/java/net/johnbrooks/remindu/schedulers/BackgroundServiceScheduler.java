@@ -14,6 +14,7 @@ import net.johnbrooks.remindu.util.UserProfile;
 public class BackgroundServiceScheduler
 {
     private static BackgroundServiceScheduler scheduler;
+    public static BackgroundServiceScheduler GetScheduler() { return scheduler; }
     public static void Initialize(Service service)
     {
         if (scheduler == null)
@@ -37,6 +38,8 @@ public class BackgroundServiceScheduler
         mHandler = new Handler();
         this.service = service;
     }
+
+    public Service GetService() { return service; }
 
     Runnable mStatusChecker = new Runnable()
     {
@@ -64,11 +67,16 @@ public class BackgroundServiceScheduler
         {
             UserProfile.PROFILE.Pull(service);
 
-            if (UserProfile.PROFILE == null)
-                return;
-            for (Reminder r : UserProfile.PROFILE.GetReminders())
+            if (UserProfile.PROFILE != null)
             {
-                r.ProcessReminderNotifications(service);
+                for (Reminder r : UserProfile.PROFILE.GetReminders())
+                {
+                    r.ProcessReminderNotifications(service);
+                }
+            }
+            else
+            {
+                Log.d("SEVERE", "null profile");
             }
         }
     }
