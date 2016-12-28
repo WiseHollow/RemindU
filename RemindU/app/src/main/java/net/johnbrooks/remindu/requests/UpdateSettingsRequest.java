@@ -37,6 +37,7 @@ public class UpdateSettingsRequest extends StringRequest
         params.put("user_id", String.valueOf(UserProfile.PROFILE.GetUserID()));
         params.put("password", UserProfile.PROFILE.GetPassword());
         params.put("receive_emails", (receiveEmails) ? "1" : "0");
+        params.put("avatar", UserProfile.PROFILE.GetAvatarID());
     }
 
     @Override

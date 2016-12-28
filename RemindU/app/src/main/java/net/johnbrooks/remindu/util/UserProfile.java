@@ -99,6 +99,8 @@ public class UserProfile implements Parcelable
     public List<Reminder> GetReminders() { return Reminders; }
     public List<ContactProfile> GetContacts() { return Contacts; }
 
+    public void SetAvatarID(String value) { AvatarID = value; }
+
     public void SetActiveReminder(Reminder reminder)
     {
         activeReminder = reminder;

@@ -1,11 +1,15 @@
 package net.johnbrooks.remindu.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.requests.UpdateSettingsRequest;
 import net.johnbrooks.remindu.schedulers.UpdateMyProfileScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.Reminder;
@@ -13,6 +17,7 @@ import net.johnbrooks.remindu.util.UserProfile;
 
 public class MyProfileActivity extends AppCompatActivity
 {
+    private static int PICK_AVATAR_REQUEST = 1;
 
     public TextView tvFullName = null;
     public TextView tvUsername = null;
@@ -82,12 +87,32 @@ public class MyProfileActivity extends AppCompatActivity
         //
 
         avatar.setBackground(AvatarImageUtil.GetAvatar(this, UserProfile.PROFILE.GetAvatarID()));
-        //avatar.setBackgroundResource(AvatarImageUtil.GetDrawableResourceID(this, UserProfile.PROFILE.GetAvatarID()));
+
+        avatar.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(MyProfileActivity.this, AvatarSelectActivity.class);
+                startActivityForResult(intent, PICK_AVATAR_REQUEST);
+            }
+        });
 
         //
         // Set scheduler
         //
 
         UpdateMyProfileScheduler.Initialize(MyProfileActivity.this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PICK_AVATAR_REQUEST)
+        {
+            finish();
+            startActivity(getIntent());
+            UpdateSettingsRequest.SendRequest(MyProfileActivity.this);
+        }
     }
 }
