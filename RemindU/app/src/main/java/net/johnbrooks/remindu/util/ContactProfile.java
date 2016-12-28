@@ -125,7 +125,7 @@ public class ContactProfile
 
         return layout;
     }
-    
+
     @Override
     public String toString()
     {
