@@ -106,7 +106,8 @@ public class ManageContactsActivity extends AppCompatActivity
         //
         for (ContactProfile profile : UserProfile.PROFILE.GetContacts())
         {
-            layout.addView(profile.CreateWidget(ManageContactsActivity.this));
+            //layout.addView(profile.CreateWidget(ManageContactsActivity.this));
+            layout.addView(profile.CreateImageView(ManageContactsActivity.this));
         }
     }
 
