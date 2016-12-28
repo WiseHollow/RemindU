@@ -1,9 +1,12 @@
 package net.johnbrooks.remindu.activities;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +39,14 @@ public class MyProfileActivity extends AppCompatActivity
         setContentView(R.layout.activity_my_profile);
 
         // This activity is the home of our personal information.
+
+        //
+        // Prepare back button
+        //
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         //
         // Get TextViews
@@ -116,6 +127,18 @@ public class MyProfileActivity extends AppCompatActivity
             finish();
             startActivity(getIntent());
             UpdateSettingsRequest.SendRequest(MyProfileActivity.this);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

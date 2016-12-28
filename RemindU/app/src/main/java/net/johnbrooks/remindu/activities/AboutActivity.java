@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,6 +34,14 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
+        //
+        // Prepare back button
+        //
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         PackageInfo pInfo;
 
         try
@@ -42,6 +52,19 @@ public class AboutActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }
