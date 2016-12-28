@@ -2,10 +2,12 @@ package net.johnbrooks.remindu.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.schedulers.UpdateMyProfileScheduler;
+import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -20,6 +22,7 @@ public class MyProfileActivity extends AppCompatActivity
     public TextView tvPendingReceivedReminders = null;
 
     public TextView tvPointsRemaining = null;
+    public ImageView avatar = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,6 +61,8 @@ public class MyProfileActivity extends AppCompatActivity
         tvPendingReceivedReminders = (TextView) findViewById(R.id.textView_Profile_ActiveReceivedReminders);
 
         tvPointsRemaining = (TextView) findViewById(R.id.textView_Profile_PointsRemaining);
+        avatar = (ImageView) findViewById(R.id.imageView_my_profile_avatar);
+
 
         //
         // Fill TextView information
@@ -71,6 +76,13 @@ public class MyProfileActivity extends AppCompatActivity
         tvPendingReceivedReminders.setText("Active Received Reminders: " + activeReceivedReminders);
 
         tvPointsRemaining.setText("Coins Remaining: " + UserProfile.PROFILE.GetCoins());
+
+        //
+        // Set avatar picture
+        //
+
+        avatar.setBackground(AvatarImageUtil.GetAvatar(this, UserProfile.PROFILE.GetAvatarID()));
+        //avatar.setBackgroundResource(AvatarImageUtil.GetDrawableResourceID(this, UserProfile.PROFILE.GetAvatarID()));
 
         //
         // Set scheduler

@@ -74,10 +74,11 @@ public class LoginRequest extends StringRequest
                         final int coins = jsonResponse.getInt("coins");
 
                         final String contacts = jsonResponse.getString("contacts");
+                        final String avatarID = jsonResponse.getString("avatar");
 
                         // Using pulled information, we can create a profile for the user.
 
-                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins);
+                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins, avatarID);
                         UserProfile.PROFILE.LoadReminderIgnoresFromFile(activity);
 
                         // Next, lets make sense of the contacts string given by the server.
@@ -118,6 +119,7 @@ public class LoginRequest extends StringRequest
                         editor.putBoolean("active", (active > 0) ? true : false);
                         editor.putInt("coins", coins);
                         editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
+                        editor.putString("avatar", UserProfile.PROFILE.GetAvatarID());
 
                         editor.commit();
 
@@ -171,10 +173,11 @@ public class LoginRequest extends StringRequest
                         final int coins = jsonResponse.getInt("coins");
 
                         final String contacts = jsonResponse.getString("contacts");
+                        final String avatarID = jsonResponse.getString("avatar");
 
                         // Using pulled information, we can create a profile for the user.
 
-                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins);
+                        UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins, avatarID);
                         UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
 
                         // Next, lets make sense of the contacts string given by the server.
@@ -215,6 +218,7 @@ public class LoginRequest extends StringRequest
                         editor.putBoolean("active", (active > 0) ? true : false);
                         editor.putInt("coins", coins);
                         editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
+                        editor.putString("avatar", UserProfile.PROFILE.GetAvatarID());
 
                         editor.commit();
                     }

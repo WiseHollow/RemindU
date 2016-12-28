@@ -52,6 +52,8 @@ public class UserProfile implements Parcelable
     private int UserID;
     private int Active;
 
+    private String AvatarID;
+
     private String FullName;
     private String Username;
     private String Email;
@@ -65,7 +67,7 @@ public class UserProfile implements Parcelable
 
     private Reminder activeReminder;
 
-    public UserProfile(int id, final int active, final String fullName, final String username, final String email, final String password, final Integer coins)
+    public UserProfile(int id, final int active, final String fullName, final String username, final String email, final String password, final Integer coins, final String avatarID)
     {
         UserID = id;
         Active = active;
@@ -74,6 +76,7 @@ public class UserProfile implements Parcelable
         Email = email;
         Password = password;
         Coins = coins;
+        AvatarID = avatarID;
 
         Reminders = new ArrayList<>();
         Contacts = new ArrayList<>();
@@ -91,6 +94,7 @@ public class UserProfile implements Parcelable
     public final int GetCoins() { return Coins; }
     public final boolean IsIgnoring(int id) { return ReminderIgnores.contains(id); }
     public final Reminder GetActiveReminder() { return activeReminder; }
+    public final String GetAvatarID() { return AvatarID; }
 
     public List<Reminder> GetReminders() { return Reminders; }
     public List<ContactProfile> GetContacts() { return Contacts; }
@@ -123,9 +127,10 @@ public class UserProfile implements Parcelable
         Email = in.readString();
         Password = in.readString();
         Coins = in.readInt();
+        AvatarID = in.readString();
     }
 
-    public void Update(final int id, final int active, final String fullName, final String username, final String email, final String password, final Integer coins)
+    public void Update(final int id, final int active, final String fullName, final String username, final String email, final String password, final Integer coins, final String avatarID)
     {
         UserID = id;
         Active = active;
@@ -134,6 +139,7 @@ public class UserProfile implements Parcelable
         Email = email;
         Password = password;
         Coins = coins;
+        AvatarID = avatarID;
     }
 
     public void RefreshReminderLayout()
@@ -272,6 +278,7 @@ public class UserProfile implements Parcelable
         parcel.writeString(Email);
         parcel.writeString(Password);
         parcel.writeInt(Coins);
+        parcel.writeString(AvatarID);
     }
 
     public void LoadRemindersFromFile(Activity activity)

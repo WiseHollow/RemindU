@@ -84,9 +84,8 @@ public class LoginActivity extends AppCompatActivity
             editor.putString("username", "null");
             editor.putInt("id", 0);
             editor.putBoolean("active", false);
-            editor.putInt("pointsTotal", 0);
-            editor.putInt("pointsSent", 0);
-            editor.putInt("pointsReceived", 0);
+            editor.putInt("coins", 0);
+            editor.putString("avatar", "default");
             editor.putStringSet("contacts", null);
             editor.commit();
             getIntent().putExtra("SignOut", false);
@@ -132,13 +131,13 @@ public class LoginActivity extends AppCompatActivity
         final boolean active = sharedPref.getBoolean("active", false);
         final int coins = sharedPref.getInt("coins", 0);
         final Set<String> contactsString = sharedPref.getStringSet("contacts", null);
-
+        final String avatarID = sharedPref.getString("avatar", "default");
 
         if (email.equalsIgnoreCase("null") || password.equalsIgnoreCase("null") || fullname.equalsIgnoreCase("null") ||
                 username.equalsIgnoreCase("null") || id == 0 || email.equalsIgnoreCase("null"))
             return false;
 
-        UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins);
+        UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins, avatarID);
         UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
 
         for(String s : contactsString)
@@ -172,13 +171,13 @@ public class LoginActivity extends AppCompatActivity
         final boolean active = sharedPref.getBoolean("active", false);
         final int coins = sharedPref.getInt("coins", 0);
         final Set<String> contactsString = sharedPref.getStringSet("contacts", null);
-
+        final String avatarID = sharedPref.getString("avatar", "default");
 
         if (email.equalsIgnoreCase("null") || password.equalsIgnoreCase("null") || fullname.equalsIgnoreCase("null") ||
                 username.equalsIgnoreCase("null") || id == 0 || email.equalsIgnoreCase("null"))
             return false;
 
-        UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins);
+        UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins, avatarID);
         UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
 
         for(String s : contactsString)

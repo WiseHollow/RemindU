@@ -73,6 +73,7 @@ public class PullProfileRequest extends StringRequest
                         final int coins = jsonResponse.getInt("coins");
 
                         final String contacts = jsonResponse.getString("contacts");
+                        final String avatarID = jsonResponse.getString("avatar");
 
                         if (UserProfile.PROFILE != null && coins != UserProfile.PROFILE.GetCoins())
                         {
@@ -80,9 +81,9 @@ public class PullProfileRequest extends StringRequest
                         }
 
                         if (UserProfile.PROFILE == null)
-                            UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins);
+                            UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins, avatarID);
                         else
-                            UserProfile.PROFILE.Update(id, active, fullName, username, email, UserProfile.PROFILE.GetPassword(), coins);
+                            UserProfile.PROFILE.Update(id, active, fullName, username, email, UserProfile.PROFILE.GetPassword(), coins, avatarID);
                         UserProfile.PROFILE.GetContacts().clear();
                         for (String contact : contacts.split("&"))
                         {

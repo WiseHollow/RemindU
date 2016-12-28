@@ -11,21 +11,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="net.johnbrooks.remindu.activities.MyProfileActivity">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/user_48"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:id="@+id/imageView2"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
     <TextView
         android:text="Full Name: "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView2"
+        android:layout_below="@+id/imageView_my_profile_avatar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="17dp"
@@ -82,5 +72,15 @@
         android:layout_below="@+id/textView_Profile_ActiveSentReminders"
         android:layout_alignLeft="@+id/textView_Profile_ActiveSentReminders"
         android:layout_alignStart="@+id/textView_Profile_ActiveSentReminders" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:id="@+id/imageView_my_profile_avatar"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/user_48" />
 
 </RelativeLayout>
