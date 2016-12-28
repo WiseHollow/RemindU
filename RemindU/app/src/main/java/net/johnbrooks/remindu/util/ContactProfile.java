@@ -47,6 +47,7 @@ public class ContactProfile
     public String GetFullName() { return "null"; }
     public String GetDisplayName() { return Email; }
     public String GetContacts() { return "null"; }
+    public String GetAvatarID() { return "default"; }
     public boolean IsContact()
     {
         if (this.getClass() == AcceptedContactProfile.class)

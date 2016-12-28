@@ -148,11 +148,12 @@ public class LoginActivity extends AppCompatActivity
             String cUsername = element[2];
             String cFullName = element[3];
             String cContacts = element[4];
+            String cAvatarID = element[5];
 
             if (cFullName.equalsIgnoreCase("null"))
                 UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
             else
-                UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts));
+                UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID));
         }
 
         UserProfile.PROFILE.LoadRemindersFromFile(service);
@@ -188,11 +189,12 @@ public class LoginActivity extends AppCompatActivity
             String cUsername = element[2];
             String cFullName = element[3];
             String cContacts = element[4];
+            String cAvatarID = element[5];
 
             if (cFullName.equalsIgnoreCase("null"))
                 UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
             else
-                UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts));
+                UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID));
         }
 
         return true;

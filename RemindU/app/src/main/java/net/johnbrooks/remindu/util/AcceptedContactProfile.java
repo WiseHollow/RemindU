@@ -6,23 +6,26 @@ package net.johnbrooks.remindu.util;
 
 public class AcceptedContactProfile extends ContactProfile
 {
-    private String FullName, Username, Contacts;
+    private String FullName, Username, Contacts, AvatarID;
 
-    public AcceptedContactProfile(int id, String email, String fullName, String username, String contacts)
+    public AcceptedContactProfile(final int id, final String email, final String fullName, final String username, final String contacts, final String avatarID)
     {
         super(id, email);
         FullName = fullName;
         Username = username;
         Contacts = contacts;
+        AvatarID = avatarID;
     }
     @Override
     public final String GetFullName() { return FullName; }
     @Override
     public final String GetUsername() { return Username; }
     @Override
-    public String GetDisplayName() { return FullName; }
+    public final String GetDisplayName() { return FullName; }
     @Override
-    public String GetContacts() { return Contacts; }
+    public final String GetContacts() { return Contacts; }
+    @Override
+    public final String GetAvatarID() { return AvatarID; }
     @Override
     public final boolean IsContact()
     {
