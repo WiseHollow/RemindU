@@ -76,4 +76,14 @@
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true"
         android:id="@+id/textView_about_version" />
+
+    <TextView
+        android:text="FreePik.com"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_freepic"
+        android:textAlignment="center"
+        android:layout_below="@+id/textView11"
+        android:layout_alignLeft="@+id/textView11"
+        android:layout_alignStart="@+id/textView11" />
 </RelativeLayout>
