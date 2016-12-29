@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.ButtonBarLayout;
@@ -16,6 +17,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -115,12 +117,14 @@ public class ContactProfile implements Comparable<ContactProfile>
         layout.addView(avatar);
 
         TextView info = new TextView(activity);
-        String text = "";
-
-        text+=GetFullName();
-        text+="\n";
-        text+="Active Reminders: " + GetAmountOfReminders();
-        info.setText(text);
+        SpannableStringBuilder sString = new SpannableStringBuilder();
+        sString.append("Name: " + GetFullName());
+        sString.setSpan(new StyleSpan(Typeface.BOLD), 0, 4, 0);
+        sString.append("\n");
+        int length = sString.length();
+        sString.append("Reminders: " + GetAmountOfReminders());
+        sString.setSpan(new StyleSpan(Typeface.BOLD), length, length + 10, 0);
+        info.setText(sString);
 
         layout.addView(info);
         final ContactProfile cp = this;
