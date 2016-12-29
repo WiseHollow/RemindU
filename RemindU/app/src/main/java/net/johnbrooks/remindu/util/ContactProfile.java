@@ -1,8 +1,12 @@
 package net.johnbrooks.remindu.util;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.widget.ButtonBarLayout;
 import android.text.Layout;
 import android.text.Spannable;
@@ -24,13 +28,19 @@ import android.widget.TextView;
 
 import net.johnbrooks.remindu.activities.ManageContactsActivity;
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.activities.ReminderListActivity;
+import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.DeleteContactRequest;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by John on 11/29/2016.
  */
 
-public class ContactProfile
+public class ContactProfile implements Comparable<ContactProfile>
 {
     public static ContactProfile GetProfile(int user_id)
     {
@@ -62,7 +72,72 @@ public class ContactProfile
         else
             return false;
     }
-    public LinearLayout CreateImageView(final ManageContactsActivity activity)
+    public final int GetAmountOfReminders()
+    {
+        int i = 0;
+
+        if (UserProfile.PROFILE == null)
+            return 0;
+        else
+            for (Reminder r : UserProfile.PROFILE.GetReminders())
+                if (r.GetTo() == GetID() || r.GetFrom() == GetID())
+                    i++;
+        return i;
+    }
+
+    public final List<Reminder> GetReminders()
+    {
+        final List<Reminder> list = new ArrayList<>();
+
+        for (Reminder r : UserProfile.PROFILE.GetReminders())
+            if (r.GetFrom() == GetID() || r.GetTo() == GetID())
+                list.add(r);
+
+        return list;
+    }
+
+    public LinearLayout CreateCategoryWidget(final Activity activity)
+    {
+        LinearLayout layout = new LinearLayout(activity);
+        layout.setLayoutParams(new LinearLayout.LayoutParams
+            (
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT, 1.0f
+            ));
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+
+        ImageView avatar = new ImageView(activity);
+        avatar.setLayoutParams(new GridView.LayoutParams(250, 250));
+        avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        avatar.setPadding(8, 8, 8, 8);
+
+        avatar.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
+        layout.addView(avatar);
+
+        TextView info = new TextView(activity);
+        String text = "";
+
+        text+=GetFullName();
+        text+="\n";
+        text+="Active Reminders: " + GetAmountOfReminders();
+        info.setText(text);
+
+        layout.addView(info);
+        final ContactProfile cp = this;
+        layout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(UserAreaActivity.GetActivity(), ReminderListActivity.class);
+                intent.putExtra("contactID", cp.GetID());
+                UserAreaActivity.GetActivity().startActivity(intent);
+            }
+        });
+
+        return layout;
+    }
+    public LinearLayout CreateWidget(final ManageContactsActivity activity)
     {
         LinearLayout layout = new LinearLayout(activity);
         layout.setLayoutParams(new LinearLayout.LayoutParams
@@ -129,6 +204,25 @@ public class ContactProfile
     @Override
     public String toString()
     {
-        return GetID() + "%" + GetEmail() + "%" + GetUsername() + "%" + GetFullName() + "%" + GetContacts();
+        return GetID() + "%" + GetEmail() + "%" + GetUsername() + "%" + GetFullName() + "%" + GetContacts() + "%" + GetAvatarID();
+    }
+
+    @Override
+    public int compareTo(ContactProfile o)
+    {
+        int compare = GetAmountOfReminders() > o.GetAmountOfReminders() ? + 1 : GetAmountOfReminders() < o.GetAmountOfReminders() ? -1 : 0;
+        return -compare;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof ContactProfile)
+        {
+            ContactProfile cp = (ContactProfile) o;
+            if (cp.GetID() == GetID())
+                return true;
+        }
+        return false;
     }
 }

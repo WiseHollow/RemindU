@@ -1,7 +1,9 @@
 package net.johnbrooks.remindu.activities;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -28,6 +30,16 @@ public class AvatarSelectActivity extends AppCompatActivity
         setContentView(R.layout.activity_avatar_select);
 
 
+        //
+        // Prepare back button
+        //
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        //
+
         final AvatarsImageAdapter adapter = new AvatarsImageAdapter(this);
         gridView = (GridView) findViewById(R.id.grid_view_avatar_select);
         gridView.setAdapter(adapter);
@@ -49,5 +61,18 @@ public class AvatarSelectActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

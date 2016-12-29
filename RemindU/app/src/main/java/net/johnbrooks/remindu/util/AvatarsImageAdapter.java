@@ -52,6 +52,6 @@ public class AvatarsImageAdapter extends BaseAdapter {
     // references to our images
     public Integer[] mThumbIds =
             {
-                    R.drawable.avatar_generic_default, R.drawable.avatar_generic_01, R.drawable.avatar_generic_02, R.drawable.avatar_generic_03, R.drawable.avatar_generic_04,
+                    R.drawable.avatar_generic_default, R.drawable.avatar_generic_01, R.drawable.avatar_generic_02, R.drawable.avatar_generic_03, R.drawable.avatar_generic_04, R.drawable.avatar_generic_05, R.drawable.avatar_generic_06, R.drawable.avatar_generic_07, R.drawable.avatar_generic_08,
             };
 }

@@ -2,9 +2,12 @@ package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
 import android.app.Service;
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -164,12 +167,36 @@ public class UserProfile implements Parcelable
         }
 
         Collections.sort(GetReminders());
+        Collections.sort(GetContacts());
 
-        for (Reminder r : GetReminders())
+        for (int i = 0; i < GetContacts().size(); i++)
         {
-            UserAreaActivity.GetActivity().reminderLayout.addView(r.CreateWidget(UserAreaActivity.GetActivity(), UserAreaActivity.GetActivity().reminderLayout));
+            ContactProfile cp = GetContacts().get(i);
+            if (cp != null)
+            {
+                LinearLayout view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
+                if (i % 2 != 0)
+                    view.setBackgroundColor(Color.parseColor("#EBEBEB"));
+                else
+                    view.setBackgroundColor(Color.parseColor("#FCFCFC"));
+                UserAreaActivity.GetActivity().reminderLayout.addView(view);
+            }
         }
 
+        /*for (Reminder r : GetReminders())
+        {
+            UserAreaActivity.GetActivity().reminderLayout.addView(r.CreateWidget(UserAreaActivity.GetActivity(), UserAreaActivity.GetActivity().reminderLayout));
+
+        }*/
+
+    }
+
+    public ContactProfile GetContact(int id)
+    {
+        for (ContactProfile cp : GetContacts())
+            if (cp.GetID() == id)
+                return cp;
+        return null;
     }
 
     public Set<String> GetContactStringSet()

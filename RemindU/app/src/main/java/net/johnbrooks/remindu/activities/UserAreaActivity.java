@@ -107,7 +107,6 @@ public class UserAreaActivity extends AppCompatActivity
         //
 
         UserProfile.PROFILE.RefreshReminderLayout();
-        SetupContacts();
 
         //
         // Create Listeners
@@ -207,37 +206,6 @@ public class UserAreaActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void SetupContacts()
-    {
-        contactsSubMenu.clear();
-        for(final ContactProfile contact : UserProfile.PROFILE.GetContacts())
-        {
-            MenuItem item = contactsSubMenu.add(contact.GetDisplayName());
-            item.setIcon(R.drawable.user_48);
-            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
-            {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem)
-                {
-                    DrawerLayout drawer = (DrawerLayout) UserAreaActivity.GetActivity().findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                    if (!Network.IsConnected(UserAreaActivity.this))
-                        return false;
-
-                    if (!contact.IsContact())
-                        return false;
-
-                    Intent intent = new Intent(UserAreaActivity.this, CreateReminderActivity.class);
-                    intent.putExtra("user_id_to", contact.GetID());
-                    intent.putExtra("user_to_fullname", contact.GetFullName());
-                    UserAreaActivity.this.startActivity(intent);
-
-                    return true;
-                }
-            });
-        }
     }
 
 

@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -94,6 +95,8 @@ public class SendReminderRequest extends StringRequest
                         PullScheduler.Call();
                         if (activity != null)
                             activity.finish();
+                        if (ReminderListActivity.GetActivity() != null)
+                            ReminderListActivity.GetActivity().RefreshReminderLayout();
                     }
                     else
                     {

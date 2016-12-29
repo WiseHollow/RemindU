@@ -43,7 +43,7 @@
 
         <service
             android:name=".services.PullService"
-            android:label="@string/app_name"></service>
+            android:label="@string/app_name" />
 
         <receiver android:name=".services.MyReceiver">
             <intent-filter>
@@ -51,9 +51,13 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.AvatarSelectActivity"
-            android:label="Choose your Avatar"
-            ></activity>
+        <activity
+            android:name=".activities.AvatarSelectActivity"
+            android:label="Choose your Avatar" />
+        <activity
+            android:name=".activities.ReminderListActivity"
+            android:label="Reminder List"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

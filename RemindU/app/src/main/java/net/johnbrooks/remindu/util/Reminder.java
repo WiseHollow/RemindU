@@ -13,13 +13,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -31,6 +34,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,6 +43,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.SendCoinsRequest;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
@@ -71,12 +77,8 @@ public class Reminder implements Comparable<Reminder>
     {
         Reminder reminder = new Reminder(message, UserProfile.PROFILE.GetUserID(), user_id_to, date);
         reminder.SetImportant(important);
-        //UserProfile.PROFILE.AddReminder(reminder);
 
-        //SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), message, important, date, reminder.GetSendResponseListener(activity));
         SendReminderRequest.SendRequest(activity, reminder);
-        RequestQueue queue = Volley.newRequestQueue(activity);
-        //queue.add(request);
 
         return reminder;
     }
@@ -201,397 +203,402 @@ public class Reminder implements Comparable<Reminder>
         DateComplete = date;
     }
 
-    public TextView CreateWidget(final Activity activity, LinearLayout parent)
+    public LinearLayout CreateWidget(final ReminderListActivity activity)
     {
-        if (Widget != null)
-            return Widget;
-
         final Reminder reminder = this;
-        TextView view = new TextView(activity);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
+                (
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT, 1.0f
+                );
+        LinearLayout parent = new LinearLayout(activity);
+        parent.setLayoutParams(params);
+        parent.setOrientation(LinearLayout.VERTICAL);
 
-        view.setOnClickListener(new View.OnClickListener()
+        //
+        // Set focus action
+        //
+        parent.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View view)
+            public void onClick(View v)
             {
                 if (!IsUpToDate())
                     SetUpToDate(true);
                 UserProfile.PROFILE.SetActiveReminder(reminder);
-                UserProfile.PROFILE.RefreshReminderLayout();
+                activity.RefreshReminderLayout();
+                //UserProfile.PROFILE.RefreshReminderLayout();
             }
         });
 
-        view.setMovementMethod(LinkMovementMethod.getInstance());
-        Bitmap bState;
-        if (GetState() == ReminderState.IN_PROGRESS)
-            if (GetTo() == UserProfile.PROFILE.GetUserID())
-                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_blue );
-            else
-                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.document_96_blue );
-        else if (GetState() == ReminderState.COMPLETE)
-            if (GetTo() == UserProfile.PROFILE.GetUserID())
-                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96_green );
-            else
-                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.document_96_green );
+        //
+        // Contents of upper portion
+        //
+
+        LinearLayout layout = new LinearLayout(activity);
+        layout.setLayoutParams(params);
+        layout.setPadding(15, 0, 5, 5);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+
+        // Image on left
+        ImageView imageView = new ImageView(activity);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setPadding(8, 8, 8, 8);
+        if (!IsUpToDate())
+            imageView.setLayoutParams(new GridView.LayoutParams(10, 250));
         else
-            if (GetTo() == UserProfile.PROFILE.GetUserID())
-                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.running_96 );
-            else
-                bState = BitmapFactory.decodeResource( activity.getResources(), R.drawable.document_96 );
-        Bitmap bDelete;
-        if (reminder.GetState() != ReminderState.COMPLETE || reminder.GetFrom() != UserProfile.PROFILE.GetUserID())
+            imageView.setLayoutParams(new GridView.LayoutParams(5, 250));
+        if (GetImportant())
         {
-            bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.delete_96 );
+            imageView.setBackgroundColor(Color.parseColor("#AA3939"));
+            //layout.setBackgroundColor(Color.parseColor("#FFDEDE"));
         }
         else
         {
-            bDelete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.coins_96_blue );
+            imageView.setBackgroundColor(Color.parseColor("#80cfa9"));
+            //layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
         }
-        Bitmap bMute;
-        if (!UserProfile.PROFILE.IsIgnoring(GetID()))
-            bMute = BitmapFactory.decodeResource( activity.getResources(), R.drawable.mute_96 );
-        else
-            bMute = BitmapFactory.decodeResource( activity.getResources(), R.drawable.mute_96_red );
-        Bitmap bImportant = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48 );
-        Bitmap bBack = BitmapFactory.decodeResource( activity.getResources(), R.drawable.back_arrow_48 );
-        Bitmap bForward = BitmapFactory.decodeResource( activity.getResources(), R.drawable.forward_arrow_48 );
-        Bitmap bUpdate = BitmapFactory.decodeResource( activity.getResources(), R.drawable.attention_48_blue);
-        Bitmap bComplete = BitmapFactory.decodeResource( activity.getResources(), R.drawable.checkmark_48_blue);
+        layout.addView(imageView);
 
-        int color = Color.LTGRAY;
-        if ((parent.getChildCount()) % 2 != 0)
-            color = Color.argb(255, 176, 176, 176);
+        //Content inside
+        TextView info = new TextView(activity);
+        info.setPadding(10, 0, 10, 0);
 
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-
-        String line1 =  "_ " + GetFullName() + System.getProperty("line.separator"); // Who
-        String line2 = "Message: " + GetMessage() + System.getProperty("line.separator"); // What
-        String line3 = "Deadline in: " + GetETA() + System.getProperty("line.separator"); // When
-        String line4 = System.getProperty("line.separator");
-        if ((!IsUpToDate() && GetImportant()) || (GetImportant() && State == ReminderState.COMPLETE))
-        {
-            line4 = "_ _" + System.getProperty("line.separator");
-        }
-        else if (GetImportant() || !IsUpToDate() || State == ReminderState.COMPLETE)
-            line4 = "_" + System.getProperty("line.separator"); // warnings
-        String line5 = "";
-        if (UserProfile.PROFILE.GetActiveReminder() == this)
-            line5 = "_ _ _"; // actions
-
-
-        spannableStringBuilder.append(line1);
-        spannableStringBuilder.append(line2);
-        spannableStringBuilder.append(line3);
-        spannableStringBuilder.append(line4);
-        if (UserProfile.PROFILE.GetActiveReminder() == this)
-            spannableStringBuilder.append(line5);
-
-        spannableStringBuilder.setSpan(new RelativeSizeSpan(1.5f), 0, line1.length() - 1, 0);
-        spannableStringBuilder.setSpan(new RelativeSizeSpan(1f), line1.length(), line1.length() + line2.length() + 1, 0);
-
+        SpannableStringBuilder sString = new SpannableStringBuilder();
         if (GetFrom() == UserProfile.PROFILE.GetUserID())
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bForward), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        {
+            sString.append("To: " + GetFullName());
+            sString.setSpan(new StyleSpan(Typeface.BOLD), 0, 3, 0);
+        }
         else
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bBack), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        {
+            sString.append("From: " + GetFullName());
+            sString.setSpan(new StyleSpan(Typeface.BOLD), 0, 5, 0);
+        }
+        int length = sString.length();
+
+        sString.append("\nReminder: " + GetMessage());
+        sString.setSpan(new StyleSpan(Typeface.BOLD), length, length + 10, 0);
+        length = sString.length();
+        sString.append("\n\n" + "Time Left: " + GetETA());
+        sString.setSpan(new StyleSpan(Typeface.BOLD), length, length + 10, 0);
+
+        info.setText(sString);
+        layout.addView(info);
+
+        parent.addView(layout);
+
+        //
+        // Contents of lower portion
+        //
 
         if (UserProfile.PROFILE.GetActiveReminder() == this)
         {
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bState), line1.length() + line2.length() + line3.length() + line4.length(), line1.length() + line2.length() + line3.length() + line4.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bDelete), line1.length() + line2.length() + line3.length() + line4.length() + 2, line1.length() + line2.length() + line3.length() + line4.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bMute), line1.length() + line2.length() + line3.length() + line4.length() + 4, line1.length() + line2.length() + line3.length() + line4.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams
+                    (
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT, 0.3f
+                    );
 
-        }
+            LinearLayout btnLayout = new LinearLayout(activity);
+            btnLayout.setOrientation(LinearLayout.HORIZONTAL);
+            btnLayout.setLayoutParams(params);
+            parent.addView(btnLayout);
 
-        //
-        // If the reminder is marked as important, create an exclamation mark at the top right of the reminder.
-        //
-        if (GetImportant() && !IsUpToDate())
-        {
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bUpdate), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            if (State == ReminderState.COMPLETE)
+            Button logBtn = new Button(activity);
+            logBtn.setLayoutParams(btnParams);
+            logBtn.setText("See Log");
+            logBtn.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(activity.getApplicationContext(), GetLogButtonResourceID()), null, null, null);
+            btnLayout.addView(logBtn);
+            logBtn.setOnClickListener(new View.OnClickListener()
             {
-                spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bComplete), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            }
-        }
-        else if (GetImportant())
-        {
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bImportant), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            if (State == ReminderState.COMPLETE)
-            {
-                spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bComplete), line1.length() + line2.length() + line3.length() + 2, line1.length() + line2.length() + line3.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            }
-        }
-        else if (State == ReminderState.COMPLETE)
-        {
-            spannableStringBuilder.setSpan(new ImageSpan(view.getContext(), bComplete), line1.length() + line2.length() + line3.length(), line1.length() + line2.length() + line3.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        }
-
-        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, line1.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length(), line1.length() + 9, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), line1.length() + line2.length(), line1.length() + line2.length() + 12, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-        if (UserProfile.PROFILE.GetActiveReminder() == this)
-        {
-            final Reminder myReminder = this;
-
-            ClickableSpan stateClick = new ClickableSpan() {
                 @Override
-                public void onClick(View view)
+                public void onClick(View v)
                 {
+                    ClickLogButton(activity, reminder);
+                }
+            });
 
-                    if (!Network.IsConnected(UserAreaActivity.GetActivity()))
-                        return;
-                    //
-                    if (UserProfile.PROFILE.GetUserID() == GetFrom())
-                    {
-                        final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
-                        dialog.setTitle("Reminder Log");
-                        dialog.setContentView(R.layout.dialog_reminder_log);
-                        dialog.show();
+            Button actionBtn = new Button(activity);
+            actionBtn.setLayoutParams(btnParams);
+            actionBtn.setText("Remove");
+            actionBtn.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(activity.getApplicationContext(), GetActionButtonResourceID()), null, null, null);
+            btnLayout.addView(actionBtn);
+            actionBtn.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    ClickRemoveButton(activity, reminder);
+                }
+            });
 
-                        LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.reminder_log);
+            Button muteBtn = new Button(activity);
+            muteBtn.setLayoutParams(btnParams);
+            muteBtn.setText("Mute");
+            muteBtn.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(activity.getApplicationContext(), GetMuteButtonResourceID()), null, null, null);
+            btnLayout.addView(muteBtn);
+            muteBtn.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    ClickMuteButton(activity, reminder);
+                }
+            });
+        }
 
-                        if (GetDateInProgress() == null && GetDateComplete() == null)
-                        {
-                            TextView tv = new TextView(dialog.getContext());
-                            tv.setText("No activity.");
-                            tv.setTextColor(Color.BLACK);
-                            tv.setTextSize(18f);
-                            layout.addView(tv);
-                        }
-                        else
-                        {
-                            try
-                            {
-                                final DateFormat formatter24Hour = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-                                final DateFormat formatter12Hour = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+        return parent;
+    }
 
-                                if (GetDateInProgress() != null)
-                                {
-                                    Date date = formatter24Hour.parse(GetDateInProgress());
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.setTime(date);
+    private void ClickLogButton(final Activity activity, final Reminder reminder)
+    {
+        if (!Network.IsConnected(ReminderListActivity.GetActivity()))
+            return;
+        //
+        if (UserProfile.PROFILE.GetUserID() == GetFrom())
+        {
+            final Dialog dialog = new Dialog(activity);
+            dialog.setTitle("Reminder Log");
+            dialog.setContentView(R.layout.dialog_reminder_log);
+            dialog.show();
 
-                                    int hours = cal.get(Calendar.HOUR_OF_DAY);
+            LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.reminder_log);
 
-                                    String suffix = "am";
-                                    if (hours > 12)
-                                        suffix = "pm";
-
-                                    TextView tv = new TextView(dialog.getContext());
-                                    tv.setText("'In Progress' at " + formatter12Hour.format(formatter12Hour.parse(GetDateInProgress())) + " " + suffix);
-                                    tv.setTextColor(Color.BLACK);
-                                    tv.setTextSize(16f);
-                                    layout.addView(tv);
-                                }
-                                if (GetDateComplete() != null)
-                                {
-                                    Date date = formatter24Hour.parse(GetDateComplete());
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.setTime(date);
-
-                                    int hours = cal.get(Calendar.HOUR_OF_DAY);
-
-                                    String suffix = "am";
-                                    if (hours > 12)
-                                        suffix = "pm";
-
-                                    TextView tv = new TextView(dialog.getContext());
-                                    tv.setText("'Complete' at " + formatter12Hour.format(formatter12Hour.parse(GetDateComplete())) + " " + suffix);
-                                    tv.setTextColor(Color.BLACK);
-                                    tv.setTextSize(16f);
-                                    layout.addView(tv);
-                                }
-
-                                /*if (GetDateComplete() != null && GetDateInProgress() != null)
-                                {
-                                    Button btn_thank = new Button(UserAreaActivity.GetActivity());
-                                    btn_thank.setText("Send two coins!");
-                                    layout.addView(btn_thank);
-
-                                    if (UserProfile.PROFILE.GetCoins() < 2)
-                                        btn_thank.setEnabled(false);
-
-                                    btn_thank.setOnClickListener(new View.OnClickListener()
-                                    {
-                                        @Override
-                                        public void onClick(View view)
-                                        {
-                                            //TODO: Lots and lots
-                                            //Check if user has enough coins.
-                                            //SendCoinsRequest
-                                            //After receive response, if successful... delete local reminder
-                                        }
-                                    });
-                                }*/
-                            } catch (ParseException e)
-                            {
-                                e.printStackTrace();
-                            }
-
-
-                        }
-
-                        return;
-                    }
-
-                    final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
-                    dialog.setTitle("Select Reminder State");
-                    dialog.setContentView(R.layout.dialog_reminder_state_picker);
-                    dialog.show();
-
-                    Button btn_in_progress = (Button) dialog.findViewById(R.id.button_rsp_in_progress);
-                    Button btn_complete = (Button) dialog.findViewById(R.id.button_rsp_complete);
+            if (GetDateInProgress() == null && GetDateComplete() == null)
+            {
+                TextView tv = new TextView(dialog.getContext());
+                tv.setText("No activity.");
+                tv.setTextColor(Color.BLACK);
+                tv.setTextSize(18f);
+                layout.addView(tv);
+            }
+            else
+            {
+                try
+                {
+                    final DateFormat formatter24Hour = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                    final DateFormat formatter12Hour = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
 
                     if (GetDateInProgress() != null)
                     {
-                        btn_in_progress.setEnabled(false);
+                        Date date = formatter24Hour.parse(GetDateInProgress());
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(date);
+
+                        int hours = cal.get(Calendar.HOUR_OF_DAY);
+
+                        String suffix = "am";
+                        if (hours > 12)
+                            suffix = "pm";
+
+                        TextView tv = new TextView(dialog.getContext());
+                        tv.setText("'In Progress' at " + formatter12Hour.format(formatter12Hour.parse(GetDateInProgress())) + " " + suffix);
+                        tv.setTextColor(Color.BLACK);
+                        tv.setTextSize(16f);
+                        layout.addView(tv);
                     }
                     if (GetDateComplete() != null)
                     {
-                        btn_in_progress.setEnabled(false);
-                        btn_complete.setEnabled(false);
+                        Date date = formatter24Hour.parse(GetDateComplete());
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(date);
+
+                        int hours = cal.get(Calendar.HOUR_OF_DAY);
+
+                        String suffix = "am";
+                        if (hours > 12)
+                            suffix = "pm";
+
+                        TextView tv = new TextView(dialog.getContext());
+                        tv.setText("'Complete' at " + formatter12Hour.format(formatter12Hour.parse(GetDateComplete())) + " " + suffix);
+                        tv.setTextColor(Color.BLACK);
+                        tv.setTextSize(16f);
+                        layout.addView(tv);
                     }
-
-                    btn_in_progress.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            SetState(ReminderState.IN_PROGRESS);
-                            UserProfile.PROFILE.RefreshReminderLayout();
-                            UserProfile.PROFILE.pushReminder(myReminder);
-                            dialog.cancel();
-                        }
-                    });
-
-                    btn_complete.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            SetState(ReminderState.COMPLETE);
-                            UserProfile.PROFILE.RefreshReminderLayout();
-                            UserProfile.PROFILE.pushReminder(myReminder);
-                            dialog.cancel();
-                        }
-                    });
-
-                    (dialog.findViewById(R.id.button_rsp_cancel)).setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            dialog.cancel();
-                        }
-                    });
+                } catch (ParseException e)
+                {
+                    e.printStackTrace();
                 }
-            };
-            ClickableSpan deleteClick = new ClickableSpan()
+
+
+            }
+
+            return;
+        }
+
+        final Dialog dialog = new Dialog(activity);
+        dialog.setTitle("Select Reminder State");
+        dialog.setContentView(R.layout.dialog_reminder_state_picker);
+        dialog.show();
+
+        Button btn_in_progress = (Button) dialog.findViewById(R.id.button_rsp_in_progress);
+        Button btn_complete = (Button) dialog.findViewById(R.id.button_rsp_complete);
+
+        if (GetDateInProgress() != null)
+        {
+            btn_in_progress.setEnabled(false);
+        }
+        if (GetDateComplete() != null)
+        {
+            btn_in_progress.setEnabled(false);
+            btn_complete.setEnabled(false);
+        }
+
+        btn_in_progress.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                SetState(ReminderState.IN_PROGRESS);
+                UserProfile.PROFILE.RefreshReminderLayout();
+                UserProfile.PROFILE.pushReminder(reminder);
+                dialog.cancel();
+            }
+        });
+
+        btn_complete.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                SetState(ReminderState.COMPLETE);
+                UserProfile.PROFILE.RefreshReminderLayout();
+                UserProfile.PROFILE.pushReminder(reminder);
+                dialog.cancel();
+            }
+        });
+
+        (dialog.findViewById(R.id.button_rsp_cancel)).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                dialog.cancel();
+            }
+        });
+    }
+
+    private void ClickRemoveButton(final ReminderListActivity activity, final Reminder reminder)
+    {
+        if (!Network.IsConnected(activity))
+            return;
+        //TODO: If completed task, give send coin dialog. or not, just delete.
+
+        if (reminder.GetState() != ReminderState.COMPLETE || reminder.GetFrom() != UserProfile.PROFILE.GetUserID())
+            UserProfile.PROFILE.DeleteReminder(reminder);
+        else
+        {
+            final Dialog dialog = new Dialog(activity);
+            dialog.setTitle("Send User Coins");
+            dialog.setContentView(R.layout.dialog_send_coins);
+            dialog.show();
+
+            TextView tv_recipient = (TextView) dialog.findViewById(R.id.textView_sc_recipient);
+            TextView tv_coins = (TextView) dialog.findViewById(R.id.textView_sc_coins);
+            Button button_send = (Button) dialog.findViewById(R.id.button_sc_send);
+            Button button_skip = (Button) dialog.findViewById(R.id.button_sc_skip);
+            final EditText et_coins = (EditText) dialog.findViewById(R.id.editText_sc_coins);
+
+            tv_recipient.setText("Recipient: " + reminder.GetFullName());
+            tv_coins.setText("Coins: " + UserProfile.PROFILE.GetCoins());
+
+            button_skip.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    if (!Network.IsConnected(UserAreaActivity.GetActivity()))
-                        return;
-                    //TODO: If completed task, give send coin dialog. or not, just delete.
-
-                    if (reminder.GetState() != ReminderState.COMPLETE || reminder.GetFrom() != UserProfile.PROFILE.GetUserID())
-                        UserProfile.PROFILE.DeleteReminder(reminder);
-                    else
-                    {
-                        final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
-                        dialog.setTitle("Send User Coins");
-                        dialog.setContentView(R.layout.dialog_send_coins);
-                        dialog.show();
-
-                        TextView tv_recipient = (TextView) dialog.findViewById(R.id.textView_sc_recipient);
-                        TextView tv_coins = (TextView) dialog.findViewById(R.id.textView_sc_coins);
-                        Button button_send = (Button) dialog.findViewById(R.id.button_sc_send);
-                        Button button_skip = (Button) dialog.findViewById(R.id.button_sc_skip);
-                        final EditText et_coins = (EditText) dialog.findViewById(R.id.editText_sc_coins);
-
-                        tv_recipient.setText("Recipient: " + reminder.GetFullName());
-                        tv_coins.setText("Coins: " + UserProfile.PROFILE.GetCoins());
-
-                        button_skip.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                UserProfile.PROFILE.DeleteReminder(reminder);
-                                dialog.cancel();
-                            }
-                        });
-
-                        button_send.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                int coins;
-                                try
-                                {
-                                    coins = Integer.parseInt(et_coins.getText().toString());
-                                }
-                                catch (NumberFormatException ex)
-                                {
-                                    ex.printStackTrace();
-                                    dialog.cancel();
-                                    return;
-                                }
-
-                                if (coins > UserProfile.PROFILE.GetCoins())
-                                {
-                                    Snackbar.make(UserAreaActivity.GetActivity().reminderLayout, "Insufficient coins!", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                    dialog.cancel();
-                                    return;
-                                }
-
-                                if (coins == 0)
-                                {
-                                    UserProfile.PROFILE.DeleteReminder(reminder);
-                                    dialog.cancel();
-                                    return;
-                                }
-
-                                SendCoinsRequest.SendRequest(UserAreaActivity.GetActivity(), reminder.GetTo(), coins);
-                                UserProfile.PROFILE.DeleteReminder(reminder);
-                                dialog.cancel();
-                            }
-                        });
-                    }
-
+                    UserProfile.PROFILE.DeleteReminder(reminder);
+                    dialog.cancel();
                 }
-            };
-            ClickableSpan muteClick = new ClickableSpan() {
+            });
+
+            button_send.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
                 public void onClick(View view)
                 {
-                    UserProfile.PROFILE.SetIgnoreReminder(GetID(), !UserProfile.PROFILE.IsIgnoring(GetID()));
-                    UserProfile.PROFILE.RefreshReminderLayout();
+                    int coins;
+                    try
+                    {
+                        coins = Integer.parseInt(et_coins.getText().toString());
+                    }
+                    catch (NumberFormatException ex)
+                    {
+                        ex.printStackTrace();
+                        dialog.cancel();
+                        return;
+                    }
+
+                    if (coins > UserProfile.PROFILE.GetCoins())
+                    {
+                        Snackbar.make(view, "Insufficient coins!", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                        dialog.cancel();
+                        return;
+                    }
+
+                    if (coins == 0)
+                    {
+                        UserProfile.PROFILE.DeleteReminder(reminder);
+                        dialog.cancel();
+                        return;
+                    }
+
+                    SendCoinsRequest.SendRequest(activity, reminder.GetTo(), coins);
+                    UserProfile.PROFILE.DeleteReminder(reminder);
+                    dialog.cancel();
                 }
-            };
-
-            spannableStringBuilder.setSpan(stateClick, line1.length() + line2.length() + line3.length() + line4.length(), line1.length() + line2.length() + line3.length() + line4.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spannableStringBuilder.setSpan(deleteClick, line1.length() + line2.length() + line3.length() + line4.length() + 2, line1.length() + line2.length() + line3.length() + line4.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            spannableStringBuilder.setSpan(muteClick, line1.length() + line2.length() + line3.length() + line4.length() + 4, line1.length() + line2.length() + line3.length() + line4.length() + 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
+            });
         }
 
-        view.setText(spannableStringBuilder);
-        if (!GetImportant())
-            view.setPadding(10, 12, 10, 12);
+        if (ReminderListActivity.GetActivity() != null)
+            ReminderListActivity.GetActivity().RefreshReminderLayout();
+    }
+
+    private void ClickMuteButton(final ReminderListActivity activity, final Reminder reminder)
+    {
+        UserProfile.PROFILE.SetIgnoreReminder(GetID(), !UserProfile.PROFILE.IsIgnoring(GetID()));
+        activity.RefreshReminderLayout();
+    }
+
+    private int GetLogButtonResourceID()
+    {
+        if (GetState() == ReminderState.IN_PROGRESS)
+        if (GetTo() == UserProfile.PROFILE.GetUserID())
+            return R.drawable.running_48_blue;
         else
-            view.setPadding(10, 12, 10, 0);
-        view.setBackgroundColor(color);
+            return R.drawable.document_48_blue;
+        else if (GetState() == ReminderState.COMPLETE)
+        if (GetTo() == UserProfile.PROFILE.GetUserID())
+            return R.drawable.running_48_green;
+        else
+            return R.drawable.document_48_green;
+    else
+    if (GetTo() == UserProfile.PROFILE.GetUserID())
+        return R.drawable.running_48;
+    else
+        return R.drawable.document_48;
+    }
 
+    private int GetActionButtonResourceID()
+    {
+        if (GetState() != ReminderState.COMPLETE || GetFrom() != UserProfile.PROFILE.GetUserID())
+        {
+            return R.drawable.delete_48;
+        }
+        else
+        {
+            return R.drawable.coins_48_blue;
+        }
+    }
 
-
-        Widget = view;
-        return view;
+    private int GetMuteButtonResourceID()
+    {
+        if (!UserProfile.PROFILE.IsIgnoring(GetID()))
+            return R.drawable.mute_48;
+        else
+            return R.drawable.mute_48_red;
     }
     public int[] GetTimeLeft()
     {

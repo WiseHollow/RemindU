@@ -2,9 +2,11 @@ package net.johnbrooks.remindu.activities;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -39,6 +41,16 @@ public class CreateReminderActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_reminder);
+
+        //
+        // Prepare back button
+        //
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        //
 
         tv_date = (TextView) findViewById(R.id.textView_cnr_date);
         tv_time = (TextView) findViewById(R.id.textView_cnr_time);
@@ -132,7 +144,21 @@ public class CreateReminderActivity extends AppCompatActivity
                 }
 
                 Reminder.CreateReminder(user_id_to, message, important, calendar.getTime(), CreateReminderActivity.this);
+                b_send.setEnabled(false);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

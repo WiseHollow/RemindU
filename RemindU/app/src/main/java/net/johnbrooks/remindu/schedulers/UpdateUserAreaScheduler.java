@@ -55,7 +55,6 @@ public class UpdateUserAreaScheduler
         else
         {
             UserProfile.PROFILE.RefreshReminderLayout();
-            UserAreaActivity.GetActivity().SetupContacts();
         }
     }
 
