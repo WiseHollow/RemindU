@@ -21,6 +21,9 @@ import net.johnbrooks.remindu.schedulers.UpdateManageContactsScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.UserProfile;
 
+import java.util.Collections;
+import java.util.List;
+
 public class ManageContactsActivity extends AppCompatActivity
 {
     @Override
@@ -58,7 +61,7 @@ public class ManageContactsActivity extends AppCompatActivity
                 dialog.setContentView(R.layout.dialog_add_contact);
                 dialog.show();
 
-                final EditText et_Email = (EditText) dialog.findViewById(R.id.editText_AddContact_Email);
+                final EditText et_Target = (EditText) dialog.findViewById(R.id.editText_AddContact_Email);
                 Button button = (Button) dialog.findViewById(R.id.button_AddContact_Submit);
 
                 button.setOnClickListener(new View.OnClickListener()
@@ -66,11 +69,11 @@ public class ManageContactsActivity extends AppCompatActivity
                     @Override
                     public void onClick(View view)
                     {
-                        String email = et_Email.getText().toString();
+                        String target = et_Target.getText().toString();
 
-                        Log.d("INFO", "Requesting that contact email=" + email + " be added.");
+                        Log.d("INFO", "Requesting that contact email/username=" + target + " be added.");
 
-                        AddContactRequest.SendRequest(ManageContactsActivity.this, email);
+                        AddContactRequest.SendRequest(ManageContactsActivity.this, target);
 
                         dialog.cancel();
                     }
@@ -96,17 +99,10 @@ public class ManageContactsActivity extends AppCompatActivity
         LinearLayout layout = (LinearLayout) findViewById(R.id.Manage_Contacts_Scroll_View_Layout);
         layout.removeAllViews();
 
-        //TODO: Make work with custom avatars.
-        // Right now we only use a default avatar for each contact.
-        Bitmap bDefaultAvatar = BitmapFactory.decodeResource( getResources(), R.drawable.user_48 );
-        // Lets get our delete image.
-        Bitmap bDelete = BitmapFactory.decodeResource( getResources(), R.drawable.delete_48);
-        //
-        // For each profile in contacts, lets make a textview for that profile.
-        //
-        for (ContactProfile profile : UserProfile.PROFILE.GetContacts())
+        List<ContactProfile> contacts = UserProfile.PROFILE.GetContacts();
+        Collections.sort(contacts);
+        for (ContactProfile profile : contacts)
         {
-            //layout.addView(profile.CreateWidget(ManageContactsActivity.this));
             layout.addView(profile.CreateWidget(ManageContactsActivity.this));
         }
     }
