@@ -22,6 +22,7 @@ public class MyProfileActivity extends AppCompatActivity
 {
     private static int PICK_AVATAR_REQUEST = 1;
 
+    public TextView tvChangeAvatar = null;
     public TextView tvFullName = null;
     public TextView tvUsername = null;
     public TextView tvEmail = null;
@@ -61,6 +62,7 @@ public class MyProfileActivity extends AppCompatActivity
 
         tvPointsRemaining = (TextView) findViewById(R.id.textView_Profile_PointsRemaining);
         avatar = (ImageView) findViewById(R.id.imageView_my_profile_avatar);
+        tvChangeAvatar = (TextView) findViewById(R.id.textView_change_my_avatar);
 
         //
         // Set avatar picture
@@ -68,7 +70,7 @@ public class MyProfileActivity extends AppCompatActivity
 
         avatar.setBackground(AvatarImageUtil.GetAvatar(this, UserProfile.PROFILE.GetAvatarID()));
 
-        avatar.setOnClickListener(new View.OnClickListener()
+        View.OnClickListener avatarClick = new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -76,7 +78,10 @@ public class MyProfileActivity extends AppCompatActivity
                 Intent intent = new Intent(MyProfileActivity.this, AvatarSelectActivity.class);
                 startActivityForResult(intent, PICK_AVATAR_REQUEST);
             }
-        });
+        };
+
+        avatar.setOnClickListener(avatarClick);
+        tvChangeAvatar.setOnClickListener(avatarClick);
 
         //
         // Set scheduler

@@ -2,48 +2,92 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="20dp">
 
-    <TextView
-        android:text="Recipient: "
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView_sc_recipient"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        android:orientation="horizontal"
+        android:paddingBottom="20dp"
+        >
 
-    <TextView
-        android:text="Coins: "
+        <TextView
+            android:text="Recipient: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_sc_recipient"
+            android:gravity="left"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:text="Coins: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_sc_coins"
+            android:gravity="right"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView_sc_coins"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        >
 
-    <EditText
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Skip"
+            android:id="@+id/button_sc_skip"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1 Coin"
+            android:id="@+id/button_sc_send_1"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/editText_sc_coins"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="Coins" />
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="5 Coins"
+            android:id="@+id/button_sc_send_5"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="10 Coins"
+            android:id="@+id/button_sc_send_10"
+            />
 
-    <Button
-        android:text="Send"
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button_sc_send"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        android:orientation="horizontal"
+        >
 
-    <Button
-        android:text="Skip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_sc_skip"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+
+    </LinearLayout>
 </LinearLayout>

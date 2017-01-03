@@ -154,18 +154,6 @@ public class UserProfile implements Parcelable
 
         ResetLinearLayout(UserAreaActivity.GetActivity().reminderLayout);
 
-        if (GetReminders().isEmpty() && UserAreaActivity.GetActivity() != null)
-        {
-            TextView tv = new TextView(UserAreaActivity.GetActivity());
-            tv.setText("No reminders!");
-            tv.setTextSize(18f);
-            tv.setAllCaps(true);
-            tv.setPadding(5, 15, 5, 15);
-            UserAreaActivity.GetActivity().reminderLayout.addView(tv);
-
-            return;
-        }
-
         Collections.sort(GetReminders());
         Collections.sort(GetContacts());
 
@@ -182,13 +170,6 @@ public class UserProfile implements Parcelable
                 UserAreaActivity.GetActivity().reminderLayout.addView(view);
             }
         }
-
-        /*for (Reminder r : GetReminders())
-        {
-            UserAreaActivity.GetActivity().reminderLayout.addView(r.CreateWidget(UserAreaActivity.GetActivity(), UserAreaActivity.GetActivity().reminderLayout));
-
-        }*/
-
     }
 
     public ContactProfile GetContact(int id)

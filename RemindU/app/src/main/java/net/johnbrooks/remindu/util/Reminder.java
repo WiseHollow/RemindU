@@ -105,7 +105,7 @@ public class Reminder implements Comparable<Reminder>
             if (reminder.GetState() != check.GetState() && reminder.GetFrom() == UserProfile.PROFILE.GetUserID())
             {
                 // Change in state, and we are the sender. Notify the user.
-                reminder.ShowNotification(true, "Reminder Alert!", "Reminder has been marked: " + reminder.GetState().toString());
+                reminder.ShowNotification(true, "Reminder Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
                 reminder.SetUpToDate(false);
             }
             UserProfile.PROFILE.GetReminders().remove(check);
@@ -114,7 +114,7 @@ public class Reminder implements Comparable<Reminder>
         {
             // New reminder has been added, make a notification
             if (!silentLoad)
-                reminder.ShowNotification(true, "Reminder Alert!", reminder.GetMessage());
+                reminder.ShowNotification(true, "New reminder from" + reminder.GetFullName(), reminder.GetMessage());
             reminder.SetUpToDate(false);
         }
 
@@ -307,7 +307,10 @@ public class Reminder implements Comparable<Reminder>
 
             Button logBtn = new Button(activity);
             logBtn.setLayoutParams(btnParams);
-            logBtn.setText("See Log");
+            if (GetFrom() == UserProfile.PROFILE.GetUserID())
+                logBtn.setText("See Log");
+            else
+                logBtn.setText("Mark as");
             logBtn.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(activity.getApplicationContext(), GetLogButtonResourceID()), null, null, null);
             btnLayout.addView(logBtn);
             logBtn.setOnClickListener(new View.OnClickListener()
@@ -321,7 +324,11 @@ public class Reminder implements Comparable<Reminder>
 
             Button actionBtn = new Button(activity);
             actionBtn.setLayoutParams(btnParams);
-            actionBtn.setText("Remove");
+
+            if (GetFrom() == UserProfile.PROFILE.GetUserID() && GetState() == ReminderState.COMPLETE)
+                actionBtn.setText("Finish");
+            else
+                actionBtn.setText("Remove");
             actionBtn.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(activity.getApplicationContext(), GetActionButtonResourceID()), null, null, null);
             btnLayout.addView(actionBtn);
             actionBtn.setOnClickListener(new View.OnClickListener()
@@ -454,6 +461,9 @@ public class Reminder implements Comparable<Reminder>
                 UserProfile.PROFILE.RefreshReminderLayout();
                 UserProfile.PROFILE.pushReminder(reminder);
                 dialog.cancel();
+
+                if (ReminderListActivity.GetActivity() != null)
+                    ReminderListActivity.GetActivity().RefreshReminderLayout();
             }
         });
 
@@ -466,6 +476,9 @@ public class Reminder implements Comparable<Reminder>
                 UserProfile.PROFILE.RefreshReminderLayout();
                 UserProfile.PROFILE.pushReminder(reminder);
                 dialog.cancel();
+
+                if (ReminderListActivity.GetActivity() != null)
+                    ReminderListActivity.GetActivity().RefreshReminderLayout();
             }
         });
 
@@ -494,11 +507,12 @@ public class Reminder implements Comparable<Reminder>
             dialog.setContentView(R.layout.dialog_send_coins);
             dialog.show();
 
-            TextView tv_recipient = (TextView) dialog.findViewById(R.id.textView_sc_recipient);
-            TextView tv_coins = (TextView) dialog.findViewById(R.id.textView_sc_coins);
-            Button button_send = (Button) dialog.findViewById(R.id.button_sc_send);
-            Button button_skip = (Button) dialog.findViewById(R.id.button_sc_skip);
-            final EditText et_coins = (EditText) dialog.findViewById(R.id.editText_sc_coins);
+            final TextView tv_recipient = (TextView) dialog.findViewById(R.id.textView_sc_recipient);
+            final TextView tv_coins = (TextView) dialog.findViewById(R.id.textView_sc_coins);
+            final Button button_skip = (Button) dialog.findViewById(R.id.button_sc_skip);
+            final Button button_send_1 = (Button) dialog.findViewById(R.id.button_sc_send_1);
+            final Button button_send_5 = (Button) dialog.findViewById(R.id.button_sc_send_5);
+            final Button button_send_10 = (Button) dialog.findViewById(R.id.button_sc_send_10);
 
             tv_recipient.setText("Recipient: " + reminder.GetFullName());
             tv_coins.setText("Coins: " + UserProfile.PROFILE.GetCoins());
@@ -510,27 +524,18 @@ public class Reminder implements Comparable<Reminder>
                 {
                     UserProfile.PROFILE.DeleteReminder(reminder);
                     dialog.cancel();
+
+                    if (ReminderListActivity.GetActivity() != null)
+                        ReminderListActivity.GetActivity().RefreshReminderLayout();
                 }
             });
 
-            button_send.setOnClickListener(new View.OnClickListener()
+            button_send_1.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    int coins;
-                    try
-                    {
-                        coins = Integer.parseInt(et_coins.getText().toString());
-                    }
-                    catch (NumberFormatException ex)
-                    {
-                        ex.printStackTrace();
-                        dialog.cancel();
-                        return;
-                    }
-
-                    if (coins > UserProfile.PROFILE.GetCoins())
+                    if (1 > UserProfile.PROFILE.GetCoins())
                     {
                         Snackbar.make(view, "Insufficient coins!", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
@@ -538,16 +543,56 @@ public class Reminder implements Comparable<Reminder>
                         return;
                     }
 
-                    if (coins == 0)
+                    SendCoinsRequest.SendRequest(activity, reminder.GetTo(), 1);
+                    UserProfile.PROFILE.DeleteReminder(reminder);
+                    dialog.cancel();
+
+                    if (ReminderListActivity.GetActivity() != null)
+                        ReminderListActivity.GetActivity().RefreshReminderLayout();
+                }
+            });
+
+            button_send_5.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    if (5 > UserProfile.PROFILE.GetCoins())
                     {
-                        UserProfile.PROFILE.DeleteReminder(reminder);
+                        Snackbar.make(view, "Insufficient coins!", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
                         dialog.cancel();
                         return;
                     }
 
-                    SendCoinsRequest.SendRequest(activity, reminder.GetTo(), coins);
+                    SendCoinsRequest.SendRequest(activity, reminder.GetTo(), 5);
                     UserProfile.PROFILE.DeleteReminder(reminder);
                     dialog.cancel();
+
+                    if (ReminderListActivity.GetActivity() != null)
+                        ReminderListActivity.GetActivity().RefreshReminderLayout();
+                }
+            });
+
+            button_send_10.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    if (10 > UserProfile.PROFILE.GetCoins())
+                    {
+                        Snackbar.make(view, "Insufficient coins!", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                        dialog.cancel();
+                        return;
+                    }
+
+                    SendCoinsRequest.SendRequest(activity, reminder.GetTo(), 10);
+                    UserProfile.PROFILE.DeleteReminder(reminder);
+                    dialog.cancel();
+
+                    if (ReminderListActivity.GetActivity() != null)
+                        ReminderListActivity.GetActivity().RefreshReminderLayout();
                 }
             });
         }
@@ -767,7 +812,12 @@ public class Reminder implements Comparable<Reminder>
         if (UserProfile.PROFILE.IsIgnoring(GetID()))
             return;
 
-        PendingIntent pi = PendingIntent.getActivity(service, 0, new Intent(service.getBaseContext(), UserAreaActivity.class), 0);
+        Intent intent = new Intent(service.getBaseContext(), ReminderListActivity.class);
+        if (GetFrom() == UserProfile.PROFILE.GetUserID())
+            intent.putExtra("contactID", GetTo());
+        else
+            intent.putExtra("contactID", GetFrom());
+        PendingIntent pi = PendingIntent.getActivity(service, 0, intent, 0);
         Notification notification = new NotificationCompat.Builder(service)
                 .setTicker(title)
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
@@ -814,7 +864,12 @@ public class Reminder implements Comparable<Reminder>
             return;
         }
 
-        PendingIntent pi = PendingIntent.getActivity(UserAreaActivity.GetActivity(), 0, new Intent(UserAreaActivity.GetActivity().getBaseContext(), UserAreaActivity.class), 0);
+        Intent intent = new Intent(UserAreaActivity.GetActivity().getBaseContext(), ReminderListActivity.class);
+        if (GetFrom() == UserProfile.PROFILE.GetUserID())
+            intent.putExtra("contactID", GetTo());
+        else
+            intent.putExtra("contactID", GetFrom());
+        PendingIntent pi = PendingIntent.getActivity(UserAreaActivity.GetActivity(), 0, intent, 0);
         Notification notification = new NotificationCompat.Builder(UserAreaActivity.GetActivity())
                 .setTicker(title)
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
