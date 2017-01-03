@@ -54,6 +54,8 @@ public class ActivateAccountActivity extends AppCompatActivity
                 RequestActivationEmailRequest.SendRequest(ActivateAccountActivity.this);
             }
         });
+
+        RequestActivationEmailRequest.SendRequest(ActivateAccountActivity.this);
     }
 
     @Override
