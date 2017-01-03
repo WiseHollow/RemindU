@@ -59,9 +59,20 @@ public class GetLatestVersionRequest extends StringRequest
 
                     if (success)
                     {
-                        String version = jsonResponse.getString("version");
+                        String LatestVersionString = jsonResponse.getString("version");
 
-                        if (!version.equalsIgnoreCase(currentVersion))
+                        double LatestVersion = Double.parseDouble(LatestVersionString.split(" ")[0]);
+                        String LatestSeries = LatestVersionString.split(" ")[1];
+
+                        boolean needsUpdate = false;
+
+                        double CurrentVersion = Double.parseDouble(currentVersion.split(" ")[0]);
+                        String CurrentSeries = currentVersion.split(" ")[1];
+
+                        if (LatestVersion > CurrentVersion || (LatestVersion <= CurrentVersion && !LatestSeries.equalsIgnoreCase(CurrentSeries)))
+                            needsUpdate = true;
+
+                        if (needsUpdate)
                         {
                             String message = jsonResponse.getString("message");
                             Log.d("INFO", "There is an update available");
@@ -69,7 +80,7 @@ public class GetLatestVersionRequest extends StringRequest
                             if (UserAreaActivity.GetActivity() != null)
                             {
                                 AlertDialog.Builder errorDialog = new AlertDialog.Builder(UserAreaActivity.GetActivity());
-                                errorDialog.setMessage("Update is available: " + version + "\n\nVersion notice: " + message)
+                                errorDialog.setMessage("Update is available: " + LatestVersionString + "\n\nVersion notice: " + message)
                                         .setNegativeButton("Okay", null)
                                         .create()
                                         .show();
