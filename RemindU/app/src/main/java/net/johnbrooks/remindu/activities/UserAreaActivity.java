@@ -146,8 +146,10 @@ public class UserAreaActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        } else
+        {
+            moveTaskToBack(true);
+            //super.onBackPressed();
         }
     }
 
@@ -190,6 +192,11 @@ public class UserAreaActivity extends AppCompatActivity
         {
             Intent intent = new Intent(UserAreaActivity.this, AboutActivity.class);
             UserAreaActivity.this.startActivity(intent);
+        }
+        else if (id == R.id.nav_exit)
+        {
+            finish();
+            System.exit(0);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
