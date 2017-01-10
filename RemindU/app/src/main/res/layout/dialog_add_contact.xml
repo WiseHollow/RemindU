@@ -24,6 +24,5 @@
         android:text="Privacy Statement: When adding a contact, you will not be able to interact with the new contact until they have also added you as a contact. "
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView5"
         android:textAlignment="center" />
 </LinearLayout>

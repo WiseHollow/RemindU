@@ -6,12 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:openDrawer="start"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    >
 
     <include
         layout="@layout/app_bar_user_area"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
@@ -19,7 +21,12 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_user_area"
-        app:menu="@menu/activity_user_area_drawer" />
+        app:itemTextColor="#FFF"
+        app:itemIconTint="#FFF"
 
+        app:headerLayout="@layout/nav_header_user_area"
+        app:menu="@menu/activity_user_area_drawer"
+        android:background="@drawable/side_nav_bar"
+        />
+    <!--app:headerLayout="@layout/nav_header_user_area"-->
 </android.support.v4.widget.DrawerLayout>

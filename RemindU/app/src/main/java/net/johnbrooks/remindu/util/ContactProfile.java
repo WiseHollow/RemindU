@@ -112,11 +112,12 @@ public class ContactProfile implements Comparable<ContactProfile>
         avatar.setLayoutParams(new GridView.LayoutParams(250, 250));
         avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
         avatar.setPadding(8, 8, 8, 8);
-
         avatar.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
         layout.addView(avatar);
+        layout.setPadding(15, 15, 15, 15);
 
         TextView info = new TextView(activity);
+        info.setPadding(15, 15, 15, 15);
         SpannableStringBuilder sString = new SpannableStringBuilder();
         sString.append("Name: " + GetFullName());
         sString.setSpan(new StyleSpan(Typeface.BOLD), 0, 4, 0);

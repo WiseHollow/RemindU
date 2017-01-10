@@ -164,7 +164,7 @@ public class UserProfile implements Parcelable
             {
                 LinearLayout view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
                 if (i % 2 != 0)
-                    view.setBackgroundColor(Color.parseColor("#EBEBEB"));
+                    view.setBackgroundColor(Color.parseColor("#eaf7ff"));
                 else
                     view.setBackgroundColor(Color.parseColor("#FCFCFC"));
                 UserAreaActivity.GetActivity().reminderLayout.addView(view);

@@ -4,21 +4,31 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_manage"
-            android:icon="@drawable/conference_call_48"
+            android:icon="@drawable/contacts_48"
             android:title="@string/manage_contacts" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/user_48"
+            android:icon="@drawable/profile_48"
             android:title="@string/my_profile" />
         <item
             android:id="@+id/nav_invite"
-            android:icon="@drawable/chat_48"
+            android:icon="@drawable/invite_48"
             android:title="@string/invite" />
     </group>
 
-    <item android:title="Contacts">
-        <menu>
-        </menu>
-    </item>
+    <group>
+        <item android:title="Settings"
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/settings_48" />
+        <item android:title="Give Feedback"
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/comments_48" />
+        <item android:title="Sign Out"
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/exit_48" />
+        <item android:title="About"
+            android:id="@+id/nav_about"
+            android:icon="@drawable/about_48" />
+    </group>
 
 </menu>

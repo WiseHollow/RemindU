@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
 
@@ -24,6 +26,7 @@ import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.services.PullService;
+import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.Network;
@@ -48,22 +51,16 @@ public class UserAreaActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-                if (!Network.IsConnected(UserAreaActivity.this))
-                    return;
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        {
+            public void onDrawerOpened(View drawerView)
+            {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -75,14 +72,8 @@ public class UserAreaActivity extends AppCompatActivity
         //
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         reminderLayout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
-
-        final Menu menu = navigationView.getMenu();
-        contactsSubMenu = menu.addSubMenu("Contacts");
-
         pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-
         if (UserProfile.PROFILE == null || reminderLayout == null)
             return;
 
@@ -107,6 +98,10 @@ public class UserAreaActivity extends AppCompatActivity
         //
 
         UserProfile.PROFILE.RefreshReminderLayout();
+
+
+
+
 
         //
         // Create Listeners
@@ -137,6 +132,16 @@ public class UserAreaActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        findViewById(R.id.drawer_profile_picture).setBackground(AvatarImageUtil.GetAvatar(this, UserProfile.PROFILE.GetAvatarID()));
+        ((TextView) findViewById(R.id.drawer_profile_name)).setText(UserProfile.PROFILE.GetFullName());
+        ((TextView) findViewById(R.id.drawer_profile_email)).setText(UserProfile.PROFILE.GetEmail());
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -146,48 +151,11 @@ public class UserAreaActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.user_area, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
-        {
-            Intent intent = new Intent(UserAreaActivity.this, SettingsActivity.class);
-            UserAreaActivity.this.startActivity(intent);
-        }
-        else if (id == R.id.action_sign_out)
-        {
-            Intent signOutIntent = new Intent(UserAreaActivity.this, LoginActivity.class);
-            signOutIntent.putExtra("signOut", true);
-            UserAreaActivity.this.startActivity(signOutIntent);
-            finish();
-        }
-        else if (id == R.id.action_about)
-        {
-            Intent intent = new Intent(UserAreaActivity.this, AboutActivity.class);
-            UserAreaActivity.this.startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_profile)
         {
             Intent intent = new Intent(UserAreaActivity.this, MyProfileActivity.class);
@@ -200,7 +168,28 @@ public class UserAreaActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_invite)
         {
+            //TODO: Gives functionality.
+        }
+        else if (id == R.id.nav_settings)
+        {
+            Intent intent = new Intent(UserAreaActivity.this, SettingsActivity.class);
+            UserAreaActivity.this.startActivity(intent);
+        }
+        else if (id == R.id.nav_sign_out)
+        {
+            Intent signOutIntent = new Intent(UserAreaActivity.this, LoginActivity.class);
+            signOutIntent.putExtra("signOut", true);
+            UserAreaActivity.this.startActivity(signOutIntent);
+            finish();
+        }
+        else if (id == R.id.nav_feedback)
+        {
 
+        }
+        else if (id == R.id.nav_about)
+        {
+            Intent intent = new Intent(UserAreaActivity.this, AboutActivity.class);
+            UserAreaActivity.this.startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

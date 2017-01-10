@@ -6,7 +6,7 @@
     android:layout_margin="20dp">
 
     <TextView
-        android:text="Reminder Message"
+        android:text="Reminder Who"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView_rf_who" />
