@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import net.johnbrooks.remindu.activities.SettingsActivity;
-
 /**
  * Created by John on 12/19/2016.
  */

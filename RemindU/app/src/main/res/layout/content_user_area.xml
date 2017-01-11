@@ -30,14 +30,17 @@
             android:layout_alignParentBottom="true"
             >
 
-        <GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/GridLayout_Reminder_Layout"
-            android:columnCount="3"
-            android:layout_gravity="center_horizontal"
-            />
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/GridLayout_Reminder_Layout"
+                android:columnCount="3"
+                android:layout_gravity="center_horizontal"
+                >
+
+
+            </GridLayout>
 
 
         </ScrollView>
@@ -57,8 +60,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/LinearLayout_Reminder_Layout"
-                android:layout_gravity="center_horizontal"
-                />
+                >
+
+                </LinearLayout>
 
             </ScrollView>
 

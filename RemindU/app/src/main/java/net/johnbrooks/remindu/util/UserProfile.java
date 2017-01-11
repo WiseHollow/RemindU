@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
@@ -158,28 +157,44 @@ public class UserProfile implements Parcelable
         Collections.sort(GetReminders());
         Collections.sort(GetContacts());
 
+        String viewStyle = UserAreaActivity.GetActivity().SharedPreferences.getString("VIEW", "LIST");
+        viewStyle = "GRID";
+        //TODO: Doesn't show grid view....
+
+        if (viewStyle.equals("GRID"))
+        {
+            UserAreaActivity.GetActivity().LinearReminderLayout.setEnabled(false);
+            UserAreaActivity.GetActivity().GridReminderLayout.setEnabled(true);
+            ((View) UserAreaActivity.GetActivity().LinearReminderLayout.getParent()).setEnabled(false);
+            ((View) UserAreaActivity.GetActivity().GridReminderLayout.getParent()).setEnabled(true);
+        }
+        else
+        {
+            UserAreaActivity.GetActivity().LinearReminderLayout.setEnabled(true);
+            UserAreaActivity.GetActivity().GridReminderLayout.setEnabled(false);
+        }
+
         for (int i = 0; i < GetContacts().size(); i++)
         {
             ContactProfile cp = GetContacts().get(i);
             if (cp != null)
             {
                 View view;
-
-                String viewStyle = UserAreaActivity.GetActivity().SharedPreferences.getString("VIEW", "LIST");
-                if (viewStyle.equals("TILES"))
-                    view = cp.CreateCategoryWidgetTest(UserAreaActivity.GetActivity());
+                if (viewStyle.equals("GRID"))
+                {
+                    view = cp.CreateCategoryWidgetForGrid(UserAreaActivity.GetActivity());
+                    UserAreaActivity.GetActivity().GridReminderLayout.addView(view);
+                }
                 else
+                {
                     view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
+                    UserAreaActivity.GetActivity().LinearReminderLayout.addView(view);
+                }
 
                 if (i % 2 != 0)
                     view.setBackgroundColor(Color.parseColor("#eaf7ff"));
                 else
                     view.setBackgroundColor(Color.parseColor("#FCFCFC"));
-
-                if (viewStyle.equals("TILES"))
-                    UserAreaActivity.GetActivity().GridReminderLayout.addView(view);
-                else
-                    UserAreaActivity.GetActivity().LinearReminderLayout.addView(view);
             }
         }
     }

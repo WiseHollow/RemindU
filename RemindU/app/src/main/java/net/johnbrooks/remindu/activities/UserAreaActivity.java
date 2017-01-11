@@ -85,11 +85,6 @@ public class UserAreaActivity extends AppCompatActivity
         ProcessRemindersScheduler.Initialize();
         if (SharedPreferences.getBoolean("check_for_updates", true))
             GetLatestVersionRequest.SendRequest(UserAreaActivity.this);
-        if (!SharedPreferences.getBoolean("boot_switch", true))
-        {
-            //Intent serviceIntent = new Intent(getBaseContext(), PullService.class);
-            //getBaseContext().startService(serviceIntent);
-        }
 
         //
         // Sets

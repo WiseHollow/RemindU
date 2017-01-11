@@ -86,7 +86,7 @@ public class ContactProfile implements Comparable<ContactProfile>
         return list;
     }
 
-    public RelativeLayout CreateCategoryWidgetTest(final Activity activity)
+    public RelativeLayout CreateCategoryWidgetForGrid(final Activity activity)
     {
         RelativeLayout layout = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact, null);
 
