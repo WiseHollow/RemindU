@@ -2,21 +2,9 @@ package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.support.v7.widget.ButtonBarLayout;
-import android.text.Layout;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ImageSpan;
-import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +12,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -35,7 +23,6 @@ import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.DeleteContactRequest;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -64,6 +51,7 @@ public class ContactProfile implements Comparable<ContactProfile>
     public final String GetEmail() { return Email; }
     public String GetUsername() { return "null"; }
     public String GetFullName() { return "null"; }
+    public String GetShortName() { return "null"; }
     public String GetDisplayName() { return Email; }
     public String GetContacts() { return "null"; }
     public String GetAvatarID() { return "default"; }
@@ -96,6 +84,33 @@ public class ContactProfile implements Comparable<ContactProfile>
                 list.add(r);
 
         return list;
+    }
+
+    public RelativeLayout CreateCategoryWidgetTest(final Activity activity)
+    {
+        RelativeLayout layout = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact, null);
+
+        TextView tv_name = (TextView) layout.findViewById(R.id.contact_name);
+        TextView tv_reminders = (TextView) layout.findViewById(R.id.contact_reminders);
+        ImageView iv_avatar = (ImageView) layout.findViewById(R.id.contact_avatar);
+
+        tv_name.setText(GetShortName());
+        tv_reminders.setText("" + GetAmountOfReminders());
+        iv_avatar.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
+
+        final ContactProfile cp = this;
+        layout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(UserAreaActivity.GetActivity(), ReminderListActivity.class);
+                intent.putExtra("contactID", cp.GetID());
+                UserAreaActivity.GetActivity().startActivity(intent);
+            }
+        });
+
+        return layout;
     }
 
     public LinearLayout CreateCategoryWidget(final Activity activity)
@@ -142,6 +157,18 @@ public class ContactProfile implements Comparable<ContactProfile>
 
         return layout;
     }
+
+    private TextView GenerateSubWidget(final ManageContactsActivity activity)
+    {
+        TextView view = new TextView(activity);
+
+        view.setText(GetAmountOfReminders());
+        view.setBackgroundColor(Color.BLACK);
+        view.setTextColor(Color.WHITE);
+
+        return view;
+    }
+
     public LinearLayout CreateWidget(final ManageContactsActivity activity)
     {
         LinearLayout layout = new LinearLayout(activity);

@@ -28,5 +28,4 @@
         app:menu="@menu/activity_user_area_drawer"
         android:background="@drawable/side_nav_bar"
         />
-    <!--app:headerLayout="@layout/nav_header_user_area"-->
 </android.support.v4.widget.DrawerLayout>

@@ -19,6 +19,19 @@ public class AcceptedContactProfile extends ContactProfile
     @Override
     public final String GetFullName() { return FullName; }
     @Override
+    public final String GetShortName()
+    {
+        String[] names = GetFullName().split(" ");
+
+        String name = names[0];
+        if (names.length > 1)
+            name += " " + names[1].charAt(0) + ".";
+
+        //TODO: Make length of short name have a max of 10 chars
+
+        return name;
+    }
+    @Override
     public final String GetUsername() { return Username; }
     @Override
     public final String GetDisplayName() { return FullName; }

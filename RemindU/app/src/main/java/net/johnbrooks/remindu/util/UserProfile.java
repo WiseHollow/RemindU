@@ -6,10 +6,10 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-import android.widget.GridView;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
@@ -152,7 +152,8 @@ public class UserProfile implements Parcelable
         if (UserAreaActivity.GetActivity() == null)
             return;
 
-        ResetLinearLayout(UserAreaActivity.GetActivity().reminderLayout);
+        ResetLinearLayout(UserAreaActivity.GetActivity().GridReminderLayout);
+        ResetLinearLayout(UserAreaActivity.GetActivity().LinearReminderLayout);
 
         Collections.sort(GetReminders());
         Collections.sort(GetContacts());
@@ -162,12 +163,23 @@ public class UserProfile implements Parcelable
             ContactProfile cp = GetContacts().get(i);
             if (cp != null)
             {
-                LinearLayout view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
+                View view;
+
+                String viewStyle = UserAreaActivity.GetActivity().SharedPreferences.getString("VIEW", "LIST");
+                if (viewStyle.equals("TILES"))
+                    view = cp.CreateCategoryWidgetTest(UserAreaActivity.GetActivity());
+                else
+                    view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
+
                 if (i % 2 != 0)
                     view.setBackgroundColor(Color.parseColor("#eaf7ff"));
                 else
                     view.setBackgroundColor(Color.parseColor("#FCFCFC"));
-                UserAreaActivity.GetActivity().reminderLayout.addView(view);
+
+                if (viewStyle.equals("TILES"))
+                    UserAreaActivity.GetActivity().GridReminderLayout.addView(view);
+                else
+                    UserAreaActivity.GetActivity().LinearReminderLayout.addView(view);
             }
         }
     }
@@ -190,13 +202,24 @@ public class UserProfile implements Parcelable
         return set;
     }
 
+    private void ResetLinearLayout(GridLayout layout)
+    {
+        for (Reminder r : GetReminders())
+        {
+            r.SetWidget(null);
+        }
+        if (layout != null)
+            layout.removeAllViews();
+    }
+
     private void ResetLinearLayout(LinearLayout layout)
     {
         for (Reminder r : GetReminders())
         {
             r.SetWidget(null);
         }
-        layout.removeAllViews();
+        if (layout != null)
+            layout.removeAllViews();
     }
 
     public void DeleteReminder(Reminder r)

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="3dp"
+    android:paddingRight="3dp"
+    android:layout_weight="0.3"
+    >
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/contact_avatar"
+        android:background="@drawable/avatar_generic_default"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/contact_reminders"
+        android:text="5"
+        android:layout_below="@id/contact_avatar"
+        android:layout_alignRight="@id/contact_avatar"
+        android:layout_marginTop="-30dp"
+        android:background="@drawable/rounded_textview"
+        android:textColor="#FFF"
+        android:padding="4dp"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/contact_name"
+        android:text="Full Name"
+        android:layout_below="@id/contact_avatar"
+        android:gravity="center"
+        android:background="@drawable/rectangle_textview"
+        />
+
+</RelativeLayout>

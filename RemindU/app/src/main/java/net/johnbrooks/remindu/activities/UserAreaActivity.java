@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
-import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,9 +23,7 @@ import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
-import net.johnbrooks.remindu.services.PullService;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
-import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -38,9 +34,10 @@ public class UserAreaActivity extends AppCompatActivity
     private static UserAreaActivity activity;
     public static UserAreaActivity GetActivity() { return activity; }
 
-    private SubMenu contactsSubMenu;
     private PullRefreshLayout pullRefreshLayout;
-    public LinearLayout reminderLayout;
+    public GridLayout GridReminderLayout;
+    public LinearLayout LinearReminderLayout;
+    public SharedPreferences SharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -71,10 +68,11 @@ public class UserAreaActivity extends AppCompatActivity
         // Gets
         //
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        reminderLayout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
+        SharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        GridReminderLayout = (GridLayout) findViewById(R.id.GridLayout_Reminder_Layout);
+        LinearReminderLayout = (LinearLayout) findViewById(R.id.LinearLayout_Reminder_Layout);
         pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        if (UserProfile.PROFILE == null || reminderLayout == null)
+        if (UserProfile.PROFILE == null || GridReminderLayout == null)
             return;
 
         //
@@ -85,9 +83,9 @@ public class UserAreaActivity extends AppCompatActivity
         PullScheduler.Initialize();
         UpdateUserAreaScheduler.Initialize();
         ProcessRemindersScheduler.Initialize();
-        if (sharedPreferences.getBoolean("check_for_updates", true))
+        if (SharedPreferences.getBoolean("check_for_updates", true))
             GetLatestVersionRequest.SendRequest(UserAreaActivity.this);
-        if (!sharedPreferences.getBoolean("boot_switch", true))
+        if (!SharedPreferences.getBoolean("boot_switch", true))
         {
             //Intent serviceIntent = new Intent(getBaseContext(), PullService.class);
             //getBaseContext().startService(serviceIntent);

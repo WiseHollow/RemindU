@@ -7,17 +7,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import net.johnbrooks.remindu.R;
-import net.johnbrooks.remindu.requests.UpdateSettingsRequest;
-import net.johnbrooks.remindu.schedulers.UpdateMyProfileScheduler;
 import net.johnbrooks.remindu.util.AvatarsImageAdapter;
 import net.johnbrooks.remindu.util.UserProfile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AvatarSelectActivity extends AppCompatActivity
 {
