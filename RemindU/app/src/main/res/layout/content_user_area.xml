@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
     android:background="#fff"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="net.johnbrooks.remindu.activities.UserAreaActivity"
@@ -20,51 +20,13 @@
         android:layout_height="match_parent">
 
         <ScrollView
+            android:id="@+id/UserArea_ScrollView"
             android:layout_width="match_parent"
-            android:layout_marginTop="14dp"
+            android:layout_height="match_parent"
             android:scrollbarStyle="insideOverlay"
-            android:layout_below="@+id/textView10"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_height="290dp"
-            android:layout_alignParentBottom="true"
             >
-
-            <GridLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/GridLayout_Reminder_Layout"
-                android:columnCount="3"
-                android:layout_gravity="center_horizontal"
-                >
-
-
-            </GridLayout>
-
 
         </ScrollView>
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_marginTop="14dp"
-            android:scrollbarStyle="insideOverlay"
-            android:layout_below="@+id/textView10"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_height="290dp"
-            android:layout_alignParentBottom="true"
-            >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/LinearLayout_Reminder_Layout"
-                >
-
-                </LinearLayout>
-
-            </ScrollView>
 
 
 

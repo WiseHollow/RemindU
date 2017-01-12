@@ -14,7 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridLayout;
-import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
@@ -25,6 +25,7 @@ import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.util.ContactViewType;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -35,9 +36,10 @@ public class UserAreaActivity extends AppCompatActivity
     public static UserAreaActivity GetActivity() { return activity; }
 
     private PullRefreshLayout pullRefreshLayout;
-    public GridLayout GridReminderLayout;
-    public LinearLayout LinearReminderLayout;
     public SharedPreferences SharedPreferences;
+
+    private ScrollView ContactScrollView;
+    public View ContactLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -68,11 +70,10 @@ public class UserAreaActivity extends AppCompatActivity
         // Gets
         //
 
+        ContactScrollView = (ScrollView) findViewById(R.id.UserArea_ScrollView);
         SharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        GridReminderLayout = (GridLayout) findViewById(R.id.GridLayout_Reminder_Layout);
-        LinearReminderLayout = (LinearLayout) findViewById(R.id.LinearLayout_Reminder_Layout);
         pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        if (UserProfile.PROFILE == null || GridReminderLayout == null)
+        if (UserProfile.PROFILE == null || ContactScrollView == null)
             return;
 
         //
@@ -92,9 +93,30 @@ public class UserAreaActivity extends AppCompatActivity
 
         UserProfile.PROFILE.RefreshReminderLayout();
 
-
-
-
+        findViewById(R.id.select_view_list).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                SharedPreferences.Editor editor = SharedPreferences.edit();
+                editor.putInt("VIEW", ContactViewType.LIST.ordinal());
+                editor.commit();
+                if (UserProfile.PROFILE != null)
+                    UserProfile.PROFILE.RefreshReminderLayout();
+            }
+        });
+        findViewById(R.id.select_view_grid).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                SharedPreferences.Editor editor = SharedPreferences.edit();
+                editor.putInt("VIEW", ContactViewType.GRID.ordinal());
+                editor.commit();
+                if (UserProfile.PROFILE != null)
+                    UserProfile.PROFILE.RefreshReminderLayout();
+            }
+        });
 
         //
         // Create Listeners
@@ -197,5 +219,16 @@ public class UserAreaActivity extends AppCompatActivity
         return true;
     }
 
+    public ContactViewType GetCurrentContactViewType()
+    {
+        return ContactViewType.values()[SharedPreferences.getInt("VIEW", 0)];
+    }
 
+    public void ApplyContactViewType()
+    {
+        ContactViewType viewType = GetCurrentContactViewType();
+        ContactScrollView.removeAllViewsInLayout();
+        ContactLayout = ((viewType == ContactViewType.LIST) ? getLayoutInflater().inflate(R.layout.widget_linear_layout, null) : getLayoutInflater().inflate(R.layout.widget_grid_layout, null));
+        ContactScrollView.addView(ContactLayout);
+    }
 }

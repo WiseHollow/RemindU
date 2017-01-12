@@ -7,8 +7,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
@@ -151,28 +151,12 @@ public class UserProfile implements Parcelable
         if (UserAreaActivity.GetActivity() == null)
             return;
 
-        ResetLinearLayout(UserAreaActivity.GetActivity().GridReminderLayout);
-        ResetLinearLayout(UserAreaActivity.GetActivity().LinearReminderLayout);
+        ResetLinearLayout();
 
         Collections.sort(GetReminders());
         Collections.sort(GetContacts());
 
-        String viewStyle = UserAreaActivity.GetActivity().SharedPreferences.getString("VIEW", "LIST");
-        viewStyle = "GRID";
-        //TODO: Doesn't show grid view....
-
-        if (viewStyle.equals("GRID"))
-        {
-            UserAreaActivity.GetActivity().LinearReminderLayout.setEnabled(false);
-            UserAreaActivity.GetActivity().GridReminderLayout.setEnabled(true);
-            ((View) UserAreaActivity.GetActivity().LinearReminderLayout.getParent()).setEnabled(false);
-            ((View) UserAreaActivity.GetActivity().GridReminderLayout.getParent()).setEnabled(true);
-        }
-        else
-        {
-            UserAreaActivity.GetActivity().LinearReminderLayout.setEnabled(true);
-            UserAreaActivity.GetActivity().GridReminderLayout.setEnabled(false);
-        }
+        ContactViewType viewType = UserAreaActivity.GetActivity().GetCurrentContactViewType();
 
         for (int i = 0; i < GetContacts().size(); i++)
         {
@@ -180,16 +164,16 @@ public class UserProfile implements Parcelable
             if (cp != null)
             {
                 View view;
-                if (viewStyle.equals("GRID"))
+                if (viewType == ContactViewType.GRID)
                 {
                     view = cp.CreateCategoryWidgetForGrid(UserAreaActivity.GetActivity());
-                    UserAreaActivity.GetActivity().GridReminderLayout.addView(view);
                 }
                 else
                 {
                     view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
-                    UserAreaActivity.GetActivity().LinearReminderLayout.addView(view);
                 }
+
+                ((ViewGroup) UserAreaActivity.GetActivity().ContactLayout).addView(view);
 
                 if (i % 2 != 0)
                     view.setBackgroundColor(Color.parseColor("#eaf7ff"));
@@ -217,24 +201,14 @@ public class UserProfile implements Parcelable
         return set;
     }
 
-    private void ResetLinearLayout(GridLayout layout)
+    private void ResetLinearLayout()
     {
         for (Reminder r : GetReminders())
         {
             r.SetWidget(null);
         }
-        if (layout != null)
-            layout.removeAllViews();
-    }
 
-    private void ResetLinearLayout(LinearLayout layout)
-    {
-        for (Reminder r : GetReminders())
-        {
-            r.SetWidget(null);
-        }
-        if (layout != null)
-            layout.removeAllViews();
+        UserAreaActivity.GetActivity().ApplyContactViewType();
     }
 
     public void DeleteReminder(Reminder r)

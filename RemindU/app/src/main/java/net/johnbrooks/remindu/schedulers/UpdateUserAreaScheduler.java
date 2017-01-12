@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.schedulers;
 
 import android.os.Handler;
+import android.util.Log;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -19,8 +20,15 @@ public class UpdateUserAreaScheduler
     }
     public static void Cancel()
     {
+        if (scheduler == null)
+            return;
         scheduler.stopRepeatingTask();
         scheduler = null;
+    }
+    public static void Call()
+    {
+        Cancel();
+        Initialize();
     }
 
     private final int mInterval = 5000; // milliseconds
@@ -50,6 +58,7 @@ public class UpdateUserAreaScheduler
     {
         if (UserAreaActivity.GetActivity() == null)
         {
+            Log.d("INFO", "Cancelling UpdateUserAreaScheduler...");
             Cancel();
         }
         else
