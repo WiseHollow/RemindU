@@ -158,17 +158,6 @@ public class ContactProfile implements Comparable<ContactProfile>
         return layout;
     }
 
-    private TextView GenerateSubWidget(final ManageContactsActivity activity)
-    {
-        TextView view = new TextView(activity);
-
-        view.setText(GetAmountOfReminders());
-        view.setBackgroundColor(Color.BLACK);
-        view.setTextColor(Color.WHITE);
-
-        return view;
-    }
-
     public LinearLayout CreateWidget(final ManageContactsActivity activity)
     {
         LinearLayout layout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_details, null);
