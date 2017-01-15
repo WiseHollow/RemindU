@@ -144,6 +144,16 @@ public class UserAreaActivity extends AppCompatActivity
 
             }
         });
+
+        //
+        // Check if account is active
+        //
+
+        if (UserProfile.PROFILE.IsActive() != 1 && !ActivateAccountActivity.IsOpen())
+        {
+            Intent activateIntent = new Intent(UserAreaActivity.GetActivity(), ActivateAccountActivity.class);
+            UserAreaActivity.GetActivity().startActivity(activateIntent);
+        }
     }
 
     @Override

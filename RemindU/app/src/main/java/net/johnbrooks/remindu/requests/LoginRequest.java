@@ -14,7 +14,6 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.LoginActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
-import net.johnbrooks.remindu.schedulers.BackgroundServiceScheduler;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -109,19 +108,7 @@ public class LoginRequest extends StringRequest
                         // Save login data for instant login next time
                         //
 
-                        SharedPreferences sharedPref = activity.getSharedPreferences("profile", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("email", email);
-                        editor.putString("password", password);
-                        editor.putString("fullname", fullName);
-                        editor.putString("username", username);
-                        editor.putInt("id", id);
-                        editor.putBoolean("active", (active > 0) ? true : false);
-                        editor.putInt("coins", coins);
-                        editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
-                        editor.putString("avatar", UserProfile.PROFILE.GetAvatarID());
-
-                        editor.commit();
+                        UserProfile.PROFILE.SaveCredentials(activity, email, password, fullName, username, id, active, coins);
 
                         //
                         // Let's now to to the User Area now that we have logged in.

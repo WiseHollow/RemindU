@@ -10,6 +10,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.LoginActivity;
 import net.johnbrooks.remindu.activities.RegisterActivity;
+import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +24,11 @@ import java.util.Map;
 
 public class RegisterRequest extends StringRequest
 {
+    private static String FullName;
+    private static String Username;
+    private static String Email;
+    private static String Password;
+
     private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/register.php";
     private Map<String, String> params;
 
@@ -35,6 +41,11 @@ public class RegisterRequest extends StringRequest
         params.put("username", username);
         params.put("email", email);
         params.put("password", password);
+
+        FullName = fullname;
+        Username = username;
+        Email = email;
+        Password = password;
     }
 
     @Override
@@ -62,6 +73,8 @@ public class RegisterRequest extends StringRequest
 
                     if (success)
                     {
+                        UserProfile.PROFILE.SaveCredentials(activity, Email, Password, FullName, Username, 0, 0, 0);
+
                         Intent intent = new Intent(activity, LoginActivity.class);
                         activity.startActivity(intent);
                         activity.finish();

@@ -2,6 +2,8 @@ package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -47,6 +49,23 @@ public class UserProfile implements Parcelable
         Log.d("INFO", "Pulling profile from server...");
         PullProfileRequest.SendRequest(service);
         GetRemindersRequest.SendRequest(service);
+    }
+
+    public static void SaveCredentials(Activity activity, String email, String password, String fullName, String username, int id, int active, int coins)
+    {
+        SharedPreferences sharedPref = activity.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("email", email);
+        editor.putString("password", password);
+        editor.putString("fullname", fullName);
+        editor.putString("username", username);
+        editor.putInt("id", id);
+        editor.putBoolean("active", (active > 0) ? true : false);
+        editor.putInt("coins", coins);
+        //editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
+        //editor.putString("avatar", UserProfile.PROFILE.GetAvatarID());
+
+        editor.commit();
     }
 
     public static UserProfile PROFILE = null;
