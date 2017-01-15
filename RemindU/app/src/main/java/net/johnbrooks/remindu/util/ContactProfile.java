@@ -88,7 +88,7 @@ public class ContactProfile implements Comparable<ContactProfile>
 
     public RelativeLayout CreateCategoryWidgetForGrid(final Activity activity)
     {
-        RelativeLayout layout = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact, null);
+        RelativeLayout layout = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_icon, null);
 
         TextView tv_name = (TextView) layout.findViewById(R.id.contact_name);
         TextView tv_reminders = (TextView) layout.findViewById(R.id.contact_reminders);
@@ -171,49 +171,17 @@ public class ContactProfile implements Comparable<ContactProfile>
 
     public LinearLayout CreateWidget(final ManageContactsActivity activity)
     {
-        LinearLayout layout = new LinearLayout(activity);
-        layout.setLayoutParams(new LinearLayout.LayoutParams
-                (
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT, 1f
-                ));
-        layout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout layout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_details, null);
 
-        ImageView avatar = new ImageView(activity);
+        ImageView avatarView = (ImageView) layout.findViewById(R.id.Contact_Profile_Avatar);
+        TextView fullnameView = (TextView) layout.findViewById(R.id.Contact_Profile_Full_Name);
+        TextView emailView = (TextView) layout.findViewById(R.id.Contact_Profile_Email);
+        TextView removeView = (TextView) layout.findViewById(R.id.Contact_Profile_Remove);
 
-        avatar.setLayoutParams(new GridView.LayoutParams(250, 250));
-        avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        avatar.setPadding(8, 8, 8, 8);
-        avatar.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
-        layout.addView(avatar);
-
-        TextView text = new TextView(activity);
-        String lore = "";
-        if (!IsContact())
-        {
-            // limited display
-            lore+="Email: " + GetEmail();
-            lore+="\n";
-            lore+="Request Pending...";
-        }
-        else
-        {
-            lore+="Email: " + GetEmail();
-            lore+="\n";
-            lore+="Name: " + GetFullName();
-            lore+="\n";
-            lore+="Username: " + GetUsername();
-        }
-        text.setText(lore);
-        LinearLayout.LayoutParams TextParams = new TableRow.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.85f);
-        text.setLayoutParams(TextParams);
-        layout.addView(text);
-
-        Button removeButton = new Button(activity);
-        removeButton.setText("X");
-        LinearLayout.LayoutParams RemoveBtnParams = new TableRow.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.15f);
-        removeButton.setLayoutParams(RemoveBtnParams);
-        removeButton.setOnClickListener(new View.OnClickListener()
+        avatarView.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
+        fullnameView.setText(GetFullName());
+        emailView.setText(GetEmail());
+        removeView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -227,8 +195,6 @@ public class ContactProfile implements Comparable<ContactProfile>
                 DeleteContactRequest.SendRequest(activity, GetID());
             }
         });
-
-        layout.addView(removeButton);
 
         return layout;
     }
