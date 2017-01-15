@@ -2,18 +2,15 @@ package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.activities.ManageContactsActivity;
@@ -115,34 +112,16 @@ public class ContactProfile implements Comparable<ContactProfile>
 
     public LinearLayout CreateCategoryWidget(final Activity activity)
     {
-        LinearLayout layout = new LinearLayout(activity);
-        layout.setLayoutParams(new LinearLayout.LayoutParams
-            (
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT, 1.0f
-            ));
-        layout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout layout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_details, null);
 
-        ImageView avatar = new ImageView(activity);
-        avatar.setLayoutParams(new GridView.LayoutParams(250, 250));
-        avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        avatar.setPadding(8, 8, 8, 8);
-        avatar.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
-        layout.addView(avatar);
-        layout.setPadding(15, 15, 15, 15);
+        TextView tv_name = (TextView) layout.findViewById(R.id.Contact_Profile_Full_Name);
+        TextView tv_reminders = (TextView) layout.findViewById(R.id.Contact_Profile_Reminders);
+        ImageView iv_avatar = (ImageView) layout.findViewById(R.id.Contact_Profile_Avatar);
 
-        TextView info = new TextView(activity);
-        info.setPadding(15, 15, 15, 15);
-        SpannableStringBuilder sString = new SpannableStringBuilder();
-        sString.append("Name: " + GetFullName());
-        sString.setSpan(new StyleSpan(Typeface.BOLD), 0, 4, 0);
-        sString.append("\n");
-        int length = sString.length();
-        sString.append("Reminders: " + GetAmountOfReminders());
-        sString.setSpan(new StyleSpan(Typeface.BOLD), length, length + 10, 0);
-        info.setText(sString);
+        iv_avatar.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
+        tv_name.setText(GetFullName());
+        tv_reminders.setText("Reminders: " + GetAmountOfReminders());
 
-        layout.addView(info);
         final ContactProfile cp = this;
         layout.setOnClickListener(new View.OnClickListener()
         {
@@ -160,7 +139,7 @@ public class ContactProfile implements Comparable<ContactProfile>
 
     public LinearLayout CreateWidget(final ManageContactsActivity activity)
     {
-        LinearLayout layout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_details, null);
+        LinearLayout layout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_details_manage, null);
 
         ImageView avatarView = (ImageView) layout.findViewById(R.id.Contact_Profile_Avatar);
         TextView fullnameView = (TextView) layout.findViewById(R.id.Contact_Profile_Full_Name);

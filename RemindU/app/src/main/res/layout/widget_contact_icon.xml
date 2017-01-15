@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:paddingLeft="3dp"
     android:paddingRight="3dp"
-    android:layout_weight="0.3"
+    android:layout_weight="0.25"
     >
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:id="@+id/contact_avatar"
         android:background="@drawable/avatar_generic_default"
         />
@@ -29,7 +29,7 @@
         />
 
     <TextView
-        android:layout_width="100dp"
+        android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:id="@+id/contact_name"
         android:text="Full Name"

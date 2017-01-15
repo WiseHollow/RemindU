@@ -9,10 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:padding="3dp">
 
         <ImageView
             android:layout_width="60dp"
@@ -40,14 +37,29 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reminders"
+                android:text="Email"
                 android:paddingLeft="10dp"
                 android:textSize="12dp"
-                android:id="@+id/Contact_Profile_Reminders"
+                android:id="@+id/Contact_Profile_Email"
                 />
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="X"
+            android:textStyle="bold"
+            android:gravity="center_vertical|end"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:id="@+id/Contact_Profile_Remove"/>
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
 </LinearLayout>

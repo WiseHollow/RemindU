@@ -10,8 +10,10 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
@@ -201,6 +203,8 @@ public class UserProfile implements Parcelable
 
         ContactViewType viewType = UserAreaActivity.GetActivity().GetCurrentContactViewType();
 
+        char latestChar = '-';
+
         for (int i = 0; i < GetContacts().size(); i++)
         {
             ContactProfile cp = GetContacts().get(i);
@@ -213,6 +217,15 @@ public class UserProfile implements Parcelable
                 }
                 else
                 {
+                    if (latestChar != cp.GetFullName().charAt(0))
+                    {
+                        LinearLayout sep = (LinearLayout) UserAreaActivity.GetActivity().getLayoutInflater().inflate(R.layout.widget_alphabet_separator, null);
+                        TextView character = (TextView) sep.findViewById(R.id.Alphabet_Separator);
+                        character.setText("" + cp.GetFullName().charAt(0));
+                        ((ViewGroup) UserAreaActivity.GetActivity().ContactLayout).addView(sep);
+                    }
+
+                    latestChar = cp.GetFullName().charAt(0);
                     view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
                 }
 
