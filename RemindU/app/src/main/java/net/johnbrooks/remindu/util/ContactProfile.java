@@ -197,8 +197,9 @@ public class ContactProfile implements Comparable<ContactProfile>
     @Override
     public int compareTo(ContactProfile o)
     {
-        int compare = GetAmountOfReminders() > o.GetAmountOfReminders() ? + 1 : GetAmountOfReminders() < o.GetAmountOfReminders() ? -1 : 0;
-        return -compare;
+        //int compare = GetAmountOfReminders() > o.GetAmountOfReminders() ? + 1 : GetAmountOfReminders() < o.GetAmountOfReminders() ? -1 : 0;
+        int compare = GetFullName().compareTo(o.GetFullName());
+        return compare;
     }
 
     @Override
