@@ -116,6 +116,30 @@ public class UserProfile implements Parcelable
     public final boolean IsIgnoring(int id) { return ReminderIgnores.contains(id); }
     public final Reminder GetActiveReminder() { return activeReminder; }
     public final String GetAvatarID() { return AvatarID; }
+    public final List<Reminder> GetActiveSentReminders()
+    {
+        List<Reminder> list = new ArrayList<>();
+
+        for (Reminder r : UserProfile.PROFILE.GetReminders())
+        {
+            if (r.GetFrom() == UserProfile.PROFILE.GetUserID())
+                list.add(r);
+        }
+
+        return list;
+    }
+    public final List<Reminder> GetActiveReceivedReminders()
+    {
+        List<Reminder> list = new ArrayList<>();
+
+        for (Reminder r : UserProfile.PROFILE.GetReminders())
+        {
+            if (r.GetTo() == UserProfile.PROFILE.GetUserID())
+                list.add(r);
+        }
+
+        return list;
+    }
 
     public List<Reminder> GetReminders() { return Reminders; }
     public List<ContactProfile> GetContacts() { return Contacts; }

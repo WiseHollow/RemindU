@@ -96,32 +96,17 @@ public class MyProfileActivity extends AppCompatActivity
         super.onStart();
 
         //
-        // Get needed information
-        //
-
-        int activeReceivedReminders = 0;
-        int activeSentReminders = 0;
-
-        for (Reminder r : UserProfile.PROFILE.GetReminders())
-        {
-            if (r.GetFrom() == UserProfile.PROFILE.GetUserID())
-                activeSentReminders++;
-            else if (r.GetTo() == UserProfile.PROFILE.GetUserID())
-                activeReceivedReminders++;
-        }
-
-        //
         // Fill TextView information
         //
 
-        tvFullName.setText("Full Name: " + UserProfile.PROFILE.GetFullName());
-        tvUsername.setText("Username: " + UserProfile.PROFILE.GetUsername());
-        tvEmail.setText("Email: " + UserProfile.PROFILE.GetEmail());
+        tvFullName.setText("" + UserProfile.PROFILE.GetFullName());
+        tvUsername.setText("" + UserProfile.PROFILE.GetUsername());
+        tvEmail.setText("" + UserProfile.PROFILE.GetEmail());
 
-        tvActiveSentReminders.setText("Active Sent Reminders: " + activeSentReminders);
-        tvPendingReceivedReminders.setText("Active Received Reminders: " + activeReceivedReminders);
+        tvActiveSentReminders.setText("" + UserProfile.PROFILE.GetActiveSentReminders().size());
+        tvPendingReceivedReminders.setText("" + UserProfile.PROFILE.GetActiveReceivedReminders().size());
 
-        tvPointsRemaining.setText("Coins Remaining: " + UserProfile.PROFILE.GetCoins());
+        tvPointsRemaining.setText("" + UserProfile.PROFILE.GetCoins());
     }
 
     @Override

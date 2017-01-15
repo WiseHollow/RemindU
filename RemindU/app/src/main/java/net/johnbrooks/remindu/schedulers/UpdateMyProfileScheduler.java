@@ -61,14 +61,14 @@ public class UpdateMyProfileScheduler
             // Fill TextView information
             //
 
-            Activity.tvFullName.setText("Full Name: " + UserProfile.PROFILE.GetFullName());
-            Activity.tvUsername.setText("Username: " + UserProfile.PROFILE.GetUsername());
-            Activity.tvEmail.setText("Email: " + UserProfile.PROFILE.GetEmail());
+            Activity.tvFullName.setText("" + UserProfile.PROFILE.GetFullName());
+            Activity.tvUsername.setText("" + UserProfile.PROFILE.GetUsername());
+            Activity.tvEmail.setText("" + UserProfile.PROFILE.GetEmail());
 
-            Activity.tvActiveSentReminders.setText("Active Sent Reminders: 0");
-            Activity.tvPendingReceivedReminders.setText("Active Received Reminders: 0");
+            Activity.tvActiveSentReminders.setText("" + UserProfile.PROFILE.GetActiveSentReminders().size());
+            Activity.tvPendingReceivedReminders.setText("" + UserProfile.PROFILE.GetActiveReceivedReminders().size());
 
-            Activity.tvPointsRemaining.setText("Coins Remaining: " + UserProfile.PROFILE.GetCoins());
+            Activity.tvPointsRemaining.setText("" + UserProfile.PROFILE.GetCoins());
         }
     }
 

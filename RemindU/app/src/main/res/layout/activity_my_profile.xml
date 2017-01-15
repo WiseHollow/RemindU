@@ -3,88 +3,228 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     android:orientation="vertical"
     tools:context="net.johnbrooks.remindu.activities.MyProfileActivity"
     >
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="20dp"
+        android:orientation="horizontal"
+        android:background="#fff"
         >
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/imageView_my_profile_avatar"
-            android:background="@drawable/user_48"
-            android:layout_gravity="center"
-            android:scaleType="center"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Avatar"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
             />
 
-        <TextView
-            android:text="Click to change.."
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView_change_my_avatar"
-            android:textSize="8dp"
-            android:layout_gravity="center"
-            android:scaleType="center"
-            />
+            android:orientation="vertical"
+            >
+
+            <ImageView
+                android:layout_width="75dp"
+                android:id="@+id/imageView_my_profile_avatar"
+                android:background="@drawable/avatar_generic_default"
+                android:layout_gravity="right"
+                android:scaleType="center"
+                android:layout_height="75dp" />
+
+            <TextView
+                android:text="Click to change.."
+                android:layout_height="wrap_content"
+                android:id="@+id/textView_change_my_avatar"
+                android:textSize="8dp"
+                android:layout_gravity="right"
+                android:textAlignment="center"
+                android:layout_width="75dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="20dp"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="#fff">
 
         <TextView
-            android:text="Full Name: "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_Profile_FullName" />
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:textStyle="bold"
+            android:text="Full Name"
+            />
 
         <TextView
-            android:text="Username: "
-            android:layout_width="wrap_content"
+            android:text="input"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:id="@+id/textView_Profile_Username" />
-
-        <TextView
-            android:text="Email: "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:id="@+id/textView_Profile_Email" />
-
-        <TextView
-            android:text="Active Received Reminders: "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="25dp"
-            android:id="@+id/textView_Profile_ActiveReceivedReminders" />
-
-        <TextView
-            android:text="Active Sent Reminders: "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:id="@+id/textView_Profile_ActiveSentReminders"/>
-
-        <TextView
-            android:text="Coins Remaining: "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="25dp"
-            android:id="@+id/textView_Profile_PointsRemaining"/>
+            android:id="@+id/textView_Profile_FullName"
+            android:gravity="center_vertical|end"/>
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="#fff">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:text="Username"/>
+
+        <TextView
+            android:text="input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_Profile_Username"
+            android:gravity="center_vertical|end"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="#fff">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:text="Email"/>
+
+        <TextView
+            android:text="input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_Profile_Email"
+            android:gravity="center_vertical|end"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="#fff">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:text="Active Sent Reminders"/>
+
+        <TextView
+            android:text="input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_Profile_ActiveSentReminders"
+            android:gravity="center_vertical|end"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="#fff">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:text="Active Received Reminders"/>
+
+        <TextView
+            android:text="input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_Profile_ActiveReceivedReminders"
+            android:gravity="center_vertical|end"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="#fff">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:text="Reputation Points"/>
+
+        <TextView
+            android:text="input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_Profile_PointsRemaining"
+            android:gravity="center_vertical|end"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray"/>
+
 
 </LinearLayout>
