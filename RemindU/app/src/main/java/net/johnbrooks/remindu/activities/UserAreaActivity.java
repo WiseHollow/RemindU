@@ -183,10 +183,6 @@ public class UserAreaActivity extends AppCompatActivity
             Intent intent = new Intent(UserAreaActivity.this, ManageContactsActivity.class);
             UserAreaActivity.this.startActivity(intent);
         }
-        else if (id == R.id.nav_invite)
-        {
-            //TODO: Gives functionality.
-        }
         else if (id == R.id.nav_settings)
         {
             Intent intent = new Intent(UserAreaActivity.this, SettingsActivity.class);

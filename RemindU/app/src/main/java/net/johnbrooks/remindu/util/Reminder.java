@@ -645,39 +645,42 @@ public class Reminder implements Comparable<Reminder>
         else
             return R.drawable.mute_48_red;
     }
-    public int[] GetTimeLeft()
+
+    public int[] GetTimeRemaining()
     {
         int[] time = new int[3];
 
-        Date now = new Date();
+        long remaining = Date.getTime() - (new Date()).getTime();
+        remaining = remaining / 1000;
+        Log.d("TIME", "Time left initial: " + remaining);
 
-        long differenceInMilliseconds = Date.getTime() - now.getTime();
-        List<TimeUnit> units = new ArrayList<>(EnumSet.allOf(TimeUnit.class));
-        Collections.reverse(units);
-        Map<TimeUnit,Long> result = new LinkedHashMap<>();
-        long millisecondsLeft = differenceInMilliseconds;
-        for ( TimeUnit unit : units ) {
-            long diff = unit.convert(millisecondsLeft,TimeUnit.MILLISECONDS);
-            long differenceInMillisecondsForUnit = unit.toMillis(diff);
-            millisecondsLeft = millisecondsLeft - differenceInMillisecondsForUnit;
-            result.put(unit,diff);
+        if (remaining != 0)
+        {
+            time[0] = (int) (remaining / (24 * 60 * 60));
+            if (time[0] != 0)
+                remaining = remaining % (24 * 60 * 60);
         }
 
-        long days = result.get(TimeUnit.DAYS);
-        long hours = result.get(TimeUnit.HOURS);
-        long minutes = result.get(TimeUnit.MINUTES);
+        if (remaining != 0)
+        {
+            time[1] = (int) (remaining / (60 * 60));
+            if (time[1] != 0)
+                remaining = remaining % (60 * 60);
+        }
 
-        time[0] = (int) days;
-        time[1] = (int) hours;
-        time[2] = (int) minutes;
+        if (remaining != 0)
+        {
+            time[2] = (int) (remaining / (60));
+        }
 
         return time;
     }
+
     private String GetETA()
     {
         String eta = "";
 
-        int[] timeLeft = GetTimeLeft();
+        int[] timeLeft = GetTimeRemaining();
 
         if (timeLeft[0] > 0)
             eta += timeLeft[0] + " days ";
@@ -699,7 +702,7 @@ public class Reminder implements Comparable<Reminder>
         // TODO: Make times to notify customizable on the settings of the app.
         //
 
-        int[] timeLeft = GetTimeLeft();
+        int[] timeLeft = GetTimeRemaining();
         if (timeLeft[0] == 0 && timeLeft[1] == 0 && timeLeft[2] == 0)
         {
             //
@@ -738,7 +741,7 @@ public class Reminder implements Comparable<Reminder>
 
         final Reminder myReminder = this;
 
-        int[] timeLeft = GetTimeLeft();
+        int[] timeLeft = GetTimeRemaining();
         if (timeLeft[0] == 0 && timeLeft[1] == 0 && timeLeft[2] == 0)
         {
             //

@@ -13,10 +13,6 @@
             android:id="@+id/nav_profile"
             android:icon="@drawable/profile_48"
             android:title="@string/my_profile" />
-        <item
-            android:id="@+id/nav_invite"
-            android:icon="@drawable/invite_48"
-            android:title="@string/invite" />
     </group>
 
     <group
