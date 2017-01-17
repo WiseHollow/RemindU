@@ -21,6 +21,7 @@ import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -114,6 +115,11 @@ public class ReminderListActivity extends AppCompatActivity
     {
         super.onStart();
         ReminderLayout.removeAllViews();
+
+        List<LinearLayout> remindersNotStarted = new ArrayList<>();
+        List<LinearLayout> remindersStarted = new ArrayList<>();
+        List<LinearLayout> remindersComplete = new ArrayList<>();
+
         List<Reminder> reminders = ContactProfile.GetReminders();
         Collections.sort(reminders);
         if (reminders.size() == 0)
@@ -132,8 +138,44 @@ public class ReminderListActivity extends AppCompatActivity
                     layout.setBackgroundColor(Color.parseColor("#EBEBEB"));
                 else
                     layout.setBackgroundColor(Color.parseColor("#FCFCFC"));
-                ReminderLayout.addView(layout);
+
+                switch (r.GetState())
+                {
+                    case NOT_STARTED:
+                        remindersNotStarted.add(layout);
+                        break;
+                    case IN_PROGRESS:
+                        remindersStarted.add(layout);
+                        break;
+                    case COMPLETE:
+                        remindersComplete.add(layout);
+                        break;
+                    default:
+                        remindersNotStarted.add(layout);
+                }
+                //ReminderLayout.addView(layout);
             }
+
+            LinearLayout separatorNotStarted = (LinearLayout) getLayoutInflater().inflate(R.layout.widget_progress_separator, null);
+            ((TextView) separatorNotStarted.findViewById(R.id.Category_Separator)).setText("Not Started");
+
+            ReminderLayout.addView(separatorNotStarted);
+            for (LinearLayout l : remindersNotStarted)
+                ReminderLayout.addView(l);
+
+            LinearLayout separatorInProgress = (LinearLayout) getLayoutInflater().inflate(R.layout.widget_progress_separator, null);
+            ((TextView) separatorInProgress.findViewById(R.id.Category_Separator)).setText("In Progress");
+
+            ReminderLayout.addView(separatorInProgress);
+            for (LinearLayout l : remindersStarted)
+                ReminderLayout.addView(l);
+
+            LinearLayout separatorComplete = (LinearLayout) getLayoutInflater().inflate(R.layout.widget_progress_separator, null);
+            ((TextView) separatorComplete.findViewById(R.id.Category_Separator)).setText("Completed");
+
+            ReminderLayout.addView(separatorComplete);
+            for (LinearLayout l : remindersComplete)
+                ReminderLayout.addView(l);
         }
     }
 
