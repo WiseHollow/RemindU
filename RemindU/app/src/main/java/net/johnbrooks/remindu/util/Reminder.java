@@ -652,7 +652,6 @@ public class Reminder implements Comparable<Reminder>
 
         long remaining = Date.getTime() - (new Date()).getTime();
         remaining = remaining / 1000;
-        Log.d("TIME", "Time left initial: " + remaining);
 
         if (remaining != 0)
         {

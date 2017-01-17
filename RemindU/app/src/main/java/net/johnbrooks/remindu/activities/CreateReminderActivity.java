@@ -86,7 +86,7 @@ public class CreateReminderActivity extends AppCompatActivity
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hours, int minutes)
                     {
-                        calendar.set(Calendar.HOUR, hours);
+                        calendar.set(Calendar.HOUR_OF_DAY, hours);
                         calendar.set(Calendar.MINUTE, minutes);
                         calendar.set(Calendar.SECOND, 0);
                         DateFormat dateFormat = new SimpleDateFormat("hh:mm");
