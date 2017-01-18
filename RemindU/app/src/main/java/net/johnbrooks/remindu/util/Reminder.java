@@ -23,6 +23,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -316,6 +317,12 @@ public class Reminder implements Comparable<Reminder>
         length = sString.length();
         sString.append("\n\n" + "Time Left: " + GetETA());
         sString.setSpan(new StyleSpan(Typeface.BOLD), length, length + 10, 0);
+        //sString.append("\n\n" + "_ " + GetETA());
+
+        //Drawable d = ContextCompat.getDrawable(activity, R.drawable.clock_48);
+        //sString.setSpan(new ImageSpan(d), length + 2, length + 3, 0);
+
+        //TODO: Replace text with clock image.
 
         info.setText(sString);
         layout.addView(info);
