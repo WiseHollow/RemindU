@@ -414,8 +414,15 @@ public class Reminder implements Comparable<Reminder>
                 }
             });
 
-            ((LinearLayout) dialog.findViewById(R.id.log_entry_progress_bar)).setBackgroundColor(GetStateColor());
-            ((TextView) dialog.findViewById(R.id.log_entry_progress_bar_text)).setText(GetETA() + " remaining");
+            dialog.findViewById(R.id.log_entry_progress_bar).setBackgroundColor(GetStateColor());
+            ((TextView) dialog.findViewById(R.id.log_entry_progress_bar_text)).setText("Time left: " + GetETA());
+
+            if (State == ReminderState.NOT_STARTED)
+                dialog.findViewById(R.id.log_entry_image).setBackgroundResource(R.drawable.running_48);
+            else if (State == ReminderState.IN_PROGRESS)
+                dialog.findViewById(R.id.log_entry_image).setBackgroundResource(R.drawable.running_48_blue);
+            else if (State == ReminderState.COMPLETE)
+                dialog.findViewById(R.id.log_entry_image).setBackgroundResource(R.drawable.running_48_green);
 
             String state = GetState().name().replace("_", " ").toLowerCase();
             state = state.replace(String.valueOf(state.charAt(0)), String.valueOf(state.charAt(0)).toUpperCase());
@@ -429,7 +436,7 @@ public class Reminder implements Comparable<Reminder>
             else
                 ((TextView) dialog.findViewById(R.id.log_entry_since)).setText("Since: " + GetStateSince(State));
 
-            
+
             return;
         }
 
