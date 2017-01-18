@@ -32,11 +32,13 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -201,6 +203,38 @@ public class Reminder implements Comparable<Reminder>
     public void SetDateComplete(final String date)
     {
         DateComplete = date;
+    }
+
+    public String GetStateSince(final ReminderState state)
+    {
+        if (state == null)
+            return "";
+
+        if (state == ReminderState.IN_PROGRESS && DateInProgress != null)
+        {
+            return DateInProgress;
+        }
+        else if (state == ReminderState.COMPLETE && DateComplete != null)
+        {
+            return DateComplete;
+        }
+
+        return "";
+    }
+
+    public int GetStateColor()
+    {
+        long now = (new Date()).getTime();
+        long due = Date.getTime();
+
+        int percent = 100 - (int) (now / due * 100);
+
+        if (percent > 75)
+            return Color.parseColor("#a8ffaf");
+        else if (percent > 50)
+            return Color.parseColor("#faffa8");
+        else
+            return Color.parseColor("#ffb0a8");
     }
 
     public LinearLayout CreateWidget(final ReminderListActivity activity)
@@ -370,67 +404,32 @@ public class Reminder implements Comparable<Reminder>
             dialog.setContentView(R.layout.dialog_reminder_log);
             dialog.show();
 
-            LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.reminder_log);
-
-            if (GetDateInProgress() == null && GetDateComplete() == null)
+            Button button_close = (Button) dialog.findViewById(R.id.log_entry_button_okay);
+            button_close.setOnClickListener(new View.OnClickListener()
             {
-                TextView tv = new TextView(dialog.getContext());
-                tv.setText("No activity.");
-                tv.setTextColor(Color.BLACK);
-                tv.setTextSize(18f);
-                layout.addView(tv);
-            }
-            else
-            {
-                try
+                @Override
+                public void onClick(View view)
                 {
-                    final DateFormat formatter24Hour = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-                    final DateFormat formatter12Hour = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
-
-                    if (GetDateInProgress() != null)
-                    {
-                        Date date = formatter24Hour.parse(GetDateInProgress());
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(date);
-
-                        int hours = cal.get(Calendar.HOUR_OF_DAY);
-
-                        String suffix = "am";
-                        if (hours > 12)
-                            suffix = "pm";
-
-                        TextView tv = new TextView(dialog.getContext());
-                        tv.setText("'In Progress' at " + formatter12Hour.format(formatter12Hour.parse(GetDateInProgress())) + " " + suffix);
-                        tv.setTextColor(Color.BLACK);
-                        tv.setTextSize(16f);
-                        layout.addView(tv);
-                    }
-                    if (GetDateComplete() != null)
-                    {
-                        Date date = formatter24Hour.parse(GetDateComplete());
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(date);
-
-                        int hours = cal.get(Calendar.HOUR_OF_DAY);
-
-                        String suffix = "am";
-                        if (hours > 12)
-                            suffix = "pm";
-
-                        TextView tv = new TextView(dialog.getContext());
-                        tv.setText("'Complete' at " + formatter12Hour.format(formatter12Hour.parse(GetDateComplete())) + " " + suffix);
-                        tv.setTextColor(Color.BLACK);
-                        tv.setTextSize(16f);
-                        layout.addView(tv);
-                    }
-                } catch (ParseException e)
-                {
-                    e.printStackTrace();
+                    dialog.cancel();
                 }
+            });
 
+            ((LinearLayout) dialog.findViewById(R.id.log_entry_progress_bar)).setBackgroundColor(GetStateColor());
+            ((TextView) dialog.findViewById(R.id.log_entry_progress_bar_text)).setText(GetETA() + " remaining");
 
-            }
+            String state = GetState().name().replace("_", " ").toLowerCase();
+            state = state.replace(String.valueOf(state.charAt(0)), String.valueOf(state.charAt(0)).toUpperCase());
+            if (state.contains(" "))
+                state = state.replace(String.valueOf(state.charAt(state.indexOf(" ") + 1)), String.valueOf(state.charAt(state.indexOf(" ") + 1)).toUpperCase());
 
+            ((TextView) dialog.findViewById(R.id.log_entry_state)).setText(state);
+
+            if (State == ReminderState.NOT_STARTED)
+                ((TextView) dialog.findViewById(R.id.log_entry_since)).setText("");
+            else
+                ((TextView) dialog.findViewById(R.id.log_entry_since)).setText("Since: " + GetStateSince(State));
+
+            
             return;
         }
 
