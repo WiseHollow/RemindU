@@ -35,7 +35,9 @@ public class Network
     }
     public static final boolean IsConnected(Service service)
     {
+        if (service == null) { return false; }
         ConnectivityManager connectivityManager = (ConnectivityManager)service.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null || connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE) == null) { return false; }
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)
         {
@@ -43,10 +45,6 @@ public class Network
         }
         else
         {
-            if (UserAreaActivity.GetActivity() != null)
-                Snackbar.make(UserAreaActivity.GetActivity().findViewById(R.id.fab), "Unable to connect to server...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
             return false;
         }
     }
