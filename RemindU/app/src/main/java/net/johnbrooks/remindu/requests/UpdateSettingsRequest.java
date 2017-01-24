@@ -11,6 +11,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -73,6 +74,8 @@ public class UpdateSettingsRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         boolean receiveEmails;
         SharedPreferences sharedPrefs = (activity == null) ? PreferenceManager.getDefaultSharedPreferences(UserAreaActivity.GetActivity()) : PreferenceManager.getDefaultSharedPreferences(activity);
         receiveEmails = !sharedPrefs.getBoolean("receive_emails_switch", true);

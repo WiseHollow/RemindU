@@ -9,6 +9,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -76,6 +77,8 @@ public class DeleteReminderRequest extends StringRequest
 
     public static void SendRequest(Reminder r)
     {
+        if (!Network.IsConnected(UserAreaActivity.GetActivity())) { return; }
+
         Response.Listener<String> responseListener = GetDeleteResponseListener(UserAreaActivity.GetActivity());
 
         DeleteReminderRequest request = new DeleteReminderRequest(UserProfile.PROFILE.GetUserID(), UserProfile.PROFILE.GetPassword(), r.GetID(), responseListener);

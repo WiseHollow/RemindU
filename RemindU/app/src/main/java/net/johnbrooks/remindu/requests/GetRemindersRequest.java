@@ -10,6 +10,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -121,6 +122,8 @@ public class GetRemindersRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         Response.Listener<String> reminderResponseListener = GetReceivedResponseListener();
         GetRemindersRequest request = new GetRemindersRequest(reminderResponseListener);
         RequestQueue queue = Volley.newRequestQueue(activity);
@@ -129,6 +132,8 @@ public class GetRemindersRequest extends StringRequest
 
     public static void SendRequest(final Service service)
     {
+        if (!Network.IsConnected(service)) { return; }
+
         if (UserProfile.PROFILE == null)
             return;
 

@@ -10,6 +10,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.LoginActivity;
 import net.johnbrooks.remindu.activities.RegisterActivity;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -109,6 +110,8 @@ public class RegisterRequest extends StringRequest
 
     public static void SendRequest(RegisterActivity activity, final String fullname, final String username, final String email, final String password)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         Response.Listener<String> listener = GetResponseListener(activity);
 
         RegisterRequest request = new RegisterRequest(fullname, username, email, password, listener);

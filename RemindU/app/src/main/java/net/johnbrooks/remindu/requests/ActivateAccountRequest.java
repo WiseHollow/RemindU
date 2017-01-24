@@ -13,6 +13,7 @@ import com.android.volley.toolbox.Volley;
 import net.johnbrooks.remindu.activities.ActivateAccountActivity;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -111,6 +112,8 @@ public class ActivateAccountRequest extends StringRequest
 
     public static void SendRequest(final ActivateAccountActivity activity, final String code)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         Response.Listener<String> listener = GetResponseListener(activity);
         ActivateAccountRequest request = new ActivateAccountRequest(code, listener);
 

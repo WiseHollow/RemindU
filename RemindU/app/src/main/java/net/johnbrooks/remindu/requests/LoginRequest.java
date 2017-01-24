@@ -16,6 +16,7 @@ import net.johnbrooks.remindu.activities.LoginActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -219,6 +220,8 @@ public class LoginRequest extends StringRequest
 
     public static void SendRequest(final LoginActivity activity, final String email, final String password)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         Response.Listener<String> responseListener = GetLoginResponseListener(activity, password);
 
         LoginRequest request = new LoginRequest(email, password, responseListener);

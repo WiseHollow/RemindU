@@ -16,6 +16,7 @@ import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.schedulers.ShowCoinGainScheduler;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -125,6 +126,8 @@ public class PullProfileRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         Response.Listener<String> profileResponseListener = GetPullResponseListener(UserProfile.PROFILE.GetPassword());
 
         LoginRequest request = new LoginRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), profileResponseListener);
@@ -134,6 +137,8 @@ public class PullProfileRequest extends StringRequest
 
     public static void SendRequest(final Service service)
     {
+        if (!Network.IsConnected(service)) { return; }
+
         SharedPreferences sharedPref = service.getSharedPreferences("profile", service.MODE_PRIVATE);
 
         String email = sharedPref.getString("email", "null");

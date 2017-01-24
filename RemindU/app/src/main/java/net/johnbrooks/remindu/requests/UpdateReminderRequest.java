@@ -9,6 +9,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -85,6 +86,8 @@ public class UpdateReminderRequest extends StringRequest
 
     public static void SendRequest(final Reminder r)
     {
+        if (!Network.IsConnected(UserAreaActivity.GetActivity())) { return; }
+
         Response.Listener<String> responseListener = GetUpdateResponseListener(UserAreaActivity.GetActivity());
         UpdateReminderRequest request = new UpdateReminderRequest(r, responseListener);
         RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.GetActivity());

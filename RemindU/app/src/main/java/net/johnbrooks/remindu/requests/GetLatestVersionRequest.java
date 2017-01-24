@@ -15,6 +15,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -97,6 +98,8 @@ public class GetLatestVersionRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         PackageInfo pInfo;
         String version;
 

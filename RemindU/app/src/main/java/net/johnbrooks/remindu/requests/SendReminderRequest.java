@@ -10,6 +10,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -112,6 +113,8 @@ public class SendReminderRequest extends StringRequest
 
     public static void SendRequest(final Activity activity, Reminder reminder)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), reminder.GetTo(), UserProfile.PROFILE.GetPassword(), reminder.GetMessage(), reminder.GetImportant(), reminder.GetDate(), GetSendResponseListener(activity));
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);

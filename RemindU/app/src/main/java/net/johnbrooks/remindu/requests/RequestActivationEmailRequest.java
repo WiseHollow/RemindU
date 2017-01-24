@@ -9,6 +9,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -71,6 +72,8 @@ public class RequestActivationEmailRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         Response.Listener<String> listener = GetResponseListener();
         RequestActivationEmailRequest request = new RequestActivationEmailRequest(listener);
 

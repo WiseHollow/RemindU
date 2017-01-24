@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -79,6 +80,8 @@ public class SendCoinsRequest extends StringRequest
 
     public static void SendRequest(final Activity activity, final int user_id_to, final int coins)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         Response.Listener<String> listener = GetResponseListener();
         SendCoinsRequest request = new SendCoinsRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), coins, listener);
 

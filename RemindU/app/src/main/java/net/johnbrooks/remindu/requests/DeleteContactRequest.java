@@ -15,6 +15,7 @@ import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.ManageContactsActivity;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -88,6 +89,8 @@ public class DeleteContactRequest extends StringRequest
 
     public static void SendRequest(final ManageContactsActivity activity, final int id)
     {
+        if (!Network.IsConnected(activity)) { return; }
+
         Response.Listener<String> responseListener = GetDeleteResponseListener(activity, id);
 
         DeleteContactRequest request = new DeleteContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), String.valueOf(id), responseListener);
