@@ -365,6 +365,7 @@ public class UserProfile implements Parcelable
 
         DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         File file = new File(activity.getBaseContext().getFilesDir(), filename);
+        //Log.d("INFO", "Base Context File Dir: " + file.getAbsolutePath());
         Map<String, ArrayList<String>> data;
 
         if (!file.exists())
@@ -483,7 +484,6 @@ public class UserProfile implements Parcelable
     public void SaveReminderIgnoresToFile(Activity activity)
     {
         final String filename = "ignores.yml";
-
         File file = new File(activity.getBaseContext().getFilesDir(), filename);
 
         if (file.exists())
