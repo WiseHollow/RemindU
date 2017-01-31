@@ -537,17 +537,18 @@ public class UserProfile implements Parcelable
 
     public void LoadReminderIgnoresFromFile(Service service)
     {
+        if (service == null) { return; }
         final String filename = "ignores.yml";
 
         File file = new File(service.getBaseContext().getFilesDir(), filename);
-        List<Integer> ignores;
 
         if (!file.exists())
             return;
 
+        List<Integer> ignores;
+
         try
         {
-
             InputStream input = new FileInputStream(file);
             Yaml config = new Yaml();
             for (Object o : config.loadAll(input))

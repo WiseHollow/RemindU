@@ -25,6 +25,7 @@ import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
 import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.ContactViewType;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -153,6 +154,17 @@ public class UserAreaActivity extends AppCompatActivity
         {
             Intent activateIntent = new Intent(UserAreaActivity.GetActivity(), ActivateAccountActivity.class);
             UserAreaActivity.GetActivity().startActivity(activateIntent);
+        }
+
+        // See if there is a pending contact to view.
+
+        int ContactID = getIntent().getIntExtra("contactID", 0);
+        ContactProfile cp = UserProfile.PROFILE.GetContact(ContactID);
+        if (cp != null)
+        {
+            Intent intent = new Intent(UserAreaActivity.this, ReminderListActivity.class);
+            intent.putExtra("contactID", cp.GetID());
+            startActivity(intent);
         }
     }
 

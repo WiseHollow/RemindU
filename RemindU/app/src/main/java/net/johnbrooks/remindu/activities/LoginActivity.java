@@ -138,26 +138,34 @@ public class LoginActivity extends AppCompatActivity
 
         if (email.equalsIgnoreCase("null") || password.equalsIgnoreCase("null") || fullname.equalsIgnoreCase("null") ||
                 username.equalsIgnoreCase("null") || id == 0 || email.equalsIgnoreCase("null"))
+        {
+            Log.d("INFO", "COULD NOT LOAD SAVED PROFILE");
             return false;
+        }
 
         UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins, avatarID);
         UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
 
-        for(String s : contactsString)
+        if (contactsString != null)
         {
-            String[] element = s.split("%");
-            int cID = Integer.parseInt(element[0]);
-            String cEmail = element[1];
-            String cUsername = element[2];
-            String cFullName = element[3];
-            String cContacts = element[4];
-            String cAvatarID = element[5];
+            for(String s : contactsString)
+            {
+                String[] element = s.split("%");
+                int cID = Integer.parseInt(element[0]);
+                String cEmail = element[1];
+                String cUsername = element[2];
+                String cFullName = element[3];
+                String cContacts = element[4];
+                String cAvatarID = element[5];
 
-            if (cFullName.equalsIgnoreCase("null"))
-                UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
-            else
-                UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID));
+                if (cFullName.equalsIgnoreCase("null"))
+                    UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
+                else
+                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID));
+            }
         }
+        else
+        Log.d("WARNING", "No contacts to load. ");
 
         UserProfile.PROFILE.LoadRemindersFromFile(service);
 

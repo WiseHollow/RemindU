@@ -137,7 +137,7 @@ public class PullProfileRequest extends StringRequest
 
     public static void SendRequest(final Service service)
     {
-        if (!Network.IsConnected(service)) { return; }
+        if (service == null || !Network.IsConnected(service)) { return; }
 
         SharedPreferences sharedPref = service.getSharedPreferences("profile", service.MODE_PRIVATE);
 

@@ -708,7 +708,7 @@ public class Reminder implements Comparable<Reminder>
     }
     public boolean ProcessReminderNotifications(Service service)
     {
-        if (GetState() == ReminderState.COMPLETE)
+        if (service == null || GetState() == ReminderState.COMPLETE)
             return false;
         //
         // TODO: Make times to notify customizable on the settings of the app.
@@ -824,10 +824,12 @@ public class Reminder implements Comparable<Reminder>
 
     public void ShowNotification(Service service, boolean vibrate, String title, String message)
     {
-        if (UserProfile.PROFILE.IsIgnoring(GetID()))
+        if (service == null || UserProfile.PROFILE.IsIgnoring(GetID()))
             return;
 
         Intent intent = new Intent(service.getBaseContext(), ReminderListActivity.class);
+        if (UserAreaActivity.GetActivity() == null)
+            intent = new Intent(service.getBaseContext(), UserAreaActivity.class);
         if (GetFrom() == UserProfile.PROFILE.GetUserID())
             intent.putExtra("contactID", GetTo());
         else
@@ -851,8 +853,15 @@ public class Reminder implements Comparable<Reminder>
 
             if (am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE || am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
             {
-                Vibrator v = (Vibrator) service.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                v.vibrate(500);
+                try
+                {
+                    Vibrator v = (Vibrator) service.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(500);
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
             }
 
             if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)

@@ -41,8 +41,10 @@ public class PullService extends Service
         Log.d("INFO", "Background service started.");
         if (!LoginActivity.AttemptLoadSavedProfile(this))
         {
-            Log.d("WARNING", "Could not load reminders from file.");
+            Log.d("WARNING", "Could not load saved profile from file.");
+            return;
         }
+
         BackgroundServiceScheduler.Initialize(this);
     }
     @Override

@@ -65,6 +65,7 @@ public class BackgroundServiceScheduler
         }
         else
         {
+
             UserProfile.PROFILE.Pull(service);
 
             if (UserProfile.PROFILE != null)

@@ -132,7 +132,7 @@ public class GetRemindersRequest extends StringRequest
 
     public static void SendRequest(final Service service)
     {
-        if (!Network.IsConnected(service)) { return; }
+        if (service == null || !Network.IsConnected(service)) { return; }
 
         if (UserProfile.PROFILE == null)
             return;
