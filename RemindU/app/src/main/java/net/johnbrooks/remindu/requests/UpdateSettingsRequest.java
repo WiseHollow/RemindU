@@ -12,7 +12,6 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.util.Network;
-import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;

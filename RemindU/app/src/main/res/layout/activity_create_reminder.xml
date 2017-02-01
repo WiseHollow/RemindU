@@ -44,7 +44,7 @@
             <EditText
                 android:ems="10"
                 android:id="@+id/editText_cnr_message"
-                android:hint="Reminder Message"
+                android:hint="Activity Details"
                 android:layout_weight="0.30"
                 android:inputType="textMultiLine"
                 android:lines="8"

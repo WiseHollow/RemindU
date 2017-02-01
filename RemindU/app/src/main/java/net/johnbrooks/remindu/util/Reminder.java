@@ -9,61 +9,34 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ImageSpan;
-import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
-import net.johnbrooks.remindu.requests.SendCoinsRequest;
+import net.johnbrooks.remindu.requests.SendReputationRequest;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.BackgroundServiceScheduler;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -108,7 +81,7 @@ public class Reminder implements Comparable<Reminder>
             if (reminder.GetState() != check.GetState() && reminder.GetFrom() == UserProfile.PROFILE.GetUserID())
             {
                 // Change in state, and we are the sender. Notify the user.
-                reminder.ShowNotification(true, "Reminder Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
+                reminder.ShowNotification(true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
                 reminder.SetUpToDate(false);
             }
             UserProfile.PROFILE.GetReminders().remove(check);
@@ -117,7 +90,7 @@ public class Reminder implements Comparable<Reminder>
         {
             // New reminder has been added, make a notification
             if (!silentLoad)
-                reminder.ShowNotification(true, "New reminder from" + reminder.GetFullName(), reminder.GetMessage());
+                reminder.ShowNotification(true, "New activity from: " + reminder.GetFullName(), reminder.GetMessage());
             reminder.SetUpToDate(false);
         }
 
@@ -312,7 +285,7 @@ public class Reminder implements Comparable<Reminder>
         }
         int length = sString.length();
 
-        sString.append("\nReminder: " + GetMessage());
+        sString.append("\nActivity: " + GetMessage());
         sString.setSpan(new StyleSpan(Typeface.BOLD), length, length + 10, 0);
         length = sString.length();
         sString.append("\n\n" + "Time Left: " + GetETA());
@@ -407,7 +380,7 @@ public class Reminder implements Comparable<Reminder>
         if (UserProfile.PROFILE.GetUserID() == GetFrom())
         {
             final Dialog dialog = new Dialog(activity);
-            dialog.setTitle("Reminder Log");
+            dialog.setTitle("Activity Log");
             dialog.setContentView(R.layout.dialog_reminder_log);
             dialog.show();
 
@@ -448,7 +421,7 @@ public class Reminder implements Comparable<Reminder>
         }
 
         final Dialog dialog = new Dialog(activity);
-        dialog.setTitle("Select Reminder State");
+        dialog.setTitle("Select Activity State");
         dialog.setContentView(R.layout.dialog_reminder_state_picker);
         dialog.show();
 
@@ -516,7 +489,7 @@ public class Reminder implements Comparable<Reminder>
         else
         {
             final Dialog dialog = new Dialog(activity);
-            dialog.setTitle("Send User Coins");
+            dialog.setTitle("Send User Reputation");
             dialog.setContentView(R.layout.dialog_send_coins);
             dialog.show();
 
@@ -528,7 +501,7 @@ public class Reminder implements Comparable<Reminder>
             final Button button_send_10 = (Button) dialog.findViewById(R.id.button_sc_send_10);
 
             tv_recipient.setText("Recipient: " + reminder.GetFullName());
-            tv_coins.setText("Coins: " + UserProfile.PROFILE.GetCoins());
+            tv_coins.setText("Reputation: " + UserProfile.PROFILE.GetCoins());
 
             button_skip.setOnClickListener(new View.OnClickListener()
             {
@@ -548,15 +521,8 @@ public class Reminder implements Comparable<Reminder>
                 @Override
                 public void onClick(View view)
                 {
-                    if (1 > UserProfile.PROFILE.GetCoins())
-                    {
-                        Snackbar.make(view, "Insufficient coins!", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                        dialog.cancel();
-                        return;
-                    }
 
-                    SendCoinsRequest.SendRequest(activity, reminder.GetTo(), 1);
+                    SendReputationRequest.SendRequest(activity, reminder.GetTo(), 1);
                     UserProfile.PROFILE.DeleteReminder(reminder);
                     dialog.cancel();
 
@@ -570,15 +536,8 @@ public class Reminder implements Comparable<Reminder>
                 @Override
                 public void onClick(View view)
                 {
-                    if (5 > UserProfile.PROFILE.GetCoins())
-                    {
-                        Snackbar.make(view, "Insufficient coins!", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                        dialog.cancel();
-                        return;
-                    }
 
-                    SendCoinsRequest.SendRequest(activity, reminder.GetTo(), 5);
+                    SendReputationRequest.SendRequest(activity, reminder.GetTo(), 2);
                     UserProfile.PROFILE.DeleteReminder(reminder);
                     dialog.cancel();
 
@@ -592,15 +551,8 @@ public class Reminder implements Comparable<Reminder>
                 @Override
                 public void onClick(View view)
                 {
-                    if (10 > UserProfile.PROFILE.GetCoins())
-                    {
-                        Snackbar.make(view, "Insufficient coins!", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                        dialog.cancel();
-                        return;
-                    }
 
-                    SendCoinsRequest.SendRequest(activity, reminder.GetTo(), 10);
+                    SendReputationRequest.SendRequest(activity, reminder.GetTo(), 3);
                     UserProfile.PROFILE.DeleteReminder(reminder);
                     dialog.cancel();
 
@@ -721,7 +673,7 @@ public class Reminder implements Comparable<Reminder>
             // Time is over.
             //
 
-            ShowNotification(service, true, "Reminder from " + GetFullName(), "Passed deadline.");
+            ShowNotification(service, true, "Activity from " + GetFullName(), "Passed deadline.");
         }
         else if (timeLeft[0] == 1 && timeLeft[1] == 0 && timeLeft[2] == 0)
         {
@@ -729,7 +681,7 @@ public class Reminder implements Comparable<Reminder>
             // One day is left
             //
 
-            ShowNotification(service, false, "Reminder from " + GetFullName(), "Due in 1 day.");
+            ShowNotification(service, false, "Activity from " + GetFullName(), "Due in 1 day.");
         }
         else if (timeLeft[0] == 0 && timeLeft[1] == 1 && timeLeft[2] == 0)
         {
@@ -737,7 +689,7 @@ public class Reminder implements Comparable<Reminder>
             // 1 hours left
             //
 
-            ShowNotification(service, true, "Reminder from " + GetFullName(), "Due in 1 hour.");
+            ShowNotification(service, true, "Activity from " + GetFullName(), "Due in 1 hour.");
         }
 
         return true;
@@ -761,7 +713,7 @@ public class Reminder implements Comparable<Reminder>
             //
 
             final Dialog dialog = new Dialog(UserAreaActivity.GetActivity());
-            dialog.setTitle("Reminder due; finalize state");
+            dialog.setTitle("Activity due; finalize state");
             dialog.setContentView(R.layout.dialog_reminder_finalize);
             dialog.show();
 

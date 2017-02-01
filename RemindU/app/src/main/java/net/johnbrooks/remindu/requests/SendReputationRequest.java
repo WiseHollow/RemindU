@@ -9,17 +9,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.schedulers.PullScheduler;
-import net.johnbrooks.remindu.util.AcceptedContactProfile;
-import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,12 +22,12 @@ import java.util.Map;
  * Created by ieatl on 11/29/2016.
  */
 
-public class SendCoinsRequest extends StringRequest
+public class SendReputationRequest extends StringRequest
 {
     private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/sendCoins.php";
     private Map<String, String> params;
 
-    private SendCoinsRequest(final int user_id_from, final int user_id_to, final String password, final int coins, final Response.Listener<String> listener)
+    private SendReputationRequest(final int user_id_from, final int user_id_to, final String password, final int coins, final Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
         super(Method.POST, REQUEST_URL, listener, null);
@@ -83,7 +78,7 @@ public class SendCoinsRequest extends StringRequest
         if (!Network.IsConnected(activity)) { return; }
 
         Response.Listener<String> listener = GetResponseListener();
-        SendCoinsRequest request = new SendCoinsRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), coins, listener);
+        SendReputationRequest request = new SendReputationRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), coins, listener);
 
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);

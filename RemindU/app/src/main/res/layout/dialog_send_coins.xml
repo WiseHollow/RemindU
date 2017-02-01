@@ -41,17 +41,17 @@
         >
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Skip"
             android:id="@+id/button_sc_skip"
             />
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="1 Coin"
+            android:text="Nice! (+1)"
             android:id="@+id/button_sc_send_1"
             />
 
@@ -65,17 +65,17 @@
         android:paddingRight="20dp"
         >
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="5 Coins"
+            android:text="Great! (+2)"
             android:id="@+id/button_sc_send_5"
             />
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="10 Coins"
+            android:text="Perfect! (+3)"
             android:id="@+id/button_sc_send_10"
             />
 

@@ -156,7 +156,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:textStyle="bold"
-            android:text="Active Sent Reminders"/>
+            android:text="Active Sent Activities"/>
 
         <TextView
             android:text="input"
@@ -183,7 +183,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:textStyle="bold"
-            android:text="Active Received Reminders"/>
+            android:text="Active Received Activities"/>
 
         <TextView
             android:text="input"
