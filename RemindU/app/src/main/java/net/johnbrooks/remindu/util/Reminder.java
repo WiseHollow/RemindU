@@ -20,6 +20,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -81,7 +82,10 @@ public class Reminder implements Comparable<Reminder>
             if (reminder.GetState() != check.GetState() && reminder.GetFrom() == UserProfile.PROFILE.GetUserID())
             {
                 // Change in state, and we are the sender. Notify the user.
-                reminder.ShowNotification(true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
+                if (UserAreaActivity.GetActivity() == null)
+                    reminder.ShowNotification(BackgroundServiceScheduler.GetScheduler().GetService(), true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
+                else
+                    reminder.ShowNotification(true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
                 reminder.SetUpToDate(false);
             }
             UserProfile.PROFILE.GetReminders().remove(check);
@@ -840,11 +844,18 @@ public class Reminder implements Comparable<Reminder>
             return;
         }
 
+        if (UserAreaActivity.GetActivity() == null)
+        {
+            Log.d("SEVERE", "ShowNotification(boolean, String, String) has NULL UserAreaActivity!");
+            return;
+        }
+
         Intent intent = new Intent(UserAreaActivity.GetActivity().getBaseContext(), ReminderListActivity.class);
         if (GetFrom() == UserProfile.PROFILE.GetUserID())
             intent.putExtra("contactID", GetTo());
         else
             intent.putExtra("contactID", GetFrom());
+
         PendingIntent pi = PendingIntent.getActivity(UserAreaActivity.GetActivity(), 0, intent, 0);
         Notification notification = new NotificationCompat.Builder(UserAreaActivity.GetActivity())
                 .setTicker(title)
