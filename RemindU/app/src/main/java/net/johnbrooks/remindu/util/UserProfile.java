@@ -90,6 +90,8 @@ public class UserProfile implements Parcelable
 
     private Reminder activeReminder;
 
+    public boolean sortRemindersByDueDate;
+
     public UserProfile(int id, final int active, final String fullName, final String username, final String email, final String password, final Integer coins, final String avatarID)
     {
         UserID = id;
@@ -106,6 +108,7 @@ public class UserProfile implements Parcelable
         ReminderIgnores = new ArrayList<>();
 
         activeReminder = null;
+        sortRemindersByDueDate = true;
     }
 
     public final int IsActive() { return Active; }

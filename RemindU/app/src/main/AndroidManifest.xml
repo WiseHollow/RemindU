@@ -70,8 +70,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="Settings"/>
-
+            android:label="Settings" />
+        <activity android:name=".activities.ReminderFeedActivity"></activity>
     </application>
 
 </manifest>

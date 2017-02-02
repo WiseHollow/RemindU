@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.GridLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 
@@ -79,6 +80,16 @@ public class UserAreaActivity extends AppCompatActivity
         pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         if (UserProfile.PROFILE == null || ContactScrollView == null)
             return;
+
+        ContactScrollView.setOnTouchListener(new OnSwipeTouchListener(UserAreaActivity.this)
+        {
+            @Override
+            public void onSwipeLeft()
+            {
+                Toast.makeText(UserAreaActivity.this, "left", Toast.LENGTH_SHORT).show();
+            }
+
+        });
 
         //
         // Run schedules
@@ -200,7 +211,12 @@ public class UserAreaActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id == R.id.nav_profile)
+        if (id == R.id.nav_feed)
+        {
+            Intent intent = new Intent(UserAreaActivity.this, ReminderFeedActivity.class);
+            UserAreaActivity.this.startActivity(intent);
+        }
+        else if (id == R.id.nav_profile)
         {
             Intent intent = new Intent(UserAreaActivity.this, MyProfileActivity.class);
             UserAreaActivity.this.startActivity(intent);

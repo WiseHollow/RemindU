@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ContactProfile implements Comparable<ContactProfile>
 {
-    public static ContactProfile GetProfile(int user_id)
+    public static ContactProfile GetProfile(final int user_id)
     {
         for (ContactProfile cp : UserProfile.PROFILE.GetContacts())
             if (cp.GetID() == user_id)

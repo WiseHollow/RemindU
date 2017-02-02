@@ -897,11 +897,36 @@ public class Reminder implements Comparable<Reminder>
     @Override
     public int compareTo(Reminder to)
     {
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String dateString1 = formatter.format(GetDate());
-        String dateString2 = formatter.format(to.GetDate());
+        if (UserProfile.PROFILE.sortRemindersByDueDate)
+        {
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String dateString1 = formatter.format(GetDate());
+            String dateString2 = formatter.format(to.GetDate());
 
-        return dateString1.compareTo(dateString2);
+            return dateString1.compareTo(dateString2);
+        }
+        else
+        {
+            String s1 = null;
+
+            if (GetDateComplete() != null)
+                s1 = GetDateComplete();
+            else if (GetDateInProgress() != null)
+                s1 = GetDateInProgress();
+            else
+                s1 = "";
+
+            String s2 = null;
+
+            if (to.GetDateComplete() != null)
+                s2 = to.GetDateComplete();
+            else if (GetDateInProgress() != null)
+                s2 = to.GetDateInProgress();
+            else
+                s2 = "";
+
+            return s1.compareTo(s2);
+        }
     }
 
     @Override
