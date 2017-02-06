@@ -4,6 +4,7 @@ import android.app.Service;
 import android.os.Handler;
 import android.util.Log;
 
+import net.johnbrooks.remindu.fragments.FeedFragment;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 

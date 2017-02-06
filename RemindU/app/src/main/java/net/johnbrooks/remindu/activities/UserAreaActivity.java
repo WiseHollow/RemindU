@@ -58,11 +58,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
-
         //
         // Gets
         //
@@ -96,6 +91,11 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         ProcessRemindersScheduler.Initialize();
         if (SharedPreferences.getBoolean("check_for_updates", true))
             GetLatestVersionRequest.SendRequest(UserAreaActivity.this);
+
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
 
         //
         // Create Listeners

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
+import android.view.View;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
@@ -27,8 +28,15 @@ public class Network
         else
         {
             if (UserAreaActivity.GetActivity() != null)
-                Snackbar.make(UserAreaActivity.GetActivity().findViewById(R.id.fab), "Unable to connect to server...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            {
+                View focus = UserAreaActivity.GetActivity().findViewById(R.id.fab);
+                if (focus != null)
+                {
+                    Snackbar.make(focus, "Unable to connect to server...", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            }
+
 
             return false;
         }
