@@ -193,12 +193,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id == R.id.nav_feed)
-        {
-            Intent intent = new Intent(UserAreaActivity.this, ReminderFeedActivity.class);
-            UserAreaActivity.this.startActivity(intent);
-        }
-        else if (id == R.id.nav_profile)
+        if (id == R.id.nav_profile)
         {
             Intent intent = new Intent(UserAreaActivity.this, MyProfileActivity.class);
             UserAreaActivity.this.startActivity(intent);
