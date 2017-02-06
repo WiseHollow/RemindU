@@ -109,7 +109,7 @@ public class GetRemindersRequest extends StringRequest
                     }
 
                     UserProfile.PROFILE.RefreshReminderLayout();
-                    UserProfile.PROFILE.SaveRemindersToFile(UserAreaActivity.GetActivity());
+                    UserProfile.PROFILE.SaveRemindersToFile();
                 } catch (JSONException e)
                 {
                     e.printStackTrace();

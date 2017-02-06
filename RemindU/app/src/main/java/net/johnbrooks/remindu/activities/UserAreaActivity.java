@@ -101,7 +101,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         // Run schedules
         //
 
-        UserProfile.PROFILE.LoadRemindersFromFile(UserAreaActivity.this);
+        UserProfile.PROFILE.LoadRemindersFromFile();
         PullScheduler.Initialize();
         UpdateUserAreaScheduler.Initialize();
         ProcessRemindersScheduler.Initialize();

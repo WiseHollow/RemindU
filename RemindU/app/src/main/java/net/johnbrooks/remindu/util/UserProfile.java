@@ -168,7 +168,7 @@ public class UserProfile implements Parcelable
                 ReminderIgnores.remove(Integer.valueOf(id));
         }
 
-        SaveReminderIgnoresToFile(UserAreaActivity.GetActivity());
+        SaveReminderIgnoresToFile();
     }
 
     protected UserProfile(Parcel in)
@@ -270,7 +270,7 @@ public class UserProfile implements Parcelable
         DeleteReminderRequest.SendRequest(r);
 
         Reminders.remove(r);
-        SaveRemindersToFile(UserAreaActivity.GetActivity());
+        SaveRemindersToFile();
         RefreshReminderLayout();
     }
 
@@ -350,12 +350,12 @@ public class UserProfile implements Parcelable
         parcel.writeString(AvatarID);
     }
 
-    public void LoadRemindersFromFile(Activity activity)
+    public void LoadRemindersFromFile()
     {
         final String filename = "reminders.yml";
 
         DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-        File file = new File(activity.getBaseContext().getFilesDir(), filename);
+        File file = new File(UserAreaActivity.GetActivity().getBaseContext().getFilesDir(), filename);
         //Log.d("INFO", "Base Context File Dir: " + file.getAbsolutePath());
         Map<String, ArrayList<String>> data;
 
@@ -435,7 +435,7 @@ public class UserProfile implements Parcelable
         }
     }
 
-    public  void SaveRemindersToFile(Activity activity)
+    public  void SaveRemindersToFile()
     {
         if (UserAreaActivity.GetActivity() == null)
         {
@@ -445,7 +445,7 @@ public class UserProfile implements Parcelable
 
         final String filename = "reminders.yml";
 
-        File file = new File(activity.getBaseContext().getFilesDir(), filename);
+        File file = new File(UserAreaActivity.GetActivity().getBaseContext().getFilesDir(), filename);
 
         if (file.exists())
             file.delete();
@@ -472,10 +472,10 @@ public class UserProfile implements Parcelable
 
     }
 
-    public void SaveReminderIgnoresToFile(Activity activity)
+    public void SaveReminderIgnoresToFile()
     {
         final String filename = "ignores.yml";
-        File file = new File(activity.getBaseContext().getFilesDir(), filename);
+        File file = new File(UserAreaActivity.GetActivity().getBaseContext().getFilesDir(), filename);
 
         if (file.exists())
             file.delete();
