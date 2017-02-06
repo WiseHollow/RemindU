@@ -16,6 +16,7 @@
         android:layout_height="match_parent"
         android:scrollbarStyle="insideOverlay"
         android:foregroundGravity="center_horizontal"
+        android:background="#495"
         >
 
     </ScrollView>
