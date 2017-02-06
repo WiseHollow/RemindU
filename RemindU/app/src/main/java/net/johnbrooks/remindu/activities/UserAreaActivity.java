@@ -25,6 +25,7 @@ import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.PagerAdapter;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -117,6 +118,16 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         //
         // Create Listeners
         //
+
+        findViewById(R.id.user_area_refresh).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (Network.IsConnected(UserAreaActivity.this))
+                    PullScheduler.Call();
+            }
+        });
 
         /*pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener()
         {

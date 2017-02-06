@@ -19,6 +19,16 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/refresh_48"
+                android:background="@drawable/refresh_48"
+                android:layout_gravity="right"
+                android:layout_marginRight="15dp"
+                android:id="@+id/user_area_refresh"
+                />
+
             </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
