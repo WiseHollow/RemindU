@@ -69,8 +69,27 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         ContactScrollView = (ScrollView) findViewById(R.id.UserArea_ScrollView);
         SharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        if (UserProfile.PROFILE == null || ContactScrollView == null)
+
+        if (UserProfile.PROFILE == null)
+        {
+            Log.d("SEVERE", "UserProfile.PROFILE is null onCreate UserAreaActivity. ");
             return;
+        }
+        else if (ContactScrollView == null)
+        {
+            Log.d("SEVERE", "ContactScrollView is null onCreate UserAreaActivity. ");
+            return;
+        }
+
+        //
+        // Check if account is active
+        //
+
+        if (UserProfile.PROFILE.IsActive() != 1 && !ActivateAccountActivity.IsOpen())
+        {
+            Intent activateIntent = new Intent(UserAreaActivity.GetActivity(), ActivateAccountActivity.class);
+            UserAreaActivity.GetActivity().startActivity(activateIntent);
+        }
 
         //
         // Run schedules
@@ -115,16 +134,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
 
             }
         });*/
-
-        //
-        // Check if account is active
-        //
-
-        if (UserProfile.PROFILE.IsActive() != 1 && !ActivateAccountActivity.IsOpen())
-        {
-            Intent activateIntent = new Intent(UserAreaActivity.GetActivity(), ActivateAccountActivity.class);
-            UserAreaActivity.GetActivity().startActivity(activateIntent);
-        }
 
         // See if there is a pending contact to view.
 
