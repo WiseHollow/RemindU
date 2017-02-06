@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,6 +25,7 @@ import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
+import net.johnbrooks.remindu.util.PagerAdapter;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class UserAreaActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -60,6 +62,10 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
 
         //
         // Gets
