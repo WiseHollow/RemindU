@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.fragments.PrimaryFragment;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.PullProfileRequest;
@@ -205,6 +206,7 @@ public class UserProfile implements Parcelable
         Collections.sort(GetContacts());
 
         char latestChar = '-';
+        ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).removeAllViews();
 
         for (int i = 0; i < GetContacts().size(); i++)
         {
@@ -216,13 +218,13 @@ public class UserProfile implements Parcelable
                     LinearLayout sep = (LinearLayout) UserAreaActivity.GetActivity().getLayoutInflater().inflate(R.layout.widget_alphabet_separator, null);
                     TextView character = (TextView) sep.findViewById(R.id.Alphabet_Separator);
                     character.setText("" + cp.GetFullName().charAt(0));
-                    ((ViewGroup) UserAreaActivity.GetActivity().ContactLayout).addView(sep);
+                    ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).addView(sep);
                 }
 
                 latestChar = cp.GetFullName().charAt(0);
                 View view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
 
-                ((ViewGroup) UserAreaActivity.GetActivity().ContactLayout).addView(view);
+                ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).addView(view);
 
                 if (i % 2 != 0)
                     view.setBackgroundColor(Color.parseColor("#eaf7ff"));

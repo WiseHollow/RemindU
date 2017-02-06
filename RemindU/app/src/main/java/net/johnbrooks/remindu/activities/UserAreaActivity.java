@@ -15,13 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
-import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
@@ -34,9 +32,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
     private static UserAreaActivity activity;
     public static UserAreaActivity GetActivity() { return activity; }
     public SharedPreferences SharedPreferences;
-
-    private ScrollView ContactScrollView;
-    public View ContactLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -72,19 +67,13 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         // Gets
         //
 
-        ContactLayout = getLayoutInflater().inflate(R.layout.widget_linear_layout, null);
-        ContactScrollView = (ScrollView) findViewById(R.id.UserArea_ScrollView);
+        //ContactScrollView = (ScrollView) findViewById(R.id.UserArea_ScrollView);
         SharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         if (UserProfile.PROFILE == null)
         {
             Log.d("SEVERE", "UserProfile.PROFILE is null onCreate UserAreaActivity. ");
-            return;
-        }
-        else if (ContactScrollView == null)
-        {
-            Log.d("SEVERE", "ContactScrollView is null onCreate UserAreaActivity. ");
             return;
         }
 
@@ -104,16 +93,9 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
 
         UserProfile.PROFILE.LoadRemindersFromFile();
         PullScheduler.Initialize();
-        UpdateUserAreaScheduler.Initialize();
         ProcessRemindersScheduler.Initialize();
         if (SharedPreferences.getBoolean("check_for_updates", true))
             GetLatestVersionRequest.SendRequest(UserAreaActivity.this);
-
-        //
-        // Sets
-        //
-
-        UserProfile.PROFILE.RefreshReminderLayout();
 
         //
         // Create Listeners
@@ -162,8 +144,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
             intent.putExtra("contactID", cp.GetID());
             startActivity(intent);
         }
-
-
     }
 
     @Override

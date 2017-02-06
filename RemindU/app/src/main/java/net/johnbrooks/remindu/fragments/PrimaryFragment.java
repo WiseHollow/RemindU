@@ -5,18 +5,33 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
+import net.johnbrooks.remindu.util.UserProfile;
 
 public class PrimaryFragment extends Fragment
 {
     private static PrimaryFragment primaryFragment;
     public static PrimaryFragment GetInstance() { return primaryFragment; }
 
+    private View ContentView;
+    public View ContactLayout;
+    public ScrollView scrollView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         primaryFragment = this;
-        return inflater.inflate(R.layout.fragment_primary, container, false);
+
+        ContentView = inflater.inflate(R.layout.fragment_primary, container, false);
+        scrollView = (ScrollView) ContentView.findViewById(R.id.UserArea_ScrollView);
+        ContactLayout = getLayoutInflater(getArguments()).inflate(R.layout.widget_linear_layout, null);
+        scrollView.addView(ContactLayout);
+
+        UpdateUserAreaScheduler.Initialize();
+        UserProfile.PROFILE.RefreshReminderLayout();
+        return ContentView;
     }
 }

@@ -12,30 +12,21 @@
     tools:context="net.johnbrooks.remindu.activities.ReminderListActivity"
     tools:showIn="@layout/activity_reminder_list">
 
-    <com.baoyz.widget.PullRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_marginTop="14dp"
+        android:scrollbarStyle="insideOverlay"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="14dp"
-            android:scrollbarStyle="insideOverlay"
-            android:layout_below="@+id/textView10"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/scrollView_Reminders_Layout"
-                />
-        </ScrollView>
-
-
-    </com.baoyz.widget.PullRefreshLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/scrollView_Reminders_Layout"
+            />
+    </ScrollView>
 
 </RelativeLayout>
