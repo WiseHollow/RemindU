@@ -71,7 +71,8 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="Settings" />
-        <activity android:name=".activities.ReminderFeedActivity"></activity>
+        <activity android:name=".activities.ReminderFeedActivity" />
+        <activity android:name=".activities.MainActivity"></activity>
     </application>
 
 </manifest>

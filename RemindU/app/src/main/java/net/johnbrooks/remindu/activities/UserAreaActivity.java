@@ -33,8 +33,7 @@ import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.OnSwipeTouchListener;
 import net.johnbrooks.remindu.util.UserProfile;
 
-public class UserAreaActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener
+public class UserAreaActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private static UserAreaActivity activity;
     public static UserAreaActivity GetActivity() { return activity; }
@@ -80,16 +79,6 @@ public class UserAreaActivity extends AppCompatActivity
         pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         if (UserProfile.PROFILE == null || ContactScrollView == null)
             return;
-
-        ContactScrollView.setOnTouchListener(new OnSwipeTouchListener(UserAreaActivity.this)
-        {
-            @Override
-            public void onSwipeLeft()
-            {
-                Toast.makeText(UserAreaActivity.this, "left", Toast.LENGTH_SHORT).show();
-            }
-
-        });
 
         //
         // Run schedules
