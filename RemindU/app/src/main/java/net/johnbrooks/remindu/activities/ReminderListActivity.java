@@ -12,10 +12,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.baoyz.widget.PullRefreshLayout;
-
 import net.johnbrooks.remindu.R;
-import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.Reminder;
@@ -29,8 +26,6 @@ public class ReminderListActivity extends AppCompatActivity
 {
     private static ReminderListActivity activity = null;
     public static ReminderListActivity GetActivity() { return activity; }
-
-    private PullRefreshLayout PullRefreshLayout;
     private LinearLayout ReminderLayout;
     private ContactProfile ContactProfile;
 
@@ -60,8 +55,8 @@ public class ReminderListActivity extends AppCompatActivity
         if (ContactProfile == null)
             finish();
 
-        PullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         ReminderLayout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
+        /*PullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         PullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener()
         {
@@ -85,7 +80,7 @@ public class ReminderListActivity extends AppCompatActivity
                 }
 
             }
-        });
+        });*/
 
 
 

@@ -14,12 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.baoyz.widget.PullRefreshLayout;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
@@ -29,16 +25,12 @@ import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.ContactViewType;
-import net.johnbrooks.remindu.util.Network;
-import net.johnbrooks.remindu.util.OnSwipeTouchListener;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class UserAreaActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private static UserAreaActivity activity;
     public static UserAreaActivity GetActivity() { return activity; }
-
-    private PullRefreshLayout pullRefreshLayout;
     public SharedPreferences SharedPreferences;
 
     private ScrollView ContactScrollView;
@@ -76,7 +68,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
 
         ContactScrollView = (ScrollView) findViewById(R.id.UserArea_ScrollView);
         SharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        //pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         if (UserProfile.PROFILE == null || ContactScrollView == null)
             return;
 
@@ -126,7 +118,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         // Create Listeners
         //
 
-        pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener()
+        /*pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener()
         {
             @Override
             public void onRefresh()
@@ -147,7 +139,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
                 }
 
             }
-        });
+        });*/
 
         //
         // Check if account is active

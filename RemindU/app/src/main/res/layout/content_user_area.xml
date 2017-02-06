@@ -14,23 +14,4 @@
     tools:showIn="@layout/app_bar_user_area"
     >
 
-    <com.baoyz.widget.PullRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ScrollView
-            android:id="@+id/UserArea_ScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbarStyle="insideOverlay"
-            android:foregroundGravity="center_horizontal"
-            >
-
-        </ScrollView>
-
-
-
-    </com.baoyz.widget.PullRefreshLayout>
-
 </RelativeLayout>

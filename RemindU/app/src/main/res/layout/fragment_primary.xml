@@ -10,4 +10,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="net.johnbrooks.remindu.fragments.PrimaryFragment">
 
+    <ScrollView
+        android:id="@+id/UserArea_ScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarStyle="insideOverlay"
+        android:foregroundGravity="center_horizontal"
+        >
+
+    </ScrollView>
+
 </RelativeLayout>
