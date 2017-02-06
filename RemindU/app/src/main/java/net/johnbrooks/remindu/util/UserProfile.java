@@ -204,8 +204,6 @@ public class UserProfile implements Parcelable
         Collections.sort(GetReminders());
         Collections.sort(GetContacts());
 
-        ContactViewType viewType = UserAreaActivity.GetActivity().GetCurrentContactViewType();
-
         char latestChar = '-';
 
         for (int i = 0; i < GetContacts().size(); i++)
@@ -213,24 +211,16 @@ public class UserProfile implements Parcelable
             ContactProfile cp = GetContacts().get(i);
             if (cp != null)
             {
-                View view;
-                if (viewType == ContactViewType.GRID)
+                if (latestChar != cp.GetFullName().charAt(0))
                 {
-                    view = cp.CreateCategoryWidgetForGrid(UserAreaActivity.GetActivity());
+                    LinearLayout sep = (LinearLayout) UserAreaActivity.GetActivity().getLayoutInflater().inflate(R.layout.widget_alphabet_separator, null);
+                    TextView character = (TextView) sep.findViewById(R.id.Alphabet_Separator);
+                    character.setText("" + cp.GetFullName().charAt(0));
+                    ((ViewGroup) UserAreaActivity.GetActivity().ContactLayout).addView(sep);
                 }
-                else
-                {
-                    if (latestChar != cp.GetFullName().charAt(0))
-                    {
-                        LinearLayout sep = (LinearLayout) UserAreaActivity.GetActivity().getLayoutInflater().inflate(R.layout.widget_alphabet_separator, null);
-                        TextView character = (TextView) sep.findViewById(R.id.Alphabet_Separator);
-                        character.setText("" + cp.GetFullName().charAt(0));
-                        ((ViewGroup) UserAreaActivity.GetActivity().ContactLayout).addView(sep);
-                    }
 
-                    latestChar = cp.GetFullName().charAt(0);
-                    view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
-                }
+                latestChar = cp.GetFullName().charAt(0);
+                View view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
 
                 ((ViewGroup) UserAreaActivity.GetActivity().ContactLayout).addView(view);
 
@@ -266,8 +256,6 @@ public class UserProfile implements Parcelable
         {
             r.SetWidget(null);
         }
-
-        UserAreaActivity.GetActivity().ApplyContactViewType();
     }
 
     public void DeleteReminder(Reminder r)

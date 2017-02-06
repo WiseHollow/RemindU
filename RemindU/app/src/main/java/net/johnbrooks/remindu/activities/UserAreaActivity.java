@@ -24,7 +24,6 @@ import net.johnbrooks.remindu.schedulers.UpdateUserAreaScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
-import net.johnbrooks.remindu.util.ContactViewType;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class UserAreaActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -66,6 +65,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         // Gets
         //
 
+        ContactLayout = getLayoutInflater().inflate(R.layout.widget_linear_layout, null);
         ContactScrollView = (ScrollView) findViewById(R.id.UserArea_ScrollView);
         SharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //pullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
@@ -88,31 +88,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         //
 
         UserProfile.PROFILE.RefreshReminderLayout();
-
-        findViewById(R.id.select_view_list).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                SharedPreferences.Editor editor = SharedPreferences.edit();
-                editor.putInt("VIEW", ContactViewType.LIST.ordinal());
-                editor.commit();
-                if (UserProfile.PROFILE != null)
-                    UserProfile.PROFILE.RefreshReminderLayout();
-            }
-        });
-        findViewById(R.id.select_view_grid).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                SharedPreferences.Editor editor = SharedPreferences.edit();
-                editor.putInt("VIEW", ContactViewType.GRID.ordinal());
-                editor.commit();
-                if (UserProfile.PROFILE != null)
-                    UserProfile.PROFILE.RefreshReminderLayout();
-            }
-        });
 
         //
         // Create Listeners
@@ -239,7 +214,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-    public ContactViewType GetCurrentContactViewType()
+    /*public ContactViewType GetCurrentContactViewType()
     {
         return ContactViewType.values()[SharedPreferences.getInt("VIEW", 0)];
     }
@@ -250,5 +225,5 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         ContactScrollView.removeAllViewsInLayout();
         ContactLayout = ((viewType == ContactViewType.LIST) ? getLayoutInflater().inflate(R.layout.widget_linear_layout, null) : getLayoutInflater().inflate(R.layout.widget_grid_layout, null));
         ContactScrollView.addView(ContactLayout);
-    }
+    }*/
 }
