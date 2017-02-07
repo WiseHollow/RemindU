@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.schedulers.PullScheduler;
@@ -87,11 +88,17 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         //
 
         UserProfile.PROFILE.LoadRemindersFromFile();
-        PullScheduler.Initialize();
-        ProcessRemindersScheduler.Initialize();
+        MasterScheduler.GetInstance(UserAreaActivity.this).StartRepeatingTasks();
+
+        //PullScheduler.Initialize();
+        //ProcessRemindersScheduler.Initialize();
+        
         if (SharedPreferences.getBoolean("check_for_updates", true))
             GetLatestVersionRequest.SendRequest(UserAreaActivity.this);
 
+        //
+        // Create Pager for Fragment view
+        //
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
@@ -107,7 +114,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
             public void onClick(View v)
             {
                 if (Network.IsConnected(UserAreaActivity.this))
-                    PullScheduler.Call();
+                    MasterScheduler.GetInstance(UserAreaActivity.this).Call();
             }
         });
 

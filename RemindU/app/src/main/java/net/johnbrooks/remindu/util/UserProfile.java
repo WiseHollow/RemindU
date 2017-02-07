@@ -21,6 +21,7 @@ import net.johnbrooks.remindu.requests.DeleteReminderRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.PullProfileRequest;
 import net.johnbrooks.remindu.requests.UpdateReminderRequest;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -48,13 +49,6 @@ import java.util.Set;
 
 public class UserProfile implements Parcelable
 {
-    public static void Pull(Service service)
-    {
-        Log.d("INFO", "Pulling profile from server...");
-        PullProfileRequest.SendRequest(service);
-        GetRemindersRequest.SendRequest(service);
-    }
-
     public static void SaveCredentials(Activity activity, String email, String password, String fullName, String username, int id, int active, int coins)
     {
         SharedPreferences sharedPref = activity.getSharedPreferences("profile", Context.MODE_PRIVATE);
@@ -316,11 +310,22 @@ public class UserProfile implements Parcelable
         }
     }
 
-    public void Pull(Activity activity)
+    public void Pull()
     {
-        Log.d("INFO", "Pulling profile from server...");
-        GetRemindersRequest.SendRequest(activity);
-        PullProfileRequest.SendRequest(activity);
+        if (MasterScheduler.GetInstance().GetActivity() != null)
+        {
+            Log.d("INFO", "Pulling profile from server...");
+            PullProfileRequest.SendRequest(MasterScheduler.GetInstance().GetActivity());
+            Log.d("INFO", "Pulling reminders from server...");
+            GetRemindersRequest.SendRequest(MasterScheduler.GetInstance().GetActivity());
+        }
+        else if (MasterScheduler.GetInstance().GetService() != null)
+        {
+            Log.d("INFO", "Pulling profile from server...");
+            PullProfileRequest.SendRequest(MasterScheduler.GetInstance().GetService());
+            Log.d("INFO", "Pulling reminders from server...");
+            GetRemindersRequest.SendRequest(MasterScheduler.GetInstance().GetService());
+        }
     }
 
     public static final Creator<UserProfile> CREATOR = new Creator<UserProfile>()
@@ -354,6 +359,14 @@ public class UserProfile implements Parcelable
         parcel.writeString(Password);
         parcel.writeInt(Coins);
         parcel.writeString(AvatarID);
+    }
+
+    public void ProcessReminders()
+    {
+        for (Reminder r : UserProfile.PROFILE.GetReminders())
+        {
+            r.ProcessReminderNotifications();
+        }
     }
 
     public void LoadRemindersFromFile()

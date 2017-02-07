@@ -52,7 +52,7 @@
             android:label="@string/title_activity_settings" />
 
         <service
-            android:name=".services.PullService"
+            android:name=".services.BackgroundService"
             android:label="@string/app_name" />
 
         <receiver android:name=".services.MyReceiver">

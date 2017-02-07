@@ -25,7 +25,7 @@ public class MyReceiver extends BroadcastReceiver
             return;
         }
 
-        Intent serviceIntent = new Intent(context, PullService.class);
+        Intent serviceIntent = new Intent(context, BackgroundService.class);
         context.startService(serviceIntent);
     }
 }

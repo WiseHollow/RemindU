@@ -67,13 +67,13 @@ public class BackgroundServiceScheduler
         else
         {
 
-            UserProfile.PROFILE.Pull(service);
+            UserProfile.PROFILE.Pull();
 
             if (UserProfile.PROFILE != null)
             {
                 for (Reminder r : UserProfile.PROFILE.GetReminders())
                 {
-                    r.ProcessReminderNotifications(service);
+                    //r.ProcessReminderNotifications(service);
                 }
             }
             else

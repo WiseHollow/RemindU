@@ -46,7 +46,7 @@ public class PullScheduler
         public void run() {
             try
             {
-                UserProfile.PROFILE.Pull(Activity);
+                UserProfile.PROFILE.Pull();
             } finally
             {
                 mHandler.postDelayed(mStatusChecker, mInterval);

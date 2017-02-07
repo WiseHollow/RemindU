@@ -34,6 +34,7 @@ import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.SendReputationRequest;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.BackgroundServiceScheduler;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -83,10 +84,10 @@ public class Reminder implements Comparable<Reminder>
             if (reminder.GetState() != check.GetState() && reminder.GetFrom() == UserProfile.PROFILE.GetUserID())
             {
                 // Change in state, and we are the sender. Notify the user.
-                if (UserAreaActivity.GetActivity() == null)
+                if (MasterScheduler.GetInstance().GetService() != null)
                     reminder.ShowNotification(BackgroundServiceScheduler.GetScheduler().GetService(), true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
                 else
-                    reminder.ShowNotification(true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
+                    reminder.ShowNotification(MasterScheduler.GetInstance().GetActivity(), true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
                 reminder.SetUpToDate(false);
             }
             UserProfile.PROFILE.GetReminders().remove(check);
@@ -95,7 +96,13 @@ public class Reminder implements Comparable<Reminder>
         {
             // New reminder has been added, make a notification
             if (!silentLoad)
-                reminder.ShowNotification(true, "New activity from: " + reminder.GetFullName(), reminder.GetMessage());
+            {
+                if (MasterScheduler.GetInstance().GetService() != null)
+                    reminder.ShowNotification(MasterScheduler.GetInstance().GetService(), true, "New activity from: " + reminder.GetFullName(), reminder.GetMessage());
+                else
+                    reminder.ShowNotification(MasterScheduler.GetInstance().GetActivity(), true, "New activity from: " + reminder.GetFullName(), reminder.GetMessage());
+
+            }
             reminder.SetUpToDate(false);
         }
 
@@ -755,9 +762,12 @@ public class Reminder implements Comparable<Reminder>
         }
     }
 
-    public boolean ProcessReminderNotifications(Service service)
+    public boolean ProcessReminderNotifications()
     {
-        if (service == null || GetState() == ReminderState.COMPLETE)
+        if (MasterScheduler.GetInstance() == null || (MasterScheduler.GetInstance().GetActivity() == null && MasterScheduler.GetInstance().GetService() == null))
+            return false;
+
+        if (GetState() == ReminderState.COMPLETE)
             return false;
         //
         // TODO: Make times to notify customizable on the settings of the app.
@@ -769,8 +779,10 @@ public class Reminder implements Comparable<Reminder>
             //
             // Time is over.
             //
-
-            ShowNotification(service, true, "Activity from " + GetFullName(), "Passed deadline.");
+            if (MasterScheduler.GetInstance().GetService() != null)
+                ShowNotification(MasterScheduler.GetInstance().GetService(), true, "Activity from " + GetFullName(), "Passed deadline.");
+            else if (MasterScheduler.GetInstance().GetActivity() != null)
+                ShowNotification(MasterScheduler.GetInstance().GetActivity(), true, "Activity from " + GetFullName(), "Passed deadline.");
         }
         else if (timeLeft[0] == 1 && timeLeft[1] == 0 && timeLeft[2] == 0)
         {
@@ -778,7 +790,10 @@ public class Reminder implements Comparable<Reminder>
             // One day is left
             //
 
-            ShowNotification(service, false, "Activity from " + GetFullName(), "Due in 1 day.");
+            if (MasterScheduler.GetInstance().GetService() != null)
+                ShowNotification(MasterScheduler.GetInstance().GetService(), true, "Activity from " + GetFullName(), "Due in 1 day.");
+            else if (MasterScheduler.GetInstance().GetActivity() != null)
+                ShowNotification(MasterScheduler.GetInstance().GetActivity(), true, "Activity from " + GetFullName(), "Due in 1 day.");
         }
         else if (timeLeft[0] == 0 && timeLeft[1] == 1 && timeLeft[2] == 0)
         {
@@ -786,7 +801,10 @@ public class Reminder implements Comparable<Reminder>
             // 1 hours left
             //
 
-            ShowNotification(service, true, "Activity from " + GetFullName(), "Due in 1 hour.");
+            if (MasterScheduler.GetInstance().GetService() != null)
+                ShowNotification(MasterScheduler.GetInstance().GetService(), true, "Activity from " + GetFullName(), "Due in 1 hour.");
+            else if (MasterScheduler.GetInstance().GetActivity() != null)
+                ShowNotification(MasterScheduler.GetInstance().GetActivity(), true, "Activity from " + GetFullName(), "Due in 1 hour.");
         }
 
         return true;
@@ -928,29 +946,31 @@ public class Reminder implements Comparable<Reminder>
 
     }
 
-    public void ShowNotification(boolean vibrate, String title, String message)
+    public void ShowNotification(Activity activity, boolean vibrate, String title, String message)
     {
-        if (UserProfile.PROFILE.IsIgnoring(GetID()) || UserAreaActivity.GetActivity() == null)
+        /*if (UserProfile.PROFILE.IsIgnoring(GetID()) || UserAreaActivity.GetActivity() == null)
         {
             if (BackgroundServiceScheduler.GetScheduler() != null && BackgroundServiceScheduler.GetScheduler().GetService() != null)
                 ShowNotification(BackgroundServiceScheduler.GetScheduler().GetService(), vibrate, title, message);
             return;
         }
-
-        if (UserAreaActivity.GetActivity() == null)
+*/
+        if (activity == null)
         {
-            Log.d("SEVERE", "ShowNotification(boolean, String, String) has NULL UserAreaActivity!");
+            Log.d("SEVERE", "ShowNotification(boolean, String, String) has NULL activity!");
             return;
         }
+        else if (UserProfile.PROFILE.IsIgnoring(GetID()))
+            return;
 
-        Intent intent = new Intent(UserAreaActivity.GetActivity().getBaseContext(), ReminderListActivity.class);
+        Intent intent = new Intent(activity.getBaseContext(), ReminderListActivity.class);
         if (GetFrom() == UserProfile.PROFILE.GetUserID())
             intent.putExtra("contactID", GetTo());
         else
             intent.putExtra("contactID", GetFrom());
 
-        PendingIntent pi = PendingIntent.getActivity(UserAreaActivity.GetActivity(), 0, intent, 0);
-        Notification notification = new NotificationCompat.Builder(UserAreaActivity.GetActivity())
+        PendingIntent pi = PendingIntent.getActivity(activity, 0, intent, 0);
+        Notification notification = new NotificationCompat.Builder(activity)
                 .setTicker(title)
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
                 .setContentTitle(title)
@@ -959,16 +979,16 @@ public class Reminder implements Comparable<Reminder>
                 .setAutoCancel(true)
                 .build();
 
-        NotificationManager notificationManager = (NotificationManager) UserAreaActivity.GetActivity().getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) activity.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, notification);
 
-        if (vibrate && UserAreaActivity.GetActivity() != null)
+        if (vibrate && activity != null)
         {
-            AudioManager am = (AudioManager)UserAreaActivity.GetActivity().getSystemService(Context.AUDIO_SERVICE);
+            AudioManager am = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 
             if (am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE || am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
             {
-                Vibrator v = (Vibrator) UserAreaActivity.GetActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                Vibrator v = (Vibrator) activity.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(500);
             }
 
@@ -977,7 +997,7 @@ public class Reminder implements Comparable<Reminder>
                 try
                 {
                     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    Ringtone r = RingtoneManager.getRingtone(UserAreaActivity.GetActivity().getApplicationContext(), alarmSound);
+                    Ringtone r = RingtoneManager.getRingtone(activity.getApplicationContext(), alarmSound);
                     r.play();
                 } catch (Exception e) {
                     e.printStackTrace();
