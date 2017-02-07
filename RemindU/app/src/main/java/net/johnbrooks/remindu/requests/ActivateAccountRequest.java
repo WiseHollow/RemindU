@@ -12,7 +12,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.ActivateAccountActivity;
 import net.johnbrooks.remindu.R;
-import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -61,7 +61,8 @@ public class ActivateAccountRequest extends StringRequest
 
                     if (success)
                     {
-                        PullScheduler.Call();
+                        //PullScheduler.Call();
+                        MasterScheduler.GetInstance(activity).Call();
                         AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
                         dialog.setTitle("Activation")
                                 .setMessage("Activation was successful!")

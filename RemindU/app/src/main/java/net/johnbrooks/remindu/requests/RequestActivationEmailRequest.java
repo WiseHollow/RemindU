@@ -8,7 +8,6 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 

@@ -10,7 +10,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.ManageContactsActivity;
-import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -68,7 +68,7 @@ public class AddContactRequest extends StringRequest
 
                         UserProfile.PROFILE.AddContact(new ContactProfile(-1, target));
                         activity.UpdateContactsList();
-                        PullScheduler.Call();
+                        MasterScheduler.GetInstance(activity).Call();
                     }
                     else
                     {

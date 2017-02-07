@@ -1,7 +1,5 @@
 package net.johnbrooks.remindu.requests;
 
-import android.app.Activity;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
@@ -11,10 +9,8 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.ManageContactsActivity;
-import net.johnbrooks.remindu.schedulers.PullScheduler;
-import net.johnbrooks.remindu.util.ContactProfile;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -66,7 +62,7 @@ public class DeleteContactRequest extends StringRequest
                     if (success)
                     {
                         UserProfile.PROFILE.RemoveContact(target);
-                        PullScheduler.Call();
+                        MasterScheduler.GetInstance(activity).Call();
                         activity.UpdateContactsList();
                     }
                     else

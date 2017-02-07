@@ -6,10 +6,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import net.johnbrooks.remindu.activities.LoginActivity;
-import net.johnbrooks.remindu.schedulers.BackgroundServiceScheduler;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
-import net.johnbrooks.remindu.util.Reminder;
-import net.johnbrooks.remindu.util.UserProfile;
 
 /**
  * Created by John on 12/19/2016.

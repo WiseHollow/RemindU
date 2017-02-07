@@ -13,7 +13,6 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.ActivateAccountActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
-import net.johnbrooks.remindu.schedulers.ShowCoinGainScheduler;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Network;
@@ -75,11 +74,6 @@ public class PullProfileRequest extends StringRequest
 
                         final String contacts = jsonResponse.getString("contacts");
                         final String avatarID = jsonResponse.getString("avatar");
-
-                        if (UserProfile.PROFILE != null && coins != UserProfile.PROFILE.GetCoins())
-                        {
-                            ShowCoinGainScheduler.Initialize();
-                        }
 
                         if (UserProfile.PROFILE == null)
                             UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins, avatarID);

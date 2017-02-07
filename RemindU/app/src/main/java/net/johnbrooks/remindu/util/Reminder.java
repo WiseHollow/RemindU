@@ -33,11 +33,9 @@ import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.SendReputationRequest;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
-import net.johnbrooks.remindu.schedulers.BackgroundServiceScheduler;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -85,7 +83,7 @@ public class Reminder implements Comparable<Reminder>
             {
                 // Change in state, and we are the sender. Notify the user.
                 if (MasterScheduler.GetInstance().GetService() != null)
-                    reminder.ShowNotification(BackgroundServiceScheduler.GetScheduler().GetService(), true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
+                    reminder.ShowNotification(MasterScheduler.GetInstance().GetService(), true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
                 else
                     reminder.ShowNotification(MasterScheduler.GetInstance().GetActivity(), true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
                 reminder.SetUpToDate(false);
@@ -1020,23 +1018,19 @@ public class Reminder implements Comparable<Reminder>
         }
         else
         {
-            String s1;
+            String s1 = "";
 
             if (GetDateComplete() != null)
                 s1 = GetDateComplete();
             else if (GetDateInProgress() != null)
                 s1 = GetDateInProgress();
-            else
-                s1 = "";
 
-            String s2;
+            String s2 = "";
 
             if (to.GetDateComplete() != null)
                 s2 = to.GetDateComplete();
-            else if (GetDateInProgress() != null)
+            else if (to.GetDateInProgress() != null)
                 s2 = to.GetDateInProgress();
-            else
-                s2 = "";
 
             return s1.compareTo(s2);
         }

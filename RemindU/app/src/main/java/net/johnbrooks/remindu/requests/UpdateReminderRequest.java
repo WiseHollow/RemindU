@@ -9,6 +9,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
@@ -70,7 +71,7 @@ public class UpdateReminderRequest extends StringRequest
 
                     if (success)
                     {
-                        UserProfile.PROFILE.Pull(activity);
+                        MasterScheduler.GetInstance(activity).Call();
                     }
                     else
                     {

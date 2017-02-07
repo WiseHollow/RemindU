@@ -20,9 +20,7 @@ import android.widget.TextView;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
-import net.johnbrooks.remindu.schedulers.ProcessRemindersScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
-import net.johnbrooks.remindu.schedulers.PullScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.PagerAdapter;
@@ -88,11 +86,10 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         //
 
         UserProfile.PROFILE.LoadRemindersFromFile();
-        MasterScheduler.GetInstance(UserAreaActivity.this).StartRepeatingTasks();
 
         //PullScheduler.Initialize();
         //ProcessRemindersScheduler.Initialize();
-        
+
         if (SharedPreferences.getBoolean("check_for_updates", true))
             GetLatestVersionRequest.SendRequest(UserAreaActivity.this);
 

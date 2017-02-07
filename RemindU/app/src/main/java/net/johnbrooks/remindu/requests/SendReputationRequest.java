@@ -8,7 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import net.johnbrooks.remindu.schedulers.PullScheduler;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -59,7 +59,7 @@ public class SendReputationRequest extends StringRequest
 
                     if (success)
                     {
-                        PullScheduler.Call();
+                        MasterScheduler.GetInstance().Call();
                     }
                     else
                     {
