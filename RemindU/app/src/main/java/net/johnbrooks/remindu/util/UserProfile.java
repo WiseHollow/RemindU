@@ -468,6 +468,8 @@ public class UserProfile implements Parcelable
         {
             e.printStackTrace();
         }
+
+        Log.d("INFO", "Loaded all reminders from file.");
     }
 
     public  void SaveRemindersToFile()
@@ -504,7 +506,7 @@ public class UserProfile implements Parcelable
             ex.printStackTrace();
         }
 
-        Log.d("INFO", "SAVING ALL REMINDERS!");
+        Log.d("INFO", "Reminders were saved into file.");
     }
 
     public void SaveReminderIgnoresToFile()
