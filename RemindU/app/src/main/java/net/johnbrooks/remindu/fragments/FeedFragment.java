@@ -19,7 +19,11 @@ import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 
 public class FeedFragment extends Fragment
 {
@@ -38,8 +42,6 @@ public class FeedFragment extends Fragment
         ContactLayout = getLayoutInflater(getArguments()).inflate(R.layout.widget_linear_layout, null);
         scrollView.addView(ContactLayout);
 
-        PopulateActivity();
-
         return ContentView;
     }
 
@@ -51,12 +53,10 @@ public class FeedFragment extends Fragment
 
         for (Reminder r : UserProfile.PROFILE.GetReminders())
         {
-            Log.d("INFO", "HIT");
             if (r.GetDateInProgress() == null && r.GetDateComplete() == null)
                 continue;
             if (r.GetTo() == UserProfile.PROFILE.GetUserID())
                 continue;
-            Log.d("INFO", "Starting");
 
             LinearLayout widget = (LinearLayout) getLayoutInflater(getArguments()).inflate(R.layout.widget_reminder_in_feed, null);
             ((ViewGroup) ContactLayout).addView(widget);
@@ -82,11 +82,38 @@ public class FeedFragment extends Fragment
             tv_state.setText(state);
             tv_activityInfo.setText(r.GetMessage());
 
+            DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+            Date reminderDateToCompare;
+            String timeLeft;
+
             if (r.GetDateComplete() != null)
-                tv_time.setText(r.GetDateComplete());
+            {
+                try
+                {
+                    reminderDateToCompare = formatter.parse(r.GetDateComplete());
+                    timeLeft = r.GetRoughTimeSince(reminderDateToCompare);
+                } catch (ParseException e)
+                {
+                    e.printStackTrace();
+                    timeLeft = "error";
+                }
+
+                tv_time.setText(timeLeft);
+            }
             else
-                tv_time.setText(r.GetDateInProgress());
-            Log.d("INFO", "Added");
+            {
+                try
+                {
+                    reminderDateToCompare = formatter.parse(r.GetDateInProgress());
+                    timeLeft = r.GetRoughTimeSince(reminderDateToCompare);
+                } catch (ParseException e)
+                {
+                    e.printStackTrace();
+                    timeLeft = "error";
+                }
+
+                tv_time.setText(timeLeft);
+            }
         }
 
         UserProfile.PROFILE.sortRemindersByDueDate = true;

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Handler;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
-import net.johnbrooks.remindu.fragments.FeedFragment;
 import net.johnbrooks.remindu.util.UserProfile;
 
 /**
@@ -48,8 +47,6 @@ public class PullScheduler
             try
             {
                 UserProfile.PROFILE.Pull(Activity);
-                if (FeedFragment.GetInstance() != null)
-                    FeedFragment.GetInstance().PopulateActivity();
             } finally
             {
                 mHandler.postDelayed(mStatusChecker, mInterval);

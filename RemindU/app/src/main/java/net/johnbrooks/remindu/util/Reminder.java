@@ -36,6 +36,7 @@ import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.BackgroundServiceScheduler;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -615,11 +616,40 @@ public class Reminder implements Comparable<Reminder>
             return R.drawable.mute_48_red;
     }
 
-    public int[] GetTimeRemaining()
+    public int[] GetTimeRemaining(Date compare)
     {
         int[] time = new int[3];
 
-        long remaining = Date.getTime() - (new Date()).getTime();
+        long remaining = compare.getTime() - (new Date()).getTime();
+        remaining = remaining / 1000;
+
+        if (remaining != 0)
+        {
+            time[0] = (int) (remaining / (24 * 60 * 60));
+            if (time[0] != 0)
+                remaining = remaining % (24 * 60 * 60);
+        }
+
+        if (remaining != 0)
+        {
+            time[1] = (int) (remaining / (60 * 60));
+            if (time[1] != 0)
+                remaining = remaining % (60 * 60);
+        }
+
+        if (remaining != 0)
+        {
+            time[2] = (int) (remaining / (60));
+        }
+
+        return time;
+    }
+
+    public int[] GetTimeSince(Date compare)
+    {
+        int[] time = new int[3];
+
+        long remaining = (new Date()).getTime() - compare.getTime();
         remaining = remaining / 1000;
 
         if (remaining != 0)
@@ -648,7 +678,7 @@ public class Reminder implements Comparable<Reminder>
     {
         String eta = "";
 
-        int[] timeLeft = GetTimeRemaining();
+        int[] timeLeft = GetTimeRemaining(Date);
 
         if (timeLeft[0] > 0)
             eta += timeLeft[0] + " days ";
@@ -662,6 +692,69 @@ public class Reminder implements Comparable<Reminder>
 
         return eta;
     }
+
+    public String GetRoughETA(Date date)
+    {
+        int[] timeLeft = GetTimeRemaining(date);
+
+        if (timeLeft[0] > 0)
+        {
+            if (timeLeft[0] == 1)
+                return "A day ago";
+            else
+                return timeLeft[0] + " days ago";
+        }
+        else if (timeLeft[1] > 0)
+        {
+            if (timeLeft[0] == 1)
+                return "An hour ago";
+            else
+                return timeLeft[0] + " hours ago";
+        }
+        else if (timeLeft[2] > 0)
+        {
+            if (timeLeft[0] == 1)
+                return "A minute ago";
+            else
+                return timeLeft[0] + " minutes ago";
+        }
+        else
+        {
+            return "Now";
+        }
+    }
+
+    public String GetRoughTimeSince(Date date)
+    {
+        int[] timeLeft = GetTimeSince(date);
+
+        if (timeLeft[0] > 0)
+        {
+            if (timeLeft[0] == 1)
+                return "A day ago";
+            else
+                return timeLeft[0] + " days ago";
+        }
+        else if (timeLeft[1] > 0)
+        {
+            if (timeLeft[1] == 1)
+                return "An hour ago";
+            else
+                return timeLeft[1] + " hours ago";
+        }
+        else if (timeLeft[2] > 0)
+        {
+            if (timeLeft[2] == 1)
+                return "A minute ago";
+            else
+                return timeLeft[2] + " minutes ago";
+        }
+        else
+        {
+            return "Now";
+        }
+    }
+
     public boolean ProcessReminderNotifications(Service service)
     {
         if (service == null || GetState() == ReminderState.COMPLETE)
@@ -670,7 +763,7 @@ public class Reminder implements Comparable<Reminder>
         // TODO: Make times to notify customizable on the settings of the app.
         //
 
-        int[] timeLeft = GetTimeRemaining();
+        int[] timeLeft = GetTimeRemaining(Date);
         if (timeLeft[0] == 0 && timeLeft[1] == 0 && timeLeft[2] == 0)
         {
             //
@@ -709,7 +802,7 @@ public class Reminder implements Comparable<Reminder>
 
         final Reminder myReminder = this;
 
-        int[] timeLeft = GetTimeRemaining();
+        int[] timeLeft = GetTimeRemaining(Date);
         if (timeLeft[0] == 0 && timeLeft[1] == 0 && timeLeft[2] == 0)
         {
             //
@@ -907,7 +1000,7 @@ public class Reminder implements Comparable<Reminder>
         }
         else
         {
-            String s1 = null;
+            String s1;
 
             if (GetDateComplete() != null)
                 s1 = GetDateComplete();
@@ -916,7 +1009,7 @@ public class Reminder implements Comparable<Reminder>
             else
                 s1 = "";
 
-            String s2 = null;
+            String s2;
 
             if (to.GetDateComplete() != null)
                 s2 = to.GetDateComplete();
@@ -960,7 +1053,9 @@ public class Reminder implements Comparable<Reminder>
                 GetMessage(),
                 formatter.format(GetDate()),
                 String.valueOf((GetImportant() == true) ? 1 : 0),
-                String.valueOf(GetState().ordinal())
+                String.valueOf(GetState().ordinal()),
+                GetDateInProgress(),
+                GetDateComplete()
         };
         return array;
     }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.fragments.FeedFragment;
 import net.johnbrooks.remindu.fragments.PrimaryFragment;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
@@ -232,6 +233,9 @@ public class UserProfile implements Parcelable
                     view.setBackgroundColor(Color.parseColor("#FCFCFC"));
             }
         }
+
+        if (FeedFragment.GetInstance() != null)
+            FeedFragment.GetInstance().PopulateActivity();
     }
 
     public ContactProfile GetContact(int id)
@@ -383,7 +387,14 @@ public class UserProfile implements Parcelable
                     boolean important = (rArray[5].equalsIgnoreCase("1")) ? true : false;
                     Reminder.ReminderState rState = Reminder.ReminderState.values()[Integer.parseInt(rArray[6])];
 
-                    Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
+                    String dateInProgress = rArray[7];
+                    String dateCompleted = rArray[8];
+
+                    Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
+                    if (dateInProgress != null)
+                        r.SetDateInProgress(dateInProgress);
+                    if (dateCompleted != null)
+                        r.SetDateComplete(dateCompleted);
                 }
             }
         } catch (FileNotFoundException e)
@@ -393,6 +404,8 @@ public class UserProfile implements Parcelable
         {
             e.printStackTrace();
         }
+
+        Log.d("INFO", "Loaded all reminders from file.");
     }
 
     public void LoadRemindersFromFile(Service service)
@@ -425,7 +438,14 @@ public class UserProfile implements Parcelable
                     boolean important = (rArray[5].equalsIgnoreCase("1")) ? true : false;
                     Reminder.ReminderState rState = Reminder.ReminderState.values()[Integer.parseInt(rArray[6])];
 
-                    Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
+                    String dateInProgress = rArray[7];
+                    String dateCompleted = rArray[8];
+
+                    Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
+                    if (!dateInProgress.equalsIgnoreCase("null"))
+                        r.SetDateInProgress(dateInProgress);
+                    if (!dateCompleted.equalsIgnoreCase("null"))
+                        r.SetDateComplete(dateCompleted);
                 }
             }
         } catch (FileNotFoundException e)
@@ -441,7 +461,7 @@ public class UserProfile implements Parcelable
     {
         if (UserAreaActivity.GetActivity() == null)
         {
-            Log.d("INFO", "Attempt to save reminders from service.... skipping.");
+            //Log.d("INFO", "Attempt to save reminders from service.... skipping.");
             return;
         }
 
@@ -471,7 +491,7 @@ public class UserProfile implements Parcelable
             ex.printStackTrace();
         }
 
-
+        Log.d("INFO", "SAVING ALL REMINDERS!");
     }
 
     public void SaveReminderIgnoresToFile()
