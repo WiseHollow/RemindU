@@ -1,5 +1,6 @@
 package net.johnbrooks.remindu.fragments;
 
+import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,8 +52,9 @@ public class FeedFragment extends Fragment
         Collections.sort(UserProfile.PROFILE.GetReminders());
         ((ViewGroup) ContactLayout).removeAllViews();
 
-        for (Reminder r : UserProfile.PROFILE.GetReminders())
+        for (int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
         {
+            Reminder r = UserProfile.PROFILE.GetReminders().get(i);
             if (r.GetDateInProgress() == null && r.GetDateComplete() == null)
                 continue;
             if (r.GetTo() == UserProfile.PROFILE.GetUserID())
@@ -60,6 +62,12 @@ public class FeedFragment extends Fragment
 
             LinearLayout widget = (LinearLayout) getLayoutInflater(getArguments()).inflate(R.layout.widget_reminder_in_feed, null);
             ((ViewGroup) ContactLayout).addView(widget);
+
+            final View view = widget.findViewById(R.id.feed_element_layout);
+            if (i % 2 != 0)
+                view.setBackgroundColor(Color.parseColor("#eaf7ff"));
+            else
+                view.setBackgroundColor(Color.parseColor("#FCFCFC"));
 
             final ImageView iv_avatar = (ImageView) widget.findViewById(R.id.feed_element_avatar);
 

@@ -1032,7 +1032,7 @@ public class Reminder implements Comparable<Reminder>
             else if (to.GetDateInProgress() != null)
                 s2 = to.GetDateInProgress();
 
-            return s1.compareTo(s2);
+            return s2.compareTo(s1);
         }
     }
 
