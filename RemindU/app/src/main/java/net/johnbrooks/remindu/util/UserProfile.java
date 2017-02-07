@@ -60,8 +60,8 @@ public class UserProfile implements Parcelable
         editor.putInt("id", id);
         editor.putBoolean("active", (active > 0) ? true : false);
         editor.putInt("coins", coins);
-        //editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
-        //editor.putString("avatar", UserProfile.PROFILE.GetAvatarID());
+        editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
+        editor.putString("avatar", UserProfile.PROFILE.GetAvatarID());
 
         editor.commit();
     }
@@ -314,6 +314,8 @@ public class UserProfile implements Parcelable
     {
         if (MasterScheduler.GetInstance().GetActivity() != null)
         {
+            if (!Network.IsConnected(MasterScheduler.GetInstance().GetActivity()))
+                return;
             Log.d("INFO", "Pulling profile from server...");
             PullProfileRequest.SendRequest(MasterScheduler.GetInstance().GetActivity());
             Log.d("INFO", "Pulling reminders from server...");
@@ -321,6 +323,8 @@ public class UserProfile implements Parcelable
         }
         else if (MasterScheduler.GetInstance().GetService() != null)
         {
+            if (!Network.IsConnected(MasterScheduler.GetInstance().GetService()))
+                return;
             Log.d("INFO", "Pulling profile from server...");
             PullProfileRequest.SendRequest(MasterScheduler.GetInstance().GetService());
             Log.d("INFO", "Pulling reminders from server...");
@@ -363,23 +367,28 @@ public class UserProfile implements Parcelable
 
     public void ProcessReminders()
     {
-        for (Reminder r : UserProfile.PROFILE.GetReminders())
+        for (Reminder r : GetReminders())
         {
             r.ProcessReminderNotifications();
         }
+
+        Log.d("INFO", "Finished processing current reminders.");
     }
 
-    public void LoadRemindersFromFile()
+    public void LoadRemindersFromFile(Activity activity)
     {
         final String filename = "reminders.yml";
 
         DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-        File file = new File(UserAreaActivity.GetActivity().getBaseContext().getFilesDir(), filename);
+        File file = new File(activity.getBaseContext().getFilesDir(), filename);
         //Log.d("INFO", "Base Context File Dir: " + file.getAbsolutePath());
         Map<String, ArrayList<String>> data;
 
         if (!file.exists())
+        {
+            Log.d("INFO", "Loading reminders failed. " + filename + " does not exist. ");
             return;
+        }
 
         try
         {
@@ -474,9 +483,15 @@ public class UserProfile implements Parcelable
 
     public  void SaveRemindersToFile()
     {
-        if (UserAreaActivity.GetActivity() == null)
+        if (MasterScheduler.GetInstance() == null || MasterScheduler.GetInstance().GetActivity() == null)
         {
-            //Log.d("INFO", "Attempt to save reminders from service.... skipping.");
+            Log.d("INFO", "Attempt to save reminders from service. Skipping...");
+            return;
+        }
+
+        if (GetReminders().size() == 0)
+        {
+            Log.d("INFO", "No reminders to save. Skipping...");
             return;
         }
 
@@ -486,6 +501,8 @@ public class UserProfile implements Parcelable
 
         if (file.exists())
             file.delete();
+
+        Log.d("INFO", file.getAbsolutePath());
 
         Map<String, String[]> data = new HashMap<>();
         for (Reminder r : GetReminders())

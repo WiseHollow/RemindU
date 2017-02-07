@@ -144,6 +144,7 @@ public class LoginActivity extends AppCompatActivity
         }
 
         UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins, avatarID);
+        UserProfile.PROFILE.LoadRemindersFromFile(service);
         UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
 
         if (contactsString != null)
@@ -187,9 +188,13 @@ public class LoginActivity extends AppCompatActivity
 
         if (email.equalsIgnoreCase("null") || password.equalsIgnoreCase("null") || fullname.equalsIgnoreCase("null") ||
                 username.equalsIgnoreCase("null") || id == 0 || email.equalsIgnoreCase("null"))
+        {
+            Log.d("WARNING", "Invalid saved login parameters.");
             return false;
+        }
 
         UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins, avatarID);
+        UserProfile.PROFILE.LoadRemindersFromFile(LoginActivity.this);
         UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
 
         if (contactsString != null)

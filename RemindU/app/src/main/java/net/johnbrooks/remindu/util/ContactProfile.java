@@ -83,7 +83,7 @@ public class ContactProfile implements Comparable<ContactProfile>
         return list;
     }
 
-    public RelativeLayout CreateCategoryWidgetForGrid(final Activity activity)
+/*    public RelativeLayout CreateCategoryWidgetForGrid(final Activity activity)
     {
         RelativeLayout layout = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_icon, null);
 
@@ -108,7 +108,7 @@ public class ContactProfile implements Comparable<ContactProfile>
         });
 
         return layout;
-    }
+    }*/
 
     public LinearLayout CreateCategoryWidget(final Activity activity)
     {
@@ -177,8 +177,7 @@ public class ContactProfile implements Comparable<ContactProfile>
     public int compareTo(ContactProfile o)
     {
         //int compare = GetAmountOfReminders() > o.GetAmountOfReminders() ? + 1 : GetAmountOfReminders() < o.GetAmountOfReminders() ? -1 : 0;
-        int compare = GetFullName().compareTo(o.GetFullName());
-        return compare;
+        return GetFullName().compareTo(o.GetFullName());
     }
 
     @Override
