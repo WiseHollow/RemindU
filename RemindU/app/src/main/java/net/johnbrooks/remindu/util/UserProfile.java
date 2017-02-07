@@ -192,8 +192,8 @@ public class UserProfile implements Parcelable
 
     public void RefreshReminderLayout()
     {
-        //if (UserAreaActivity.GetActivity() == null)
-        //    return;
+        if (UserAreaActivity.GetActivity() == null)
+            return;
 
         ResetLinearLayout();
 
@@ -464,9 +464,9 @@ public class UserProfile implements Parcelable
                     String dateCompleted = rArray[8];
 
                     Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
-                    if (!dateInProgress.equalsIgnoreCase("null"))
+                    if (dateInProgress != null)
                         r.SetDateInProgress(dateInProgress);
-                    if (!dateCompleted.equalsIgnoreCase("null"))
+                    if (dateCompleted != null)
                         r.SetDateComplete(dateCompleted);
                 }
             }
