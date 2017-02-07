@@ -6,7 +6,6 @@
     <string name="title_activity_create_reminder">Create Activity</string>
     <string name="title_activity_profile">My Profile</string>
     <string name="title_activity_register">Registration</string>
-    <string name="title_activity_login">Login</string>
     <string name="title_activity_activate">Account Activation</string>
     <string name="title_activity_reminder_list">Activity List</string>
     <string name="title_activity_settings">Settings</string>
@@ -14,7 +13,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="invite">Invite</string>
     <string name="my_profile">My Profile</string>
     <string name="manage_contacts">Manage Contacts</string>
 
@@ -49,5 +47,4 @@
 
     <string name="pref_general_receive_emails">Receive emails from Administrators</string>
     <string name="pref_general_background_service">Background Service on phone startup.</string>
-    <string name="view_activity_feed">View Activity Feed</string>
 </resources>
