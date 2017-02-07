@@ -194,11 +194,10 @@ public class LoginActivity extends AppCompatActivity
         }
 
         UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins, avatarID);
-        UserProfile.PROFILE.LoadRemindersFromFile(LoginActivity.this);
-        UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
 
         if (contactsString != null)
         {
+
             for(String s : contactsString)
             {
                 String[] element = s.split("%");
@@ -208,6 +207,7 @@ public class LoginActivity extends AppCompatActivity
                 String cFullName = element[3];
                 String cContacts = element[4];
                 String cAvatarID = element[5];
+                //Log.d("INFO", cEmail + " | " + cUsername + " | " + cFullName + " | " + cContacts + " | " + cAvatarID);
 
                 if (cFullName.equalsIgnoreCase("null"))
                     UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
@@ -215,6 +215,9 @@ public class LoginActivity extends AppCompatActivity
                     UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID));
             }
         }
+
+        UserProfile.PROFILE.LoadRemindersFromFile(LoginActivity.this);
+        UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
 
         return true;
     }

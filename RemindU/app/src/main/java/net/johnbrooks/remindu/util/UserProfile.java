@@ -192,8 +192,8 @@ public class UserProfile implements Parcelable
 
     public void RefreshReminderLayout()
     {
-        if (UserAreaActivity.GetActivity() == null)
-            return;
+        //if (UserAreaActivity.GetActivity() == null)
+        //    return;
 
         ResetLinearLayout();
 

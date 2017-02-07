@@ -109,33 +109,9 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
             @Override
             public void onClick(View v)
             {
-                if (Network.IsConnected(UserAreaActivity.this))
-                    MasterScheduler.GetInstance(UserAreaActivity.this).Call();
+                MasterScheduler.GetInstance(UserAreaActivity.this).Call();
             }
         });
-
-        /*pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener()
-        {
-            @Override
-            public void onRefresh()
-            {
-                if (!Network.IsConnected(UserAreaActivity.this))
-                    pullRefreshLayout.setRefreshing(false);
-                else
-                {
-                    PullScheduler.Call();
-                    pullRefreshLayout.postDelayed(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            pullRefreshLayout.setRefreshing(false);
-                        }
-                    }, 1500);
-                }
-
-            }
-        });*/
 
         // See if there is a pending contact to view.
 

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.ReminderFeedActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Reminder;
@@ -44,6 +45,13 @@ public class FeedFragment extends Fragment
         scrollView.addView(ContactLayout);
 
         return ContentView;
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        MasterScheduler.GetInstance().Call();
     }
 
     public void PopulateActivity()
