@@ -47,8 +47,6 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Reminder implements Comparable<Reminder>
 {
-
-
     /** Upload the request to the user's online records. */
     public static Reminder CreateReminder(int user_id_to, String message, boolean important, Date date, Activity activity)
     {

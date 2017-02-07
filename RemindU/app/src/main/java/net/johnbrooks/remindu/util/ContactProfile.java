@@ -93,7 +93,7 @@ public class ContactProfile implements Comparable<ContactProfile>
 
         tv_name.setText(GetShortName());
         tv_reminders.setText("" + GetAmountOfReminders());
-        iv_avatar.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
+        iv_avatar.setBackground(AvatarImageUtil.GetAvatar(GetAvatarID()));
 
         final ContactProfile cp = this;
         layout.setOnClickListener(new View.OnClickListener()
@@ -118,7 +118,7 @@ public class ContactProfile implements Comparable<ContactProfile>
         TextView tv_reminders = (TextView) layout.findViewById(R.id.Contact_Profile_Reminders);
         ImageView iv_avatar = (ImageView) layout.findViewById(R.id.Contact_Profile_Avatar);
 
-        iv_avatar.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
+        iv_avatar.setBackground(AvatarImageUtil.GetAvatar(GetAvatarID()));
         tv_name.setText(GetFullName());
         tv_reminders.setText("Reminders: " + GetAmountOfReminders());
 
@@ -146,7 +146,7 @@ public class ContactProfile implements Comparable<ContactProfile>
         TextView emailView = (TextView) layout.findViewById(R.id.Contact_Profile_Email);
         TextView removeView = (TextView) layout.findViewById(R.id.Contact_Profile_Remove);
 
-        avatarView.setBackground(AvatarImageUtil.GetAvatar(activity, GetAvatarID()));
+        avatarView.setBackground(AvatarImageUtil.GetAvatar(GetAvatarID()));
         fullnameView.setText(GetFullName());
         emailView.setText(GetEmail());
         removeView.setOnClickListener(new View.OnClickListener()

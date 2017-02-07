@@ -69,7 +69,7 @@ public class ReminderFeedActivity extends AppCompatActivity
                 cp = ContactProfile.GetProfile(r.GetTo());
             else
                 cp = ContactProfile.GetProfile(r.GetFrom());
-            iv_avatar.setBackground(AvatarImageUtil.GetAvatar(ReminderFeedActivity.this, cp.GetAvatarID()));
+            iv_avatar.setBackground(AvatarImageUtil.GetAvatar(cp.GetAvatarID()));
 
             tv_fullName.setText(r.GetFullName());
             String state = r.GetState().name().replace("_", " ").toLowerCase();

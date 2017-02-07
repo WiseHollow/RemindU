@@ -153,7 +153,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        findViewById(R.id.drawer_profile_picture).setBackground(AvatarImageUtil.GetAvatar(this, UserProfile.PROFILE.GetAvatarID()));
+        findViewById(R.id.drawer_profile_picture).setBackground(AvatarImageUtil.GetAvatar(UserProfile.PROFILE.GetAvatarID()));
         ((TextView) findViewById(R.id.drawer_profile_name)).setText(UserProfile.PROFILE.GetFullName());
         ((TextView) findViewById(R.id.drawer_profile_email)).setText(UserProfile.PROFILE.GetEmail());
         return super.onPrepareOptionsMenu(menu);
@@ -172,7 +172,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

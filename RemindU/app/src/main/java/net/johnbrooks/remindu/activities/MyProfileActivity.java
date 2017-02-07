@@ -68,7 +68,7 @@ public class MyProfileActivity extends AppCompatActivity
         // Set avatar picture
         //
 
-        avatar.setBackground(AvatarImageUtil.GetAvatar(this, UserProfile.PROFILE.GetAvatarID()));
+        avatar.setBackground(AvatarImageUtil.GetAvatar(UserProfile.PROFILE.GetAvatarID()));
 
         View.OnClickListener avatarClick = new View.OnClickListener()
         {
