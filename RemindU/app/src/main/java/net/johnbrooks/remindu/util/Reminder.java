@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.activities.CreateReminderActivity;
 import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.SendReputationRequest;
@@ -48,7 +49,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 public class Reminder implements Comparable<Reminder>
 {
     /** Upload the request to the user's online records. */
-    public static Reminder CreateReminder(int user_id_to, String message, boolean important, Date date, Activity activity)
+    public static Reminder CreateReminder(int user_id_to, String message, boolean important, Date date, CreateReminderActivity activity)
     {
         Reminder reminder = new Reminder(message, UserProfile.PROFILE.GetUserID(), user_id_to, date);
         reminder.SetImportant(important);

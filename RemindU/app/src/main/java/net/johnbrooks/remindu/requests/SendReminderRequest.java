@@ -2,12 +2,14 @@ package net.johnbrooks.remindu.requests;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import net.johnbrooks.remindu.activities.CreateReminderActivity;
 import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
@@ -54,7 +56,7 @@ public class SendReminderRequest extends StringRequest
         return params;
     }
 
-    private static Response.Listener<String> GetSendResponseListener(final Activity activity)
+    private static Response.Listener<String> GetSendResponseListener(final CreateReminderActivity activity)
     {
         return new Response.Listener<String>()
         {
@@ -103,6 +105,8 @@ public class SendReminderRequest extends StringRequest
                     {
                         Log.d("ERROR", "Message: " + message);
                     }
+
+                    activity.progressBar.setVisibility(View.INVISIBLE);
                 } catch (JSONException e)
                 {
                     e.printStackTrace();
@@ -111,7 +115,7 @@ public class SendReminderRequest extends StringRequest
         };
     }
 
-    public static void SendRequest(final Activity activity, Reminder reminder)
+    public static void SendRequest(final CreateReminderActivity activity, Reminder reminder)
     {
         if (!Network.IsConnected(activity)) { return; }
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -24,6 +25,8 @@ import java.util.Calendar;
 
 public class CreateReminderActivity extends AppCompatActivity
 {
+    public ProgressBar progressBar;
+
     private TextView tv_date;
     private TextView tv_time;
     private TextView tv_recipient;
@@ -41,6 +44,9 @@ public class CreateReminderActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_reminder);
+
+        progressBar = (ProgressBar) findViewById(R.id.create_reminder_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         //
         // Prepare back button
@@ -132,6 +138,7 @@ public class CreateReminderActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
+                progressBar.setVisibility(View.VISIBLE);
                 String message = et_message.getText().toString();
                 boolean important = s_important.isChecked();
 
