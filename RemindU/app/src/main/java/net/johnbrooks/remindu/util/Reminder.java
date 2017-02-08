@@ -380,9 +380,9 @@ public class Reminder implements Comparable<Reminder>
         return parent;
     }
 
-    private void ClickLogButton(final Activity activity, final Reminder reminder)
+    public void ClickLogButton(final Activity activity, final Reminder reminder)
     {
-        if (!Network.IsConnected(ReminderListActivity.GetActivity()))
+        if (!Network.IsConnected(activity))
             return;
         //
         if (UserProfile.PROFILE.GetUserID() == GetFrom())

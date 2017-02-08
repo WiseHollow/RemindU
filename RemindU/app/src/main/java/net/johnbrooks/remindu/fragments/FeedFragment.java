@@ -62,7 +62,7 @@ public class FeedFragment extends Fragment
 
         for (int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
         {
-            Reminder r = UserProfile.PROFILE.GetReminders().get(i);
+            final Reminder r = UserProfile.PROFILE.GetReminders().get(i);
             if (r.GetDateInProgress() == null && r.GetDateComplete() == null)
                 continue;
             if (r.GetTo() == UserProfile.PROFILE.GetUserID())
@@ -70,6 +70,14 @@ public class FeedFragment extends Fragment
 
             LinearLayout widget = (LinearLayout) getLayoutInflater(getArguments()).inflate(R.layout.widget_reminder_in_feed, null);
             ((ViewGroup) ContactLayout).addView(widget);
+            widget.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    r.ClickLogButton(UserAreaActivity.GetActivity(), r);
+                }
+            });
 
             final View view = widget.findViewById(R.id.feed_element_layout);
             if (i % 2 != 0)
