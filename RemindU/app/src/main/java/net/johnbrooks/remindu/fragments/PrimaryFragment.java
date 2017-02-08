@@ -36,4 +36,14 @@ public class PrimaryFragment extends Fragment
         //UserProfile.PROFILE.RefreshReminderLayout();
         return ContentView;
     }
+
+    @Override
+    public void setMenuVisibility(final boolean visible)
+    {
+        super.setMenuVisibility(visible);
+        if (visible)
+        {
+            UserAreaActivity.GetActivity().setTitle("RemindU - Home");
+        }
+    }
 }

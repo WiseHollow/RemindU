@@ -22,7 +22,6 @@ import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.ContactProfile;
-import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.PagerAdapter;
 import net.johnbrooks.remindu.util.UserProfile;
 

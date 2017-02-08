@@ -13,7 +13,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
-import net.johnbrooks.remindu.activities.ReminderFeedActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
@@ -52,6 +51,16 @@ public class FeedFragment extends Fragment
     {
         super.onStart();
         MasterScheduler.GetInstance().Call();
+    }
+
+    @Override
+    public void setMenuVisibility(final boolean visible)
+    {
+        super.setMenuVisibility(visible);
+        if (visible)
+        {
+            UserAreaActivity.GetActivity().setTitle("RemindU - Feed");
+        }
     }
 
     public void PopulateActivity()
