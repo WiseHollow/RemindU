@@ -12,6 +12,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.util.Network;
+import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -35,7 +36,7 @@ public class UpdateSettingsRequest extends StringRequest
         super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("user_id", String.valueOf(UserProfile.PROFILE.GetUserID()));
-        params.put("password", UserProfile.PROFILE.GetPassword());
+        params.put("password", PasswordHash.Hash(UserProfile.PROFILE.GetPassword()));
         params.put("receive_emails", (receiveEmails) ? "1" : "0");
         params.put("avatar", UserProfile.PROFILE.GetAvatarID());
     }

@@ -1,19 +1,18 @@
 package net.johnbrooks.remindu.requests;
 
-import android.support.v7.app.AlertDialog;
+import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import net.johnbrooks.remindu.activities.ManageContactsActivity;
-import net.johnbrooks.remindu.schedulers.MasterScheduler;
+import net.johnbrooks.remindu.activities.ForgotMyPasswordActivity;
+import net.johnbrooks.remindu.activities.ResetMyPasswordActivity;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.PasswordHash;
-import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,19 +24,19 @@ import java.util.Map;
  * Created by ieatl on 11/29/2016.
  */
 
-public class DeleteContactRequest extends StringRequest
+public class ResetPasswordRequest extends StringRequest
 {
-    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/removeContact.php";
+    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/resetPassword.php";
     private Map<String, String> params;
 
-    public DeleteContactRequest(String email, String password, String targetID, Response.Listener<String> listener)
+    public ResetPasswordRequest(final String email, final int code, final String password, Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
-        super(Request.Method.POST, REQUEST_URL, listener, null);
+        super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("email", email);
+        params.put("code", String.valueOf(code));
         params.put("password", PasswordHash.Hash(password));
-        params.put("target", targetID);
     }
 
     @Override
@@ -46,7 +45,7 @@ public class DeleteContactRequest extends StringRequest
         return params;
     }
 
-    private static Response.Listener<String> GetDeleteResponseListener(final ManageContactsActivity activity, final int target)
+    private static Response.Listener<String> GetResponseListener(final ResetMyPasswordActivity activity, final String email, final int code)
     {
         Response.Listener<String> responseListener = new Response.Listener<String>()
         {
@@ -57,22 +56,24 @@ public class DeleteContactRequest extends StringRequest
                 {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
 
                     Log.d("INFO", "Received response: " + success);
 
                     if (success)
                     {
-                        UserProfile.PROFILE.RemoveContact(target);
-                        MasterScheduler.GetInstance(activity).Call();
-                        activity.UpdateContactsList();
+                        if (activity == null)
+                            return;
+
+                        Snackbar.make(activity.getCurrentFocus(), "Your password has been reset!", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+
+                        activity.finish();
                     }
                     else
                     {
-                        AlertDialog.Builder errorDialog = new AlertDialog.Builder(activity);
-                        errorDialog.setMessage("Server not reached. Error!")
-                                .setNegativeButton("Close", null)
-                                .create()
-                                .show();
+                        Snackbar.make(activity.getCurrentFocus(), message, Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
                     }
                 } catch (JSONException e)
                 {
@@ -84,13 +85,14 @@ public class DeleteContactRequest extends StringRequest
         return responseListener;
     }
 
-    public static void SendRequest(final ManageContactsActivity activity, final int id)
+    public static void SendRequest(final ResetMyPasswordActivity activity, final String email, final int code, final String password)
     {
         if (!Network.IsConnected(activity)) { return; }
 
-        Response.Listener<String> responseListener = GetDeleteResponseListener(activity, id);
+        Response.Listener<String> responseListener = GetResponseListener(activity, email, code);
 
-        DeleteContactRequest request = new DeleteContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), String.valueOf(id), responseListener);
+        // Send request to server for contact adding.
+        ResetPasswordRequest request = new ResetPasswordRequest(email, code, password, responseListener);
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
     }

@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
+import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -35,7 +36,7 @@ public class DeleteReminderRequest extends StringRequest
         super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("user_id", String.valueOf(user_id));
-        params.put("password", password);
+        params.put("password", PasswordHash.Hash(password));
         params.put("reminder_id", String.valueOf(reminderID));
     }
 

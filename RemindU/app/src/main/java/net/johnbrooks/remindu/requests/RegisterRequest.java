@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 import net.johnbrooks.remindu.activities.LoginActivity;
 import net.johnbrooks.remindu.activities.RegisterActivity;
 import net.johnbrooks.remindu.util.Network;
+import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -37,7 +38,12 @@ public class RegisterRequest extends StringRequest
     {
         //TODO: Give error listener instead of null
         super(Method.POST, REQUEST_URL, listener, null);
+
         params = new HashMap<>();
+        password = PasswordHash.Hash(password);
+        if (password == null)
+            return;
+
         params.put("fullname", fullname);
         params.put("username", username);
         params.put("email", email);

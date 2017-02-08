@@ -1,7 +1,10 @@
 package net.johnbrooks.remindu.requests;
 
+import android.app.Dialog;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -9,11 +12,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.activities.ForgotMyPasswordActivity;
 import net.johnbrooks.remindu.activities.ManageContactsActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Network;
-import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -26,19 +29,17 @@ import java.util.Map;
  * Created by ieatl on 11/29/2016.
  */
 
-public class AddContactRequest extends StringRequest
+public class ForgotMyPasswordRequest extends StringRequest
 {
-    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/addContact.php";
+    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/forgotPassword.php";
     private Map<String, String> params;
 
-    public AddContactRequest(String email, String password, String targetID, Response.Listener<String> listener)
+    public ForgotMyPasswordRequest(String email, Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
         super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("email", email);
-        params.put("password", PasswordHash.Hash(password));
-        params.put("target", targetID);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class AddContactRequest extends StringRequest
         return params;
     }
 
-    private static Response.Listener<String> GetResponseListener(final ManageContactsActivity activity, final String target)
+    private static Response.Listener<String> GetResponseListener(final ForgotMyPasswordActivity activity, final String target)
     {
         Response.Listener<String> responseListener = new Response.Listener<String>()
         {
@@ -58,21 +59,40 @@ public class AddContactRequest extends StringRequest
                 {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
 
                     Log.d("INFO", "Received response: " + success);
 
                     if (success)
                     {
-                        Snackbar.make(activity.findViewById(R.id.content_manage_contacts), "Added user of email: " + target, Snackbar.LENGTH_LONG)
+                        if (activity == null)
+                            return;
+
+                        Snackbar.make(activity.getCurrentFocus(), "Password reset code has been sent to the email: " + target, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
 
-                        UserProfile.PROFILE.AddContact(new ContactProfile(-1, target));
-                        activity.UpdateContactsList();
-                        MasterScheduler.GetInstance(activity).Call();
+                        final Dialog dialog = new Dialog(activity);
+                        dialog.setTitle("Confirm Reset Code");
+                        dialog.setContentView(R.layout.dialog_forgot_my_password);
+                        dialog.show();
+
+                        final TextView input = (TextView) dialog.findViewById(R.id.editText_code);
+                        dialog.findViewById(R.id.button_Confirm).setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                String inputString = input.getText().toString();
+                                final int code = Integer.parseInt(inputString);
+
+                                //TODO: Confirm that the code is correct.
+                                ValidateCodeRequest.SendRequest(activity, target, code);
+                            }
+                        });
                     }
                     else
                     {
-                        Snackbar.make(activity.findViewById(R.id.content_manage_contacts), "Email is not registered, or are already added.", Snackbar.LENGTH_LONG)
+                        Snackbar.make(activity.getCurrentFocus(), message, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
                 } catch (JSONException e)
@@ -85,14 +105,14 @@ public class AddContactRequest extends StringRequest
         return responseListener;
     }
 
-    public static void SendRequest(final ManageContactsActivity activity, final String email)
+    public static void SendRequest(final ForgotMyPasswordActivity activity, final String email)
     {
         if (!Network.IsConnected(activity)) { return; }
 
         Response.Listener<String> responseListener = GetResponseListener(activity, email);
 
         // Send request to server for contact adding.
-        AddContactRequest request = new AddContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), email, responseListener);
+        ForgotMyPasswordRequest request = new ForgotMyPasswordRequest(email, responseListener);
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
     }

@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.util.Network;
+import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -39,7 +40,7 @@ public class GetRemindersRequest extends StringRequest
         super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("user_id", String.valueOf(UserProfile.PROFILE.GetUserID()));
-        params.put("password", UserProfile.PROFILE.GetPassword());
+        params.put("password", PasswordHash.Hash(UserProfile.PROFILE.GetPassword()));
     }
 
     @Override

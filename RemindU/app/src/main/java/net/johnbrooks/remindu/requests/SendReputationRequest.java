@@ -10,6 +10,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
+import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -34,7 +35,7 @@ public class SendReputationRequest extends StringRequest
         params = new HashMap<>();
         params.put("user_id_from", String.valueOf(user_id_from));
         params.put("user_id_to", String.valueOf(user_id_to));
-        params.put("password", password);
+        params.put("password", PasswordHash.Hash(password));
         params.put("coins", String.valueOf(coins));
     }
 

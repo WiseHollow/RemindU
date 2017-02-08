@@ -16,6 +16,7 @@ import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Network;
+import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -39,7 +40,7 @@ public class PullProfileRequest extends StringRequest
         super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("email", email);
-        params.put("password", password);
+        params.put("password", PasswordHash.Hash(password));
     }
 
     @Override

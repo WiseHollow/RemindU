@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
+import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -38,7 +39,7 @@ public class UpdateReminderRequest extends StringRequest
         super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("user_id", String.valueOf(UserProfile.PROFILE.GetUserID()));
-        params.put("password", UserProfile.PROFILE.GetPassword());
+        params.put("password", PasswordHash.Hash(UserProfile.PROFILE.GetPassword()));
         params.put("reminder_id", String.valueOf(reminder.GetID()));
         params.put("state", String.valueOf(reminder.GetStateOrdinal()));
 

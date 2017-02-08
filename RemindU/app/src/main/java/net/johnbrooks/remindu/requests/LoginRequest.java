@@ -18,6 +18,7 @@ import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Network;
+import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -40,6 +41,11 @@ public class LoginRequest extends StringRequest
         //TODO: Give error listener instead of null
         super(Request.Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
+
+        password = PasswordHash.Hash(password);
+        if (password == null)
+            return;
+
         params.put("email", email);
         params.put("password", password);
     }

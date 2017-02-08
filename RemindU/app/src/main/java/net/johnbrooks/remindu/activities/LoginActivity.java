@@ -46,6 +46,7 @@ public class LoginActivity extends AppCompatActivity
         final EditText etPassword = (EditText) findViewById(R.id.editText_Login_Password);
         final Button bLogin = (Button) findViewById(R.id.button_Login);
         final TextView tvRegister = (TextView) findViewById(R.id.textView_Register);
+        final TextView tvForgotPassword = (TextView) findViewById(R.id.textView_Forgot_Password);
 
         //
         // What happens when the register button is clicked.
@@ -75,6 +76,16 @@ public class LoginActivity extends AppCompatActivity
 
                 progressBar.setVisibility(View.VISIBLE);
                 LoginRequest.SendRequest(LoginActivity.this, email, password);
+            }
+        });
+
+        tvForgotPassword.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(LoginActivity.this, ForgotMyPasswordActivity.class);
+                startActivity(intent);
             }
         });
     }

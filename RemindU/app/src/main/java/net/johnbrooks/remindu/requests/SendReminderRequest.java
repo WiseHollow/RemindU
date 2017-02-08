@@ -13,6 +13,7 @@ import net.johnbrooks.remindu.activities.CreateReminderActivity;
 import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
+import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -42,7 +43,7 @@ public class SendReminderRequest extends StringRequest
         params = new HashMap<>();
         params.put("user_id_from", String.valueOf(user_id_from));
         params.put("user_id_to", String.valueOf(user_id_to));
-        params.put("password", password);
+        params.put("password", PasswordHash.Hash(password));
         params.put("message", message);
         params.put("important", String.valueOf((important) ? 1 : 0));
         DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
