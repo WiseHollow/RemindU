@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -56,6 +57,7 @@ public class LoginRequest extends StringRequest
             @Override
             public void onResponse(String response)
             {
+
                 try
                 {
                     JSONObject jsonResponse = new JSONObject(response);
@@ -117,11 +119,13 @@ public class LoginRequest extends StringRequest
 
                         Intent intent = new Intent(activity, UserAreaActivity.class);
 
+                        activity.progressBar.setVisibility(View.INVISIBLE);
                         activity.startActivity(intent);
                         activity.finish();
                     }
                     else
                     {
+                        activity.progressBar.setVisibility(View.INVISIBLE);
                         AlertDialog.Builder errorDialog = new AlertDialog.Builder(activity);
                         errorDialog.setMessage("Login credential error.")
                                 .setNegativeButton("Retry", null)

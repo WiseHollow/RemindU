@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,13 +29,16 @@ import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity
 {
-    View splashView;
+    public ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        progressBar = (ProgressBar) findViewById(R.id.login_progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         AttemptAutoLogin();
 
@@ -69,6 +73,7 @@ public class LoginActivity extends AppCompatActivity
                 final String email = etEmail.getText().toString();
                 final String password = etPassword.getText().toString();
 
+                progressBar.setVisibility(View.VISIBLE);
                 LoginRequest.SendRequest(LoginActivity.this, email, password);
             }
         });
@@ -122,6 +127,7 @@ public class LoginActivity extends AppCompatActivity
 
         if (!email.equalsIgnoreCase("null") && !password.equalsIgnoreCase("null"))
         {
+            progressBar.setVisibility(View.VISIBLE);
             LoginRequest.SendRequest(LoginActivity.this, email, password);
         }
     }

@@ -10,16 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="net.johnbrooks.remindu.activities.LoginActivity">
 
-    <TextView
-        android:text="Register Here"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView_Register"
-        android:textStyle="normal|italic"
-        android:layout_marginTop="14dp"
-        android:layout_below="@+id/button_Login"
-        android:layout_centerHorizontal="true" />
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,5 +40,32 @@
         android:layout_below="@+id/editText_Login_Password"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Register Here"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_Register"
+        android:textStyle="normal|italic"
+        android:layout_marginTop="14dp"
+        android:layout_below="@+id/button_Login"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            android:id="@+id/login_progress_bar"
+            />
+
+    </RelativeLayout>
+
+
 
 </RelativeLayout>
