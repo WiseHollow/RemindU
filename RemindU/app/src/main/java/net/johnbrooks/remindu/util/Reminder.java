@@ -2,12 +2,9 @@ package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.app.TaskStackBuilder;
-import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +19,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -37,12 +33,12 @@ import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.SendReputationRequest;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
+import net.johnbrooks.remindu.services.CancelReminderService;
+import net.johnbrooks.remindu.services.ConfirmReminderService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by John on 11/28/2016.
@@ -876,19 +872,35 @@ public class Reminder implements Comparable<Reminder>
 
     private NotificationCompat.Builder GetNotification(String title, String message)
     {
-        NotificationCompat.Builder mBuilder;
-        Intent intent;
-        TaskStackBuilder stackBuilder;
-
         if (MasterScheduler.GetInstance() == null) { return null; }
 
-        mBuilder = new NotificationCompat.Builder(MasterScheduler.GetInstance().GetContextWrapper())
+        //Create Intent for Cancel
+
+        Intent cancelIntent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), CancelReminderService.class);
+        cancelIntent.putExtra("reminder", GetID());
+        PendingIntent pendingCancelIntent = PendingIntent.getService(MasterScheduler.GetInstance().GetContextWrapper(), 0, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationCompat.Action cancelAction = new NotificationCompat.Action(android.R.drawable.ic_menu_close_clear_cancel, "Cancel", pendingCancelIntent);
+
+        //Create intent for confirm
+
+        Intent confirmIntent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), ConfirmReminderService.class);
+        confirmIntent.putExtra("reminder", GetID());
+        PendingIntent pendingConfirmIntent = PendingIntent.getService(MasterScheduler.GetInstance().GetContextWrapper(), 0, confirmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationCompat.Action confirmAction = new NotificationCompat.Action(android.R.drawable.checkbox_on_background, "Okay", pendingConfirmIntent);
+
+        //
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MasterScheduler.GetInstance().GetContextWrapper())
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
                 .setContentTitle(title)
                 .setContentText(message)
-                .setAutoCancel(true);
-        intent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), ReminderListActivity.class);
-        stackBuilder = TaskStackBuilder.create(MasterScheduler.GetInstance().GetContextWrapper());
+                .setAutoCancel(true)
+                .setOngoing(true)
+                .addAction(confirmAction)
+                .addAction(cancelAction)
+                ;
+        Intent intent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), ReminderListActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(MasterScheduler.GetInstance().GetContextWrapper());
 
         if (GetFrom() == UserProfile.PROFILE.GetUserID())
             intent.putExtra("contactID", GetTo());
@@ -908,11 +920,12 @@ public class Reminder implements Comparable<Reminder>
 
     public void ShowNotification(boolean vibrate, String title, String message)
     {
+        //TODO: Does this take too many resources? IDE said skipped frames.
         if (MasterScheduler.GetInstance() == null || MasterScheduler.GetInstance().GetContextWrapper() == null) { return; }
 
         NotificationCompat.Builder notification = GetNotification(title, message);
         NotificationManager mNotificationManager = (NotificationManager) MasterScheduler.GetInstance().GetContextWrapper().getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, notification.build());
+        mNotificationManager.notify(GetID(), notification.build());
         if (!vibrate) { return; }
 
         AudioManager am = (AudioManager) MasterScheduler.GetInstance().GetContextWrapper().getSystemService(Context.AUDIO_SERVICE);
