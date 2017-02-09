@@ -885,7 +885,8 @@ public class Reminder implements Comparable<Reminder>
         mBuilder = new NotificationCompat.Builder(MasterScheduler.GetInstance().GetContextWrapper())
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
                 .setContentTitle(title)
-                .setContentText(message);
+                .setContentText(message)
+                .setAutoCancel(true);
         intent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), ReminderListActivity.class);
         stackBuilder = TaskStackBuilder.create(MasterScheduler.GetInstance().GetContextWrapper());
 
