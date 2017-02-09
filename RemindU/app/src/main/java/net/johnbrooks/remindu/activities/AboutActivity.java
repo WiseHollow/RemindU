@@ -7,14 +7,11 @@ import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
-import net.johnbrooks.remindu.util.OnSwipeTouchListener;
 
 public class AboutActivity extends AppCompatActivity
 {

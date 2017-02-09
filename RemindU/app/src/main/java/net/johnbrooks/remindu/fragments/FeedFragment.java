@@ -65,6 +65,9 @@ public class FeedFragment extends Fragment
 
     public void PopulateActivity()
     {
+        if (getArguments() == null || getLayoutInflater(getArguments()) == null)
+            return;
+
         UserProfile.PROFILE.sortRemindersByDueDate = false;
         Collections.sort(UserProfile.PROFILE.GetReminders());
         ((ViewGroup) ContactLayout).removeAllViews();

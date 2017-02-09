@@ -63,6 +63,8 @@ public class LoginRequest extends StringRequest
             @Override
             public void onResponse(String response)
             {
+                if (UserAreaActivity.GetActivity() != null)
+                    return;
 
                 try
                 {

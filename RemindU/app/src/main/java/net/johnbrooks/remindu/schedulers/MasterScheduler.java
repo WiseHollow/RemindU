@@ -2,6 +2,7 @@ package net.johnbrooks.remindu.schedulers;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.ContextWrapper;
 import android.os.Handler;
 import android.util.Log;
 
@@ -69,6 +70,13 @@ public class MasterScheduler
 
     public final Activity GetActivity() { return Activity; }
     public final Service GetService() { return Service; }
+    public final ContextWrapper GetContextWrapper()
+    {
+        if (GetActivity() != null)
+            return GetActivity();
+        else
+            return GetService();
+    }
 
     public void StartRepeatingTasks()
     {
