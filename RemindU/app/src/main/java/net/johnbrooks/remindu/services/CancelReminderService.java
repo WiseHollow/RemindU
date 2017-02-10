@@ -33,6 +33,8 @@ public class CancelReminderService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        if (MasterScheduler.GetInstance() == null || MasterScheduler.GetInstance().GetContextWrapper() == null) { return super.onStartCommand(intent, flags, startId); }
+
         if (UserProfile.PROFILE == null)
         {
             NotificationManager mNotificationManager = (NotificationManager) MasterScheduler.GetInstance().GetContextWrapper().getSystemService(Context.NOTIFICATION_SERVICE);

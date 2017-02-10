@@ -169,6 +169,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         {
             Intent signOutIntent = new Intent(UserAreaActivity.this, LoginActivity.class);
             signOutIntent.putExtra("signOut", true);
+            activity = null;
             UserAreaActivity.this.startActivity(signOutIntent);
             finish();
         }
