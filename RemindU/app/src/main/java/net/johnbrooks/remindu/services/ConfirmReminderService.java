@@ -30,6 +30,13 @@ public class ConfirmReminderService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        if (UserProfile.PROFILE == null)
+        {
+            NotificationManager mNotificationManager = (NotificationManager) MasterScheduler.GetInstance().GetContextWrapper().getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancelAll();
+            return super.onStartCommand(intent, flags, startId);
+        }
+
         Reminder reminder = UserProfile.PROFILE.GetReminder(intent.getIntExtra("reminder", 0));
         if (reminder != null)
         {

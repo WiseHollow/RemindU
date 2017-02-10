@@ -36,6 +36,13 @@ public class ReminderListActivity extends AppCompatActivity
         setContentView(R.layout.activity_reminder_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (UserProfile.PROFILE == null)
+        {
+            finish();
+            return;
+        }
+
         activity = this;
 
         //
