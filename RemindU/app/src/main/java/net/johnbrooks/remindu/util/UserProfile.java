@@ -52,6 +52,38 @@ import java.util.Set;
 
 public class UserProfile implements Parcelable
 {
+    public static void CleanupLocalFiles()
+    {
+        SharedPreferences.Editor editor = UserAreaActivity.GetActivity().SharedPreferences.edit();
+        editor.putString("email", "null");
+        editor.putString("password", "null");
+        editor.putString("fullname", "null");
+        editor.putString("username", "null");
+        editor.putInt("id", 0);
+        editor.putBoolean("active", false);
+        editor.putInt("coins", 0);
+        editor.putString("avatar", "default");
+        editor.putStringSet("contacts", null);
+        editor.commit();
+
+        File fileReminders = new File(MasterScheduler.GetInstance().GetContextWrapper().getBaseContext().getFilesDir(), "reminders.yml");
+        File fileIgnores = new File(MasterScheduler.GetInstance().GetContextWrapper().getBaseContext().getFilesDir(), "ignores.yml");
+        if (fileReminders.exists())
+            fileReminders.delete();
+        if (fileIgnores.exists())
+            fileIgnores.delete();
+
+        Log.d("INFO", "Removing saved sign in credentials. ");
+
+        if (PROFILE != null)
+        {
+            PROFILE.GetContacts().clear();
+            PROFILE.GetReminders().clear();
+            PROFILE.SaveRemindersToFile();
+
+        }
+    }
+
     public static void SaveCredentials(Activity activity, String email, String password, String fullName, String username, int id, int active, int coins)
     {
         SharedPreferences sharedPref = activity.getSharedPreferences("profile", Context.MODE_PRIVATE);
@@ -110,7 +142,8 @@ public class UserProfile implements Parcelable
         sortRemindersByDueDate = true;
     }
 
-    public final int IsActive() { return Active; }
+    public final int GetActiveState() { return Active; }
+    public final boolean AccountIsDisabled() { return (Active == 2);}
     public final int GetUserID() { return UserID; }
     public final String GetFullName() { return FullName; }
     public final String GetUsername() { return Username; }

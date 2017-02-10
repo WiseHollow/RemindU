@@ -6,14 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.ArraySet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
@@ -23,8 +20,6 @@ import net.johnbrooks.remindu.requests.LoginRequest;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity
@@ -97,30 +92,11 @@ public class LoginActivity extends AppCompatActivity
     private void AttemptAutoLogin()
     {
         SharedPreferences sharedPref = LoginActivity.this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+
         if (getIntent().getBooleanExtra("signOut", false) == true)
         {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("email", "null");
-            editor.putString("password", "null");
-            editor.putString("fullname", "null");
-            editor.putString("username", "null");
-            editor.putInt("id", 0);
-            editor.putBoolean("active", false);
-            editor.putInt("coins", 0);
-            editor.putString("avatar", "default");
-            editor.putStringSet("contacts", null);
-            editor.commit();
-            getIntent().putExtra("SignOut", false);
+            UserProfile.CleanupLocalFiles();
 
-            File fileReminders = new File(getBaseContext().getFilesDir(), "reminders.yml");
-            File fileIgnores = new File(getBaseContext().getFilesDir(), "ignores.yml");
-            if (fileReminders.exists())
-                fileReminders.delete();
-            if (fileIgnores.exists())
-                fileIgnores.delete();
-
-
-            Log.d("INFO", "Removing saved sign in credentials. ");
             return;
         }
 

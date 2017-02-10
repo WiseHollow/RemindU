@@ -12,8 +12,10 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import net.johnbrooks.remindu.activities.AccountDisabledActivity;
 import net.johnbrooks.remindu.activities.ActivateAccountActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.Network;
@@ -102,10 +104,15 @@ public class PullProfileRequest extends StringRequest
 
                         }
 
-                        if (active != 1 && !ActivateAccountActivity.IsOpen())
+                        if (active == 0 && !ActivateAccountActivity.IsOpen())
                         {
                             Intent activateIntent = new Intent(UserAreaActivity.GetActivity(), ActivateAccountActivity.class);
                             UserAreaActivity.GetActivity().startActivity(activateIntent);
+                        }
+                        else if (UserProfile.PROFILE.GetActiveState() == 2 && !UserAreaActivity.GetActivity().SharedPreferences.getBoolean("readDisabledMessage", false))
+                        {
+                            Intent disabledIntent = new Intent(UserAreaActivity.GetActivity(), AccountDisabledActivity.class);
+                            UserAreaActivity.GetActivity().startActivity(disabledIntent);
                         }
                     }
                     else

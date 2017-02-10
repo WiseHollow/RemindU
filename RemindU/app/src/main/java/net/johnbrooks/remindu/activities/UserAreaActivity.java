@@ -74,10 +74,15 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         // Check if account is active
         //
 
-        if (UserProfile.PROFILE.IsActive() != 1 && !ActivateAccountActivity.IsOpen())
+        if (UserProfile.PROFILE.GetActiveState() == 0 && !ActivateAccountActivity.IsOpen())
         {
             Intent activateIntent = new Intent(UserAreaActivity.GetActivity(), ActivateAccountActivity.class);
             UserAreaActivity.GetActivity().startActivity(activateIntent);
+        }
+        else if (UserProfile.PROFILE.GetActiveState() == 2 && !SharedPreferences.getBoolean("readDisabledMessage", false))
+        {
+            Intent disabledIntent = new Intent(UserAreaActivity.this, AccountDisabledActivity.class);
+            startActivity(disabledIntent);
         }
 
         //
