@@ -5,6 +5,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -117,6 +118,10 @@ public class ActivateAccountRequest extends StringRequest
 
         Response.Listener<String> listener = GetResponseListener(activity);
         ActivateAccountRequest request = new ActivateAccountRequest(code, listener);
+        request.setRetryPolicy(new DefaultRetryPolicy(
+            0,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);

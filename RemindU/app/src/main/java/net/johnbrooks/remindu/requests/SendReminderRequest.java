@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -121,6 +122,10 @@ public class SendReminderRequest extends StringRequest
         if (!Network.IsConnected(activity)) { return; }
 
         SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), reminder.GetTo(), UserProfile.PROFILE.GetPassword(), reminder.GetMessage(), reminder.GetImportant(), reminder.GetDate(), GetSendResponseListener(activity));
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
     }

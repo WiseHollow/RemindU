@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -112,6 +113,11 @@ public class ValidateCodeRequest extends StringRequest
 
         // Send request to server for contact adding.
         ValidateCodeRequest request = new ValidateCodeRequest(email, code, responseListener);
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
     }

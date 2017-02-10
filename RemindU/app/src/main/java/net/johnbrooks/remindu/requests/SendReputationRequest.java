@@ -3,6 +3,7 @@ package net.johnbrooks.remindu.requests;
 import android.app.Activity;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -80,6 +81,10 @@ public class SendReputationRequest extends StringRequest
 
         Response.Listener<String> listener = GetResponseListener();
         SendReputationRequest request = new SendReputationRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), coins, listener);
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);

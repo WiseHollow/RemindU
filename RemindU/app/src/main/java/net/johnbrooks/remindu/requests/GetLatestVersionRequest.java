@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -115,6 +116,10 @@ public class GetLatestVersionRequest extends StringRequest
 
         Response.Listener<String> responseListener = GetResponseListener(version);
         GetLatestVersionRequest request = new GetLatestVersionRequest(responseListener);
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue queue = (activity == null) ? Volley.newRequestQueue(UserAreaActivity.GetActivity()) : Volley.newRequestQueue(activity);
         queue.add(request);
     }

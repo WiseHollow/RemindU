@@ -3,6 +3,7 @@ package net.johnbrooks.remindu.requests;
 import android.app.Activity;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -75,6 +76,10 @@ public class RequestActivationEmailRequest extends StringRequest
 
         Response.Listener<String> listener = GetResponseListener();
         RequestActivationEmailRequest request = new RequestActivationEmailRequest(listener);
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);

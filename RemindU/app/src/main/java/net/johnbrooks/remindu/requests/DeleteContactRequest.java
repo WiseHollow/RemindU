@@ -3,6 +3,7 @@ package net.johnbrooks.remindu.requests;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -91,6 +92,10 @@ public class DeleteContactRequest extends StringRequest
         Response.Listener<String> responseListener = GetDeleteResponseListener(activity, id);
 
         DeleteContactRequest request = new DeleteContactRequest(UserProfile.PROFILE.GetEmail(), UserProfile.PROFILE.GetPassword(), String.valueOf(id), responseListener);
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
     }
