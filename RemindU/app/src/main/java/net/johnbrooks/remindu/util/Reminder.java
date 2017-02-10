@@ -56,6 +56,21 @@ public class Reminder implements Comparable<Reminder>
 
         return reminder;
     }
+    public static Reminder CreatePersonalReminder(String message, boolean important, Date date, Activity activity)
+    {
+        Reminder reminder = new Reminder(message, -1, -1, date);
+        reminder.SetImportant(important);
+
+        UserProfile.PROFILE.AddReminder(reminder);
+        UserProfile.PROFILE.SaveRemindersToFile();
+        activity.finish();
+
+        MasterScheduler.GetInstance(activity).Call();
+        if (ReminderListActivity.GetActivity() != null)
+            ReminderListActivity.GetActivity().RefreshReminderLayout();
+
+        return reminder;
+    }
     /** Insert a reminder into memory (local only). */
     public static Reminder LoadReminder(boolean silentLoad, int id, int user_id_from, int user_id_to, String message, boolean important, Date date, ReminderState state)
     {
@@ -123,24 +138,37 @@ public class Reminder implements Comparable<Reminder>
     private Reminder(String message, int user_id_from, int user_id_to, Date date)
     {
         Old = false;
-        ID = 0;
+        if (user_id_from != -1)
+            ID = 0;
+        else
+        {
+            if (UserProfile.PROFILE.GetPersonalReminders().size() > 0)
+                ID = UserProfile.PROFILE.GetPersonalReminders().get(UserProfile.PROFILE.GetPersonalReminders().size() - 1).GetID() - 1;
+            else
+                ID = -1;
+        }
         User_ID_From = user_id_from;
         User_ID_To = user_id_to;
 
         DateInProgress = null;
         DateComplete = null;
 
-        try
+        if (user_id_from != -1)
         {
-            if (user_id_from == UserProfile.PROFILE.GetUserID())
-                FullName = ContactProfile.GetProfile(user_id_to).GetFullName();
-            else
-                FullName = ContactProfile.GetProfile(user_id_from).GetFullName();
+            try
+            {
+                if (user_id_from == UserProfile.PROFILE.GetUserID())
+                    FullName = ContactProfile.GetProfile(user_id_to).GetFullName();
+                else
+                    FullName = ContactProfile.GetProfile(user_id_from).GetFullName();
+            }
+            catch(Exception ex)
+            {
+                FullName = "N/A";
+            }
         }
-        catch(Exception ex)
-        {
-            FullName = "N/A";
-        }
+        else
+            FullName = "Me";
 
         Message = message;
         Date = date;
@@ -162,6 +190,7 @@ public class Reminder implements Comparable<Reminder>
     public final String GetDateComplete() { return DateComplete; }
     public final boolean IsUpToDate() { return UpToDate; }
     public final boolean IsOld() { return Old; }
+    public final boolean IsLocal() { return (GetFrom() == -1); }
 
     public void SetOld(boolean value) { Old = value; }
     public void SetID(final int id) { ID = id; }
@@ -895,7 +924,6 @@ public class Reminder implements Comparable<Reminder>
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
-                .setOngoing(true)
                 .addAction(confirmAction)
                 .addAction(cancelAction)
                 ;
@@ -1024,6 +1052,7 @@ public class Reminder implements Comparable<Reminder>
         };
         return array;
     }
+
     public enum ReminderState
     {
         NOT_STARTED, IN_PROGRESS, COMPLETE;

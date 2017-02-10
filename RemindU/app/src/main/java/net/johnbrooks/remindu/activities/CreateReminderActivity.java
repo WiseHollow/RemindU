@@ -152,8 +152,15 @@ public class CreateReminderActivity extends AppCompatActivity
                     finish();
                     return;
                 }
+                else if(user_id_to == -1)
+                {
+                    Reminder.CreatePersonalReminder(message, important, calendar.getTime(), CreateReminderActivity.this);
+                }
+                else
+                {
+                    Reminder.CreateReminder(user_id_to, message, important, calendar.getTime(), CreateReminderActivity.this);
+                }
 
-                Reminder.CreateReminder(user_id_to, message, important, calendar.getTime(), CreateReminderActivity.this);
                 b_send.setEnabled(false);
             }
         });

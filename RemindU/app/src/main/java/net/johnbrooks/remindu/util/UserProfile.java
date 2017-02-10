@@ -3,6 +3,7 @@ package net.johnbrooks.remindu.util;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Parcel;
@@ -10,10 +11,12 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.fragments.FeedFragment;
 import net.johnbrooks.remindu.fragments.PrimaryFragment;
@@ -143,6 +146,14 @@ public class UserProfile implements Parcelable
     }
 
     public List<Reminder> GetReminders() { return Reminders; }
+    public List<Reminder> GetPersonalReminders()
+    {
+        List<Reminder> list = new ArrayList<>();
+        for (Reminder r : GetReminders())
+            if (r.IsLocal())
+                list.add(r);
+        return list;
+    }
     public List<ContactProfile> GetContacts() { return Contacts; }
 
     public void SetAvatarID(String value) { AvatarID = value; }
@@ -203,6 +214,18 @@ public class UserProfile implements Parcelable
         char latestChar = '-';
         ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).removeAllViews();
 
+        // Separator and personal view for personal reminders
+
+        LinearLayout sep = (LinearLayout) UserAreaActivity.GetActivity().getLayoutInflater().inflate(R.layout.widget_alphabet_separator, null);
+        TextView character = (TextView) sep.findViewById(R.id.Alphabet_Separator);
+        character.setText("Local");
+        ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).addView(sep);
+        View personalView = CreateCategoryWidget(UserAreaActivity.GetActivity());
+        ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).addView(personalView);
+        personalView.setBackgroundColor(Color.parseColor("#d1ecfc"));
+
+        //
+
         for (int i = 0; i < GetContacts().size(); i++)
         {
             ContactProfile cp = GetContacts().get(i);
@@ -210,8 +233,8 @@ public class UserProfile implements Parcelable
             {
                 if (latestChar != cp.GetFullName().charAt(0))
                 {
-                    LinearLayout sep = (LinearLayout) UserAreaActivity.GetActivity().getLayoutInflater().inflate(R.layout.widget_alphabet_separator, null);
-                    TextView character = (TextView) sep.findViewById(R.id.Alphabet_Separator);
+                    sep = (LinearLayout) UserAreaActivity.GetActivity().getLayoutInflater().inflate(R.layout.widget_alphabet_separator, null);
+                    character = (TextView) sep.findViewById(R.id.Alphabet_Separator);
                     character.setText("" + cp.GetFullName().charAt(0));
                     ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).addView(sep);
                 }
@@ -508,7 +531,7 @@ public class UserProfile implements Parcelable
         Map<String, String[]> data = new HashMap<>();
         for (Reminder r : GetReminders())
         {
-            data.put("id-" + r.GetID(), r.toArray());
+            data.put("id_" + r.GetID(), r.toArray());
         }
 
         Yaml config = new Yaml();
@@ -610,5 +633,31 @@ public class UserProfile implements Parcelable
         {
             e.printStackTrace();
         }
+    }
+
+    public LinearLayout CreateCategoryWidget(final Activity activity)
+    {
+        LinearLayout layout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_details, null);
+
+        TextView tv_name = (TextView) layout.findViewById(R.id.Contact_Profile_Full_Name);
+        TextView tv_reminders = (TextView) layout.findViewById(R.id.Contact_Profile_Reminders);
+        ImageView iv_avatar = (ImageView) layout.findViewById(R.id.Contact_Profile_Avatar);
+
+        iv_avatar.setBackground(AvatarImageUtil.GetAvatar(GetAvatarID()));
+        tv_name.setText("Me");
+        tv_reminders.setText("Reminders: " + GetPersonalReminders().size());
+
+        layout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(UserAreaActivity.GetActivity(), ReminderListActivity.class);
+                intent.putExtra("contactID", -1);
+                UserAreaActivity.GetActivity().startActivity(intent);
+            }
+        });
+
+        return layout;
     }
 }

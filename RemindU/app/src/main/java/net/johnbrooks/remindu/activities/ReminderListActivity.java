@@ -28,6 +28,7 @@ public class ReminderListActivity extends AppCompatActivity
     public static ReminderListActivity GetActivity() { return activity; }
     private LinearLayout ReminderLayout;
     private ContactProfile ContactProfile;
+    private int ContactID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -57,10 +58,16 @@ public class ReminderListActivity extends AppCompatActivity
         // Get variables
         //
 
-        int ContactID = getIntent().getIntExtra("contactID", 0);
-        ContactProfile = UserProfile.PROFILE.GetContact(ContactID);
-        if (ContactProfile == null)
-            finish();
+        ContactID = getIntent().getIntExtra("contactID", 0);
+        if (ContactID != -1)
+        {
+            ContactProfile = UserProfile.PROFILE.GetContact(ContactID);
+            if (ContactProfile == null)
+            {
+                finish();
+                return;
+            }
+        }
 
         ReminderLayout = (LinearLayout) findViewById(R.id.scrollView_Reminders_Layout);
         /*PullRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
@@ -95,18 +102,17 @@ public class ReminderListActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-                if (!Network.IsConnected(ReminderListActivity.this))
+            public void onClick(View view)
+            {
+                if (!Network.IsConnected(ReminderListActivity.this) && ContactID != -1)
                     return;
 
-                if (!ContactProfile.IsContact())
+                if (ContactID != -1 && !ContactProfile.IsContact())
                     return;
 
                 Intent intent = new Intent(ReminderListActivity.this, CreateReminderActivity.class);
-                intent.putExtra("user_id_to", ContactProfile.GetID());
-                intent.putExtra("user_to_fullname", ContactProfile.GetFullName());
+                intent.putExtra("user_id_to", (ContactID != -1) ? ContactProfile.GetID() : -1);
+                intent.putExtra("user_to_fullname", (ContactID != -1) ? ContactProfile.GetFullName() : "Me");
                 ReminderListActivity.this.startActivity(intent);
             }
         });
@@ -122,7 +128,17 @@ public class ReminderListActivity extends AppCompatActivity
         List<LinearLayout> remindersStarted = new ArrayList<>();
         List<LinearLayout> remindersComplete = new ArrayList<>();
 
-        List<Reminder> reminders = ContactProfile.GetReminders();
+        List<Reminder> reminders;
+
+        if (ContactID != -1)
+        {
+            reminders = ContactProfile.GetReminders();
+        }
+        else
+        {
+            reminders = UserProfile.PROFILE.GetPersonalReminders();
+        }
+
         Collections.sort(reminders);
         if (reminders.size() == 0)
         {

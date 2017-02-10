@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Reminder;
@@ -30,7 +31,11 @@ public class ConfirmReminderService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        if (MasterScheduler.GetInstance() == null || MasterScheduler.GetInstance().GetContextWrapper() == null) { return super.onStartCommand(intent, flags, startId); }
+        if (MasterScheduler.GetInstance() == null || MasterScheduler.GetInstance().GetContextWrapper() == null)
+        {
+            Log.d("SEVERE", "No MasterSchedule instance or context wrapper. ");
+            return super.onStartCommand(intent, flags, startId);
+        }
 
         if (UserProfile.PROFILE == null)
         {

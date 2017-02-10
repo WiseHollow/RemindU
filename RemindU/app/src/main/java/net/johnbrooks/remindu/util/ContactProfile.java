@@ -154,13 +154,13 @@ public class ContactProfile implements Comparable<ContactProfile>
             @Override
             public void onClick(View v)
             {
-                if (GetID() == -1)
-                {
-                    return;
-                }
+            if (GetID() == -1)
+            {
+                return;
+            }
 
-                Log.d("INFO", "Requesting that contact id=" + GetID() + " be removed.");
-                DeleteContactRequest.SendRequest(activity, GetID());
+            Log.d("INFO", "Requesting that contact id=" + GetID() + " be removed.");
+            DeleteContactRequest.SendRequest(activity, GetID());
             }
         });
 

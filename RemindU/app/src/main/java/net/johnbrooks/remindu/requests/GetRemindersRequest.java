@@ -103,7 +103,7 @@ public class GetRemindersRequest extends StringRequest
                     for (int i = 0; i < UserProfile.PROFILE.GetReminders().size(); i++)
                     {
                         Reminder r = UserProfile.PROFILE.GetReminders().get(i);
-                        if (r.IsOld() == true && r.GetID() != 0)
+                        if (r.IsOld() == true && r.GetID() > 0)
                         {
                             UserProfile.PROFILE.GetReminders().remove(r);
                             i--;
