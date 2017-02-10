@@ -32,6 +32,8 @@ public class AcceptedContactProfile extends ContactProfile
         return name;
     }
     @Override
+    public final String GetEmail() { return Email; }
+    @Override
     public final String GetUsername() { return Username; }
     @Override
     public final String GetDisplayName() { return FullName; }

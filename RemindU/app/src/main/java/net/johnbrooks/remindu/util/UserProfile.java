@@ -281,9 +281,18 @@ public class UserProfile implements Parcelable
 
     public Reminder GetReminder(int id)
     {
+        Log.d("INFO", "Searching for reminders...");
         for (Reminder r : GetReminders())
+        {
+            Log.d("INFO", "Reminder: " + r.GetID());
             if (r.GetID() == id)
+            {
+                Log.d("INFO", "Found ID: " + id);
                 return r;
+            }
+        }
+
+        Log.d("INFO", "ID: " + id + " not found.");
         return null;
     }
 

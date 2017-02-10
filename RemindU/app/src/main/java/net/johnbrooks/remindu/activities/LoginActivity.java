@@ -127,16 +127,15 @@ public class LoginActivity extends AppCompatActivity
         final String email = sharedPref.getString("email", "null");
         final String password = sharedPref.getString("password", "null");
 
-        if (!Network.IsConnected(LoginActivity.this) && AttemptLoadSavedProfile())
+        AttemptLoadSavedProfile();
+
+        if (!Network.IsConnected(LoginActivity.this))
         {
             Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
             LoginActivity.this.startActivity(intent);
             finish();
-
-            return;
         }
-
-        if (!email.equalsIgnoreCase("null") && !password.equalsIgnoreCase("null"))
+        else if (!email.equalsIgnoreCase("null") && !password.equalsIgnoreCase("null"))
         {
             progressBar.setVisibility(View.VISIBLE);
             LoginRequest.SendRequest(LoginActivity.this, email, password);
@@ -164,8 +163,6 @@ public class LoginActivity extends AppCompatActivity
         }
 
         UserProfile.PROFILE = new UserProfile(id, (active == true) ? 1 : 0, fullname, username, email, password, coins, avatarID);
-        UserProfile.PROFILE.LoadRemindersFromFile(service);
-        UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
 
         if (contactsString != null)
         {
@@ -189,6 +186,7 @@ public class LoginActivity extends AppCompatActivity
         Log.d("WARNING", "No contacts to load. ");
 
         UserProfile.PROFILE.LoadRemindersFromFile(service);
+        UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
 
         return true;
     }
@@ -217,7 +215,6 @@ public class LoginActivity extends AppCompatActivity
 
         if (contactsString != null)
         {
-
             for(String s : contactsString)
             {
                 String[] element = s.split("%");
@@ -227,7 +224,6 @@ public class LoginActivity extends AppCompatActivity
                 String cFullName = element[3];
                 String cContacts = element[4];
                 String cAvatarID = element[5];
-                //Log.d("INFO", cEmail + " | " + cUsername + " | " + cFullName + " | " + cContacts + " | " + cAvatarID);
 
                 if (cFullName.equalsIgnoreCase("null"))
                     UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));

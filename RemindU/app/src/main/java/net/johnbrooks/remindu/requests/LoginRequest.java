@@ -89,6 +89,7 @@ public class LoginRequest extends StringRequest
                         // Using pulled information, we can create a profile for the user.
 
                         UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins, avatarID);
+                        UserProfile.PROFILE.LoadRemindersFromFile(activity);
                         UserProfile.PROFILE.LoadReminderIgnoresFromFile(activity);
 
                         // Next, lets make sense of the contacts string given by the server.

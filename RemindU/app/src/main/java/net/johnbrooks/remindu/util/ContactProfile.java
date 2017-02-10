@@ -37,7 +37,7 @@ public class ContactProfile implements Comparable<ContactProfile>
     }
 
     private int ID;
-    private String Email;
+    protected String Email;
 
     public ContactProfile(int id, String email)
     {
@@ -45,9 +45,9 @@ public class ContactProfile implements Comparable<ContactProfile>
         Email = email;
     }
     public final int GetID() { return ID; }
-    public final String GetEmail() { return Email; }
+    public String GetEmail() { return "Pending..."; }
     public String GetUsername() { return "null"; }
-    public String GetFullName() { return "null"; }
+    public String GetFullName() { return Email; }
     public String GetShortName() { return "null"; }
     public String GetDisplayName() { return Email; }
     public String GetContacts() { return "null"; }
