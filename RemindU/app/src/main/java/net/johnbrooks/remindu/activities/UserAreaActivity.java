@@ -172,10 +172,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
             UserAreaActivity.this.startActivity(signOutIntent);
             finish();
         }
-        else if (id == R.id.nav_feedback)
-        {
-
-        }
         else if (id == R.id.nav_about)
         {
             Intent intent = new Intent(UserAreaActivity.this, AboutActivity.class);
