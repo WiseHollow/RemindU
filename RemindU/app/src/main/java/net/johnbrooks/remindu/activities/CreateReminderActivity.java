@@ -2,10 +2,13 @@ package net.johnbrooks.remindu.activities;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -101,9 +104,16 @@ public class CreateReminderActivity extends AppCompatActivity
                             suffix = "pm";
                         tv_time.setText("Time Due: " + dateFormat.format(calendar.getTime()) + suffix);
                     }
-                }, 0, 0, false);
-                tpDialog.show();
+                },calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
+                tpDialog.setOnShowListener(new DialogInterface.OnShowListener()
+                {
+                    @Override
+                    public void onShow(DialogInterface dialog)
+                    {
 
+                    }
+                });
+                tpDialog.show();
             }
         });
 
