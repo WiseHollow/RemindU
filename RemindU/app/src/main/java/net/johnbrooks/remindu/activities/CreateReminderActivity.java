@@ -105,14 +105,6 @@ public class CreateReminderActivity extends AppCompatActivity
                         tv_time.setText("Time Due: " + dateFormat.format(calendar.getTime()) + suffix);
                     }
                 },calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
-                tpDialog.setOnShowListener(new DialogInterface.OnShowListener()
-                {
-                    @Override
-                    public void onShow(DialogInterface dialog)
-                    {
-
-                    }
-                });
                 tpDialog.show();
             }
         });
