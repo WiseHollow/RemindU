@@ -120,6 +120,7 @@ public class CreateReminderActivity extends AppCompatActivity
                 dialog.show();
 
                 CalendarView cView = (CalendarView) dialog.findViewById(R.id.calendarView_cnr);
+                cView.setDate(calendar.getTimeInMillis());
                 cView.setOnDateChangeListener(new CalendarView.OnDateChangeListener()
                 {
                     @Override
