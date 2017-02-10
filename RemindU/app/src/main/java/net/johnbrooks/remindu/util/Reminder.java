@@ -404,9 +404,9 @@ public class Reminder implements Comparable<Reminder>
 
     public void ClickLogButton(final Activity activity, final Reminder reminder)
     {
-        if (!Network.IsConnected(activity))
+        if (!Network.IsConnected(activity) && !IsLocal())
             return;
-        //
+
         if (UserProfile.PROFILE.GetUserID() == GetFrom())
         {
             final Dialog dialog = new Dialog(activity);
@@ -510,9 +510,8 @@ public class Reminder implements Comparable<Reminder>
 
     private void ClickRemoveButton(final ReminderListActivity activity, final Reminder reminder)
     {
-        if (!Network.IsConnected(activity))
+        if (!Network.IsConnected(activity) && !IsLocal())
             return;
-        //TODO: If completed task, give send coin dialog. or not, just delete.
 
         if (reminder.GetState() != ReminderState.COMPLETE || reminder.GetFrom() != UserProfile.PROFILE.GetUserID())
             UserProfile.PROFILE.DeleteReminder(reminder);
