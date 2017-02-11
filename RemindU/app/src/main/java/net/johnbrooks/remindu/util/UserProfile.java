@@ -54,7 +54,7 @@ public class UserProfile implements Parcelable
 {
     public static void CleanupLocalFiles()
     {
-        SharedPreferences.Editor editor = UserAreaActivity.GetActivity().SharedPreferences.edit();
+        SharedPreferences.Editor editor = MasterScheduler.GetInstance().GetContextWrapper().getSharedPreferences("profile", Context.MODE_PRIVATE).edit();
         editor.putString("email", "null");
         editor.putString("password", "null");
         editor.putString("fullname", "null");
