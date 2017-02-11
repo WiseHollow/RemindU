@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.util.Quotes;
 
 public class SplashActivity extends AppCompatActivity
 {
@@ -19,6 +21,8 @@ public class SplashActivity extends AppCompatActivity
         getSupportActionBar().hide();
         Handler = new Handler();
         GoToLogin.run();
+
+        ((TextView) findViewById(R.id.splash_quote)).setText(Quotes.GetRandom());
     }
 
     Runnable GoToLogin = new Runnable()

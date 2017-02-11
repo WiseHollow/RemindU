@@ -9,12 +9,28 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_centerVertical="true"
         android:text="Welcome"
         android:textSize="38dp"
         android:textColor="#fff"
         android:includeFontPadding="false"
+        android:id="@+id/splash_primary"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Quote"
+        android:textSize="10dp"
+        android:textColor="#b1c1d8"
+        android:layout_below="@+id/splash_primary"
+        android:id="@+id/splash_quote"
+        android:layout_marginTop="6dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         />
 
 </RelativeLayout>
