@@ -108,6 +108,15 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 
+            <TextView
+                android:text="Characters: 128"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView_cnr_char_count"
+                android:layout_alignBaseline="@+id/switch_cnr_important"
+                android:layout_alignBottom="@+id/switch_cnr_important"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
 
 
         </RelativeLayout>

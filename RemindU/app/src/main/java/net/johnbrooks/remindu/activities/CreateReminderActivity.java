@@ -3,11 +3,13 @@ package net.johnbrooks.remindu.activities;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +35,7 @@ public class CreateReminderActivity extends AppCompatActivity
     private TextView tv_date;
     private TextView tv_time;
     private TextView tv_recipient;
+    private TextView tv_characters;
     private EditText et_message;
     private Switch s_important;
 
@@ -61,6 +64,7 @@ public class CreateReminderActivity extends AppCompatActivity
 
         //
 
+        tv_characters = (TextView) findViewById(R.id.textView_cnr_char_count);
         tv_date = (TextView) findViewById(R.id.textView_cnr_date);
         tv_time = (TextView) findViewById(R.id.textView_cnr_time);
         tv_recipient = (TextView) findViewById(R.id.textView_cnr_recipient);
@@ -84,6 +88,20 @@ public class CreateReminderActivity extends AppCompatActivity
         if (calendar.get(Calendar.HOUR_OF_DAY) > 12)
             suffix = "pm";
         tv_time.setText("Time Due: " + timeFormat.format(calendar.getTime()) + suffix);
+
+        et_message.setOnKeyListener(new View.OnKeyListener()
+        {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if (event.getAction() == KeyEvent.ACTION_UP)
+                {
+                    tv_characters.setText("Characters left: " + (128 - et_message.getText().length()));
+                }
+
+                return false;
+            }
+        });
 
         b_time.setOnClickListener(new View.OnClickListener()
         {
@@ -141,8 +159,15 @@ public class CreateReminderActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                progressBar.setVisibility(View.VISIBLE);
                 String message = et_message.getText().toString();
+
+                if (message.length() > 128)
+                {
+                    Snackbar.make(getCurrentFocus(), "Maximum activity description is 128 characters. ", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+                }
+
                 boolean important = s_important.isChecked();
 
                 int user_id_to = getIntent().getIntExtra("user_id_to", 0);
@@ -154,10 +179,12 @@ public class CreateReminderActivity extends AppCompatActivity
                 }
                 else if(user_id_to == -1)
                 {
+                    progressBar.setVisibility(View.VISIBLE);
                     Reminder.CreatePersonalReminder(message, important, calendar.getTime(), CreateReminderActivity.this);
                 }
                 else
                 {
+                    progressBar.setVisibility(View.VISIBLE);
                     Reminder.CreateReminder(user_id_to, message, important, calendar.getTime(), CreateReminderActivity.this);
                 }
 
