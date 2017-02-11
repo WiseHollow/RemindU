@@ -34,6 +34,8 @@ public class FeedFragment extends Fragment
     private View ContentView;
     private View ContactLayout;
 
+    private Bundle savedInstanceState;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -42,6 +44,7 @@ public class FeedFragment extends Fragment
         ScrollView scrollView = (ScrollView) ContentView.findViewById(R.id.Feed_ScrollView);
         ContactLayout = getLayoutInflater(getArguments()).inflate(R.layout.widget_linear_layout, null);
         scrollView.addView(ContactLayout);
+        this.savedInstanceState = savedInstanceState;
 
         return ContentView;
     }
@@ -65,7 +68,7 @@ public class FeedFragment extends Fragment
 
     public void PopulateActivity()
     {
-        if (getArguments() == null || getLayoutInflater(getArguments()) == null)
+        if (getLayoutInflater(null) == null)
             return;
 
         UserProfile.PROFILE.sortRemindersByDueDate = false;
@@ -80,7 +83,7 @@ public class FeedFragment extends Fragment
             if (r.GetTo() == UserProfile.PROFILE.GetUserID())
                 continue;
 
-            LinearLayout widget = (LinearLayout) getLayoutInflater(getArguments()).inflate(R.layout.widget_reminder_in_feed, null);
+            LinearLayout widget = (LinearLayout) getLayoutInflater(null).inflate(R.layout.widget_reminder_in_feed, null);
             ((ViewGroup) ContactLayout).addView(widget);
             widget.setOnClickListener(new View.OnClickListener()
             {
