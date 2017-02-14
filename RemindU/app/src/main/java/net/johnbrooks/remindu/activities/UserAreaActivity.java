@@ -89,11 +89,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         // Run schedules
         //
 
-
-        //PullScheduler.Initialize();
-        //ProcessRemindersScheduler.Initialize();
-
-        if (SharedPreferences.getBoolean("check_for_updates", true))
+        if (SharedPreferences.getBoolean("settings_check_for_updates", true))
             GetLatestVersionRequest.SendRequest(UserAreaActivity.this);
 
         //

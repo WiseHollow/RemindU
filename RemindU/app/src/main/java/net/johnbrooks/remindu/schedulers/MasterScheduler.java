@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.ContextWrapper;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import net.johnbrooks.remindu.util.UserProfile;
@@ -51,7 +52,6 @@ public class MasterScheduler
         return masterScheduler;
     }
 
-    private final int Interval = 60000;
     private Handler Handler = null;
     private Activity Activity = null;
     private Service Service = null;
@@ -120,10 +120,13 @@ public class MasterScheduler
         @Override
         public void run()
         {
+            int interval = Integer.parseInt((PreferenceManager.getDefaultSharedPreferences(MasterScheduler.GetInstance().GetContextWrapper()).getString("sync_frequency", "1")));
+            if (interval <= 0)
+                return;
             Update();
 
             if (masterScheduler != null)
-                Handler.postDelayed(ScheduleProcessor, Interval);
+                Handler.postDelayed(ScheduleProcessor, 60000 * interval);
         }
     };
 }

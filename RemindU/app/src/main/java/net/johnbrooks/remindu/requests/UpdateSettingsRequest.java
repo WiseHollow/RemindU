@@ -77,9 +77,14 @@ public class UpdateSettingsRequest extends StringRequest
     {
         if (!Network.IsConnected(activity)) { return; }
 
+        if (true)
+            return;
+
+        //TODO: REMOVE THIS REQUEST
+
         boolean receiveEmails;
-        SharedPreferences sharedPrefs = (activity == null) ? PreferenceManager.getDefaultSharedPreferences(UserAreaActivity.GetActivity()) : PreferenceManager.getDefaultSharedPreferences(activity);
-        receiveEmails = !sharedPrefs.getBoolean("receive_emails_switch", true);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(UserAreaActivity.GetActivity());
+        receiveEmails = sharedPrefs.getBoolean("receive_emails_switch", true);
 
         Response.Listener<String> responseListener = GetResponseListener();
         UpdateSettingsRequest request = new UpdateSettingsRequest(receiveEmails, responseListener);

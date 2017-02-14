@@ -8,6 +8,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.AudioManager;
@@ -15,6 +16,8 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
@@ -956,8 +959,8 @@ public class Reminder implements Comparable<Reminder>
         if (!vibrate) { return; }
 
         AudioManager am = (AudioManager) MasterScheduler.GetInstance().GetContextWrapper().getSystemService(Context.AUDIO_SERVICE);
-
-        if (am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE || am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MasterScheduler.GetInstance().GetContextWrapper());
+        if ((am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE || am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) && sharedPreferences.getBoolean("notifications_new_message_vibrate", true))
         {
             try
             {
@@ -970,11 +973,21 @@ public class Reminder implements Comparable<Reminder>
             }
         }
 
-        if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+        if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL && sharedPreferences.getBoolean("settings_updated_activity_notification", true))
         {
             try
             {
-                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                String ringtoneName = sharedPreferences.getString("notifications_new_message_ringtone", null);
+                //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Uri alarmSound;
+                if (ringtoneName == null)
+                {
+                    alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                }
+                else
+                {
+                    alarmSound = Uri.parse(ringtoneName);
+                }
                 Ringtone r = RingtoneManager.getRingtone(MasterScheduler.GetInstance().GetContextWrapper().getApplicationContext(), alarmSound);
                 r.play();
             } catch (Exception e) {

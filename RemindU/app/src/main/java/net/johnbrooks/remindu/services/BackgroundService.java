@@ -2,10 +2,13 @@ package net.johnbrooks.remindu.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import net.johnbrooks.remindu.activities.LoginActivity;
+import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 
 /**
@@ -36,7 +39,16 @@ public class BackgroundService extends Service
     public void onStart(Intent intent, int startId)
     {
         super.onStart(intent, startId);
-        Log.d("INFO", "Background service started.");
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!sharedPrefs.getBoolean("settings_background_service", true))
+        {
+            Log.d("INFO", "Background service skipped.");
+            return;
+        }
+        else
+            Log.d("INFO", "Background service started.");
+
         if (!LoginActivity.AttemptLoadSavedProfile(this))
         {
             Log.d("WARNING", "Could not load saved profile from file.");
