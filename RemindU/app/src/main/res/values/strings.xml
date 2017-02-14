@@ -41,7 +41,7 @@
     <string name="summary_settings_background_service">Automatically sync with the server without starting up RemindU.</string>
     <string name="title_settings_background_service">Run Background Service</string>
     <string-array name="pref_sync_frequency_titles">
-        <item>1 minute</item>
+        <item>3 minutes</item>
         <item>10 minutes</item>
         <item>15 minutes</item>
         <item>30 minutes</item>
@@ -49,7 +49,7 @@
         <item>Never</item>
     </string-array>
     <string-array name="pref_sync_frequency_values">
-        <item>1</item>
+        <item>3</item>
         <item>10</item>
         <item>15</item>
         <item>30</item>
