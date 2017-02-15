@@ -3,7 +3,10 @@ package net.johnbrooks.remindu.activities;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,18 +39,15 @@ public class ReminderFeedActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        //
-
-        PopulateActivity();
     }
 
+    @Deprecated
     private void PopulateActivity()
     {
         UserProfile.PROFILE.sortRemindersByDueDate = false;
         Collections.sort(UserProfile.PROFILE.GetReminders());
 
-        for (Reminder r : UserProfile.PROFILE.GetReminders())
+        for (final Reminder r : UserProfile.PROFILE.GetReminders())
         {
             if (r.GetDateInProgress() == null && r.GetDateComplete() == null)
                 continue;
@@ -57,12 +57,42 @@ public class ReminderFeedActivity extends AppCompatActivity
             LinearLayout widget = (LinearLayout) getLayoutInflater().inflate(R.layout.widget_reminder_in_feed, null);
             layout.addView(widget);
 
+            final LinearLayout l_desc = (LinearLayout) widget.findViewById(R.id.feed_element_layout_desc);
+            l_desc.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    Log.d("INFO", "HIT");
+                    r.ClickLogButton(UserAreaActivity.GetActivity(), r);
+                }
+            });
+
             final ImageView iv_avatar = (ImageView) widget.findViewById(R.id.feed_element_avatar);
 
             final TextView tv_fullName = (TextView) widget.findViewById(R.id.feed_element_fullName);
             final TextView tv_state = (TextView) widget.findViewById(R.id.feed_element_state);
             final TextView tv_activityInfo = (TextView) widget.findViewById(R.id.feed_element_activityInfo);
             final TextView tv_time = (TextView) widget.findViewById(R.id.feed_element_time);
+
+            final ImageView iv_like = (ImageView) widget.findViewById(R.id.feed_element_like);
+            if (r.IsLiked())
+                iv_like.setBackgroundResource(R.drawable.like_it_filled_48);
+            else
+                iv_like.setBackgroundResource(R.drawable.like_it_48);
+            iv_like.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    r.SetLiked(!r.IsLiked());
+                    if (r.IsLiked())
+                        iv_like.setBackgroundResource(R.drawable.like_it_filled_48);
+                    else
+                        iv_like.setBackgroundResource(R.drawable.like_it_48);
+                    UserProfile.PROFILE.SaveRemindersToFile();
+                }
+            });
 
             ContactProfile cp;
             if (r.GetFrom() == UserProfile.PROFILE.GetUserID())

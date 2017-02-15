@@ -100,6 +100,9 @@ public class Reminder implements Comparable<Reminder>
                 reminder.ShowNotification(true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
                 reminder.SetUpToDate(false);
             }
+
+            reminder.SetLiked(check.IsLiked());
+
             UserProfile.PROFILE.GetReminders().remove(check);
         }
         else
@@ -137,6 +140,8 @@ public class Reminder implements Comparable<Reminder>
 
     private String DateInProgress;
     private String DateComplete;
+
+    private boolean Liked;
 
     private Reminder(String message, int user_id_from, int user_id_to, Date date)
     {
@@ -178,6 +183,7 @@ public class Reminder implements Comparable<Reminder>
         Important = false;
         UpToDate = true;
         State = ReminderState.NOT_STARTED;
+        Liked = false;
     }
 
     public final int GetID() { return ID; }
@@ -194,7 +200,9 @@ public class Reminder implements Comparable<Reminder>
     public final boolean IsUpToDate() { return UpToDate; }
     public final boolean IsOld() { return Old; }
     public final boolean IsLocal() { return (GetFrom() == -1); }
+    public final boolean IsLiked() { return Liked; }
 
+    public void SetLiked(boolean liked) { Liked = liked; }
     public void SetOld(boolean value) { Old = value; }
     public void SetID(final int id) { ID = id; }
     public void SetImportant(final boolean value) { Important = value; }
@@ -1060,7 +1068,8 @@ public class Reminder implements Comparable<Reminder>
                 String.valueOf((GetImportant() == true) ? 1 : 0),
                 String.valueOf(GetState().ordinal()),
                 GetDateInProgress(),
-                GetDateComplete()
+                GetDateComplete(),
+                (IsLiked() ? "true" : "false")
         };
         return array;
     }

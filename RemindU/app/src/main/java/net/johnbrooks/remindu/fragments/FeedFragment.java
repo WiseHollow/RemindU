@@ -85,7 +85,7 @@ public class FeedFragment extends Fragment
 
             LinearLayout widget = (LinearLayout) getLayoutInflater(null).inflate(R.layout.widget_reminder_in_feed, null);
             ((ViewGroup) ContactLayout).addView(widget);
-            widget.setOnClickListener(new View.OnClickListener()
+            widget.findViewById(R.id.feed_element_layout_desc).setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
@@ -106,6 +106,25 @@ public class FeedFragment extends Fragment
             final TextView tv_state = (TextView) widget.findViewById(R.id.feed_element_state);
             final TextView tv_activityInfo = (TextView) widget.findViewById(R.id.feed_element_activityInfo);
             final TextView tv_time = (TextView) widget.findViewById(R.id.feed_element_time);
+
+            final ImageView iv_like = (ImageView) widget.findViewById(R.id.feed_element_like);
+            if (r.IsLiked())
+                iv_like.setBackgroundResource(R.drawable.like_it_filled_48);
+            else
+                iv_like.setBackgroundResource(R.drawable.like_it_48);
+            iv_like.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    r.SetLiked(!r.IsLiked());
+                    if (r.IsLiked())
+                        iv_like.setBackgroundResource(R.drawable.like_it_filled_48);
+                    else
+                        iv_like.setBackgroundResource(R.drawable.like_it_48);
+                    UserProfile.PROFILE.SaveRemindersToFile();
+                }
+            });
 
             ContactProfile cp;
             if (r.GetFrom() == UserProfile.PROFILE.GetUserID())
