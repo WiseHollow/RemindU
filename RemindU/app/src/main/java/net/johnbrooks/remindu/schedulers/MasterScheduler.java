@@ -120,7 +120,7 @@ public class MasterScheduler
         @Override
         public void run()
         {
-            int interval = Integer.parseInt((PreferenceManager.getDefaultSharedPreferences(MasterScheduler.GetInstance().GetContextWrapper()).getString("sync_frequency", "1")));
+            int interval = Integer.parseInt((PreferenceManager.getDefaultSharedPreferences(MasterScheduler.GetInstance().GetContextWrapper()).getString("sync_frequency", "3")));
             if (interval <= 0)
                 return;
             Update();
