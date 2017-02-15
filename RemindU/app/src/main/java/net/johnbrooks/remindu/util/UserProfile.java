@@ -470,7 +470,6 @@ public class UserProfile implements Parcelable
                     String dateCompleted = rArray[8];
 
                     boolean liked = "true".equalsIgnoreCase(rArray[9]);
-                    Log.d("INFO", rArray[9]);
 
                     Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
                     if (dateInProgress != null)
