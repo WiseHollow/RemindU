@@ -684,7 +684,7 @@ public class Reminder implements Comparable<Reminder>
     {
         int[] time = new int[3];
 
-        long remaining = compare.getTime() - (new Date()).getTime();
+        long remaining = (new Date()).getTime() - compare.getTime();
         remaining = remaining / 1000;
 
         if (remaining != 0)
