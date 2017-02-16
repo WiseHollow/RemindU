@@ -1,7 +1,6 @@
 package net.johnbrooks.remindu.util;
 
 import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
-import net.johnbrooks.remindu.requests.UpdateReminderLikeRequest;
 
 /**
  * Created by John on 2/16/2017.

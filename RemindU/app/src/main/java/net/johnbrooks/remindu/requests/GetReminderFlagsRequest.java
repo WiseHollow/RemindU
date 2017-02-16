@@ -10,6 +10,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.PasswordHash;
@@ -71,7 +72,7 @@ public class GetReminderFlagsRequest extends StringRequest
                         for (String element : s.split("&"))
                         {
                             String[] parts = element.split("-");
-                            if (parts == null || "".equals(parts[0]))
+                            if (parts == null || parts.length == 0 || "".equals(parts[0]))
                                 continue;
                             Reminder reminder = UserProfile.PROFILE.GetReminder(Integer.parseInt(parts[0]));
                             if (reminder != null)
@@ -82,6 +83,30 @@ public class GetReminderFlagsRequest extends StringRequest
                                 {
                                     ReminderFlag flag = reminder.GetFlag(state);
                                     flag.SetLiked(true);
+                                }
+                            }
+                        }
+
+                        s = jsonResponse.getString("myLikedReminders");
+                        for (String element : s.split("&"))
+                        {
+                            String[] parts = element.split("-");
+                            if (parts == null || parts.length == 0 || "".equals(parts[0]))
+                                continue;
+                            Reminder reminder = UserProfile.PROFILE.GetReminder(Integer.parseInt(parts[0]));
+                            if (reminder != null)
+                            {
+                                int o = Integer.parseInt(parts[1]);
+                                Reminder.ReminderState state = Reminder.ReminderState.values()[o];
+                                if (state != null)
+                                {
+                                    ReminderFlag flag = reminder.GetFlag(state);
+                                    if (flag != null && !flag.IsLiked())
+                                    {
+                                        flag.SetLiked(true);
+                                        reminder.ShowNotification(true, Reminder.NotificationType.LIKED_REMINDER_STATE, "Your recent activity update was liked.");
+                                        //TODO: Make this recorded and accessible elsewhere
+                                    }
                                 }
                             }
                         }

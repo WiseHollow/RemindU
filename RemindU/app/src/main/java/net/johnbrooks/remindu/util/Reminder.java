@@ -1117,7 +1117,7 @@ public class Reminder implements Comparable<Reminder>
 
     public enum NotificationType
     {
-        NEW_REMINDER, UPDATED_REMINDER, REMINDER_DEADLINE;
+        NEW_REMINDER, UPDATED_REMINDER, REMINDER_DEADLINE, LIKED_REMINDER_STATE;
 
         @Override
         public String toString()
@@ -1128,6 +1128,8 @@ public class Reminder implements Comparable<Reminder>
                 return "Updated Activity";
             else if (ordinal() == 2)
                 return "Activity Deadline";
+            else if (ordinal() == 3)
+                return "Liked Activity Update";
             else
                 return super.toString();
         }
