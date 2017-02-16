@@ -119,7 +119,7 @@ public class SendReminderRequest extends StringRequest
 
     public static void SendRequest(final CreateReminderActivity activity, Reminder reminder)
     {
-        if (!Network.IsConnected(activity) || reminder.IsLocal()) { return; }
+        if (!Network.IsConnected() || reminder.IsLocal()) { return; }
 
         SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), reminder.GetTo(), UserProfile.PROFILE.GetPassword(), reminder.GetMessage(), reminder.GetImportant(), reminder.GetDate(), GetSendResponseListener(activity));
         request.setRetryPolicy(new DefaultRetryPolicy(

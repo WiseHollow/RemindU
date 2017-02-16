@@ -1,5 +1,7 @@
 package net.johnbrooks.remindu.util;
 
+import android.util.Log;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 

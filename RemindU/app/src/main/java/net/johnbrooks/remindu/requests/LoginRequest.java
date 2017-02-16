@@ -175,6 +175,7 @@ public class LoginRequest extends StringRequest
 
                         final int coins = jsonResponse.getInt("coins");
 
+                        final String likes = jsonResponse.getString("likes");
                         final String contacts = jsonResponse.getString("contacts");
                         final String avatarID = jsonResponse.getString("avatar");
 
@@ -238,7 +239,7 @@ public class LoginRequest extends StringRequest
 
     public static void SendRequest(final LoginActivity activity, final String email, final String password)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> responseListener = GetLoginResponseListener(activity, password);
 

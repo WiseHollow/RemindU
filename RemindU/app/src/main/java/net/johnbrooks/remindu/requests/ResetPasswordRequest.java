@@ -88,7 +88,7 @@ public class ResetPasswordRequest extends StringRequest
 
     public static void SendRequest(final ResetMyPasswordActivity activity, final String email, final int code, final String password)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> responseListener = GetResponseListener(activity, email, code);
 

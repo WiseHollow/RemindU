@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.requests.UpdateReminderLikeRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.ContactProfile;
@@ -121,6 +122,7 @@ public class FeedFragment extends Fragment
                     else
                         iv_like.setBackgroundResource(R.drawable.like_it_48);
                     UserProfile.PROFILE.SaveReminderFlagsToFile();
+                    UpdateReminderLikeRequest.SendRequest(flag);
                 }
             });
 

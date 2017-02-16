@@ -117,7 +117,7 @@ public class RegisterRequest extends StringRequest
 
     public static void SendRequest(RegisterActivity activity, final String fullname, final String username, final String email, final String password)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> listener = GetResponseListener(activity);
 

@@ -129,7 +129,7 @@ public class PullProfileRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> profileResponseListener = GetPullResponseListener(UserProfile.PROFILE.GetPassword());
 
@@ -140,7 +140,7 @@ public class PullProfileRequest extends StringRequest
 
     public static void SendRequest(final Service service)
     {
-        if (service == null || !Network.IsConnected(service)) { return; }
+        if (service == null || !Network.IsConnected()) { return; }
 
         SharedPreferences sharedPref = service.getSharedPreferences("profile", service.MODE_PRIVATE);
 

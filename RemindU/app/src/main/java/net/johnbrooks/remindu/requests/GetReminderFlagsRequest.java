@@ -14,6 +14,7 @@ import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.PasswordHash;
 import net.johnbrooks.remindu.util.Reminder;
+import net.johnbrooks.remindu.util.ReminderFlag;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import org.json.JSONException;
@@ -29,25 +30,18 @@ import java.util.Map;
  * Created by ieatl on 11/29/2016.
  */
 
-public class UpdateReminderRequest extends StringRequest
+public class GetReminderFlagsRequest extends StringRequest
 {
-    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/updateReminder.php";
+    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/getReminderFlags.php";
     private Map<String, String> params;
 
-    public UpdateReminderRequest(Reminder reminder, Response.Listener<String> listener)
+    public GetReminderFlagsRequest(Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
         super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("user_id", String.valueOf(UserProfile.PROFILE.GetUserID()));
         params.put("password", PasswordHash.Hash(UserProfile.PROFILE.GetPassword()));
-        params.put("reminder_id", String.valueOf(reminder.GetID()));
-        params.put("state", String.valueOf(reminder.GetStateOrdinal()));
-
-        final Date now = new Date();
-        final DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-        final String dateString = formatter.format(now);
-        params.put("date", dateString);
     }
 
     @Override
@@ -56,7 +50,7 @@ public class UpdateReminderRequest extends StringRequest
         return params;
     }
 
-    private static Response.Listener<String> GetUpdateResponseListener(final Activity activity)
+    private static Response.Listener<String> GetUpdateResponseListener()
     {
         return new Response.Listener<String>()
         {
@@ -73,7 +67,24 @@ public class UpdateReminderRequest extends StringRequest
 
                     if (success)
                     {
-                        MasterScheduler.GetInstance(activity).Call();
+                        String s = jsonResponse.getString("likes");
+                        for (String element : s.split("&"))
+                        {
+                            String[] parts = element.split("-");
+                            if (parts == null || "".equals(parts[0]))
+                                continue;
+                            Reminder reminder = UserProfile.PROFILE.GetReminder(Integer.parseInt(parts[0]));
+                            if (reminder != null)
+                            {
+                                int o = Integer.parseInt(parts[1]);
+                                Reminder.ReminderState state = Reminder.ReminderState.values()[o];
+                                if (state != null)
+                                {
+                                    ReminderFlag flag = reminder.GetFlag(state);
+                                    flag.SetLiked(true);
+                                }
+                            }
+                        }
                     }
                     else
                     {
@@ -87,12 +98,12 @@ public class UpdateReminderRequest extends StringRequest
         };
     }
 
-    public static void SendRequest(final Reminder r)
+    public static void SendRequest()
     {
         if (!Network.IsConnected()) { return; }
 
-        Response.Listener<String> responseListener = GetUpdateResponseListener(UserAreaActivity.GetActivity());
-        UpdateReminderRequest request = new UpdateReminderRequest(r, responseListener);
+        Response.Listener<String> responseListener = GetUpdateResponseListener();
+        GetReminderFlagsRequest request = new GetReminderFlagsRequest(responseListener);
         request.setRetryPolicy(new DefaultRetryPolicy(
                 0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,

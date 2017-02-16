@@ -77,7 +77,7 @@ public class SendReputationRequest extends StringRequest
 
     public static void SendRequest(final Activity activity, final int user_id_to, final int coins)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> listener = GetResponseListener();
         SendReputationRequest request = new SendReputationRequest(UserProfile.PROFILE.GetUserID(), user_id_to, UserProfile.PROFILE.GetPassword(), coins, listener);

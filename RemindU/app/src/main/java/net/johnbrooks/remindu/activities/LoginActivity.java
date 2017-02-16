@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity
 
         AttemptLoadSavedProfile();
 
-        if (!Network.IsConnected(LoginActivity.this))
+        if (!Network.IsConnected())
         {
             Intent intent = new Intent(LoginActivity.this, UserAreaActivity.class);
             LoginActivity.this.startActivity(intent);

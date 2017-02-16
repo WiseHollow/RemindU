@@ -22,6 +22,7 @@ import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
 import net.johnbrooks.remindu.fragments.FeedFragment;
 import net.johnbrooks.remindu.fragments.PrimaryFragment;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
+import net.johnbrooks.remindu.requests.GetReminderFlagsRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.PullProfileRequest;
 import net.johnbrooks.remindu.requests.UpdateReminderRequest;
@@ -370,21 +371,19 @@ public class UserProfile implements Parcelable
     {
         if (MasterScheduler.GetInstance().GetActivity() != null)
         {
-            if (!Network.IsConnected(MasterScheduler.GetInstance().GetActivity()))
-                return;
             Log.d("INFO", "Pulling profile from server...");
             PullProfileRequest.SendRequest(MasterScheduler.GetInstance().GetActivity());
             Log.d("INFO", "Pulling reminders from server...");
             GetRemindersRequest.SendRequest(MasterScheduler.GetInstance().GetActivity());
+            //GetReminderFlagsRequest.SendRequest();
         }
         else if (MasterScheduler.GetInstance().GetService() != null)
         {
-            if (!Network.IsConnected(MasterScheduler.GetInstance().GetService()))
-                return;
             Log.d("INFO", "Pulling profile from server...");
             PullProfileRequest.SendRequest(MasterScheduler.GetInstance().GetService());
             Log.d("INFO", "Pulling reminders from server...");
             GetRemindersRequest.SendRequest(MasterScheduler.GetInstance().GetService());
+            //GetReminderFlagsRequest.SendRequest();
         }
     }
 

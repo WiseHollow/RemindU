@@ -107,7 +107,7 @@ public class ValidateCodeRequest extends StringRequest
 
     public static void SendRequest(final ForgotMyPasswordActivity activity, final String email, final int code)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> responseListener = GetResponseListener(activity, email, code);
 

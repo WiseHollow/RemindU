@@ -104,7 +104,7 @@ public class ReminderListActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                if (!Network.IsConnected(ReminderListActivity.this) && ContactID != -1)
+                if (!Network.IsConnected() && ContactID != -1)
                     return;
 
                 if (ContactID != -1 && !ContactProfile.IsContact())

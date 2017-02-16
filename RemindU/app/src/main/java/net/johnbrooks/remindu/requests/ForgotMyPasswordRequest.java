@@ -108,7 +108,7 @@ public class ForgotMyPasswordRequest extends StringRequest
 
     public static void SendRequest(final ForgotMyPasswordActivity activity, final String email)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> responseListener = GetResponseListener(activity, email);
 

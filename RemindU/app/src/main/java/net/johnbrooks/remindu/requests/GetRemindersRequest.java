@@ -124,17 +124,21 @@ public class GetRemindersRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> reminderResponseListener = GetReceivedResponseListener();
         GetRemindersRequest request = new GetRemindersRequest(reminderResponseListener);
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue queue = Volley.newRequestQueue(activity);
         queue.add(request);
     }
 
     public static void SendRequest(final Service service)
     {
-        if (service == null || !Network.IsConnected(service)) { return; }
+        if (service == null || !Network.IsConnected()) { return; }
 
         if (UserProfile.PROFILE == null)
             return;

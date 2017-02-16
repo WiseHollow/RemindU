@@ -114,7 +114,7 @@ public class ActivateAccountRequest extends StringRequest
 
     public static void SendRequest(final ActivateAccountActivity activity, final String code)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> listener = GetResponseListener(activity);
         ActivateAccountRequest request = new ActivateAccountRequest(code, listener);

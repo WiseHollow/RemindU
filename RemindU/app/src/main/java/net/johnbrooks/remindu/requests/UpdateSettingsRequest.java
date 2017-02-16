@@ -75,7 +75,7 @@ public class UpdateSettingsRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         if (true)
             return;

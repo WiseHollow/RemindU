@@ -99,7 +99,7 @@ public class GetLatestVersionRequest extends StringRequest
 
     public static void SendRequest(final Activity activity)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         PackageInfo pInfo;
         String version;

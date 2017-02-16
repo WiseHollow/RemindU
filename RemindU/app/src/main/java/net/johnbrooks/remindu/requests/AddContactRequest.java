@@ -88,7 +88,7 @@ public class AddContactRequest extends StringRequest
 
     public static void SendRequest(final ManageContactsActivity activity, final String email)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> responseListener = GetResponseListener(activity, email);
 

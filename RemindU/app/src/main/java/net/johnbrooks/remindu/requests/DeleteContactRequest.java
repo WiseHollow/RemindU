@@ -87,7 +87,7 @@ public class DeleteContactRequest extends StringRequest
 
     public static void SendRequest(final ManageContactsActivity activity, final int id)
     {
-        if (!Network.IsConnected(activity)) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> responseListener = GetDeleteResponseListener(activity, id);
 

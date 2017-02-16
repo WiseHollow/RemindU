@@ -80,7 +80,7 @@ public class DeleteReminderRequest extends StringRequest
 
     public static void SendRequest(Reminder r)
     {
-        if (!Network.IsConnected(UserAreaActivity.GetActivity()) || r.IsLocal()) { return; }
+        if (!Network.IsConnected() || r.IsLocal()) { return; }
 
         Response.Listener<String> responseListener = GetDeleteResponseListener(UserAreaActivity.GetActivity());
 

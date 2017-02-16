@@ -46,8 +46,6 @@ public class ReminderFlag implements Comparable<ReminderFlag>
     public final void SetLiked(boolean liked)
     {
         this.liked = liked;
-
-        UpdateReminderLikeRequest.SendRequest(this);
     }
 
     public final String[] toArray()

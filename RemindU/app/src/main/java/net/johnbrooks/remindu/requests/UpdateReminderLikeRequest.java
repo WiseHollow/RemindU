@@ -86,7 +86,7 @@ public class UpdateReminderLikeRequest extends StringRequest
 
     public static void SendRequest(final ReminderFlag flag)
     {
-        if (!Network.IsConnected(UserAreaActivity.GetActivity())) { return; }
+        if (!Network.IsConnected()) { return; }
 
         Response.Listener<String> responseListener = GetUpdateResponseListener(UserAreaActivity.GetActivity());
         UpdateReminderLikeRequest request = new UpdateReminderLikeRequest(flag.GetReminder(), flag.GetState(), flag.IsLiked(), responseListener);

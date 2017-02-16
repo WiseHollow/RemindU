@@ -3,6 +3,7 @@ package net.johnbrooks.remindu.util;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
@@ -10,6 +11,7 @@ import android.view.View;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 
 /**
  * Created by John on 12/5/2016.
@@ -17,7 +19,36 @@ import net.johnbrooks.remindu.activities.UserAreaActivity;
 
 public class Network
 {
-    public static final boolean IsConnected(Activity activity)
+    public static final boolean IsConnected()
+    {
+        ContextWrapper context = MasterScheduler.GetInstance().GetContextWrapper();
+        if (context == null)
+            return false;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)
+        {
+            return true;
+        }
+        else
+        {
+            if (UserAreaActivity.GetActivity() != null)
+            {
+                View focus = UserAreaActivity.GetActivity().findViewById(R.id.fab);
+                if (focus != null)
+                {
+                    Snackbar.make(focus, "Unable to connect to server...", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            }
+
+
+            return false;
+        }
+    }
+
+    /*public static final boolean IsConnected(Activity activity)
     {
         if (UserProfile.PROFILE != null && UserProfile.PROFILE.AccountIsDisabled())
             return false;
@@ -57,5 +88,5 @@ public class Network
         {
             return false;
         }
-    }
+    }*/
 }
