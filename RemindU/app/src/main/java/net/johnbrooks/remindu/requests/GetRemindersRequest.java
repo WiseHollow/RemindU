@@ -112,6 +112,8 @@ public class GetRemindersRequest extends StringRequest
 
                     UserProfile.PROFILE.RefreshReminderLayout();
                     UserProfile.PROFILE.SaveRemindersToFile();
+
+                    GetReminderFlagsRequest.SendRequest();
                 } catch (JSONException e)
                 {
                     e.printStackTrace();
