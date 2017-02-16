@@ -2,9 +2,6 @@ package net.johnbrooks.remindu.util;
 
 import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 /**
  * Created by John on 2/16/2017.
  */
@@ -51,7 +48,7 @@ public class ReminderFlag implements Comparable<ReminderFlag>
     {
         return new String[]{ String.valueOf(reminder.GetID()),
                 String.valueOf(state.ordinal()),
-                liked ? "true" : "false"
+                liked ? "1" : "0"
         };
     }
 
