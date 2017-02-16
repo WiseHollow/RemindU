@@ -78,11 +78,14 @@ public class FeedFragment extends Fragment
         Collections.sort(flags);
         ((ViewGroup) ContactLayout).removeAllViews();
 
-        for (int i = 0; i < flags.size(); i++)
+        int realIndex = 0;
+        for (final ReminderFlag flag : flags)
         {
-            final ReminderFlag flag = flags.get(i);
-            if (flag.GetDateOfFlag() == null)
+            if (flag.GetDateOfFlag() == null || flag.GetReminder().GetTo() == UserProfile.PROFILE.GetUserID())
                 continue;
+
+            realIndex++;
+
             LinearLayout widget = (LinearLayout) getLayoutInflater(null).inflate(R.layout.widget_reminder_in_feed, null);
             ((ViewGroup) ContactLayout).addView(widget);
             widget.findViewById(R.id.feed_element_layout_desc).setOnClickListener(new View.OnClickListener()
@@ -95,7 +98,7 @@ public class FeedFragment extends Fragment
             });
 
             final View view = widget.findViewById(R.id.feed_element_layout);
-            if (i % 2 != 0)
+            if (realIndex % 2 != 0)
                 view.setBackgroundColor(Color.parseColor("#eaf7ff"));
             else
                 view.setBackgroundColor(Color.parseColor("#FCFCFC"));
