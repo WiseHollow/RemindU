@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.util;
 
 import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
+import net.johnbrooks.remindu.requests.UpdateReminderLikeRequest;
 
 /**
  * Created by John on 2/16/2017.
@@ -42,7 +43,12 @@ public class ReminderFlag implements Comparable<ReminderFlag>
             return null;
     }
 
-    public final void SetLiked(boolean liked) { this.liked = liked; }
+    public final void SetLiked(boolean liked)
+    {
+        this.liked = liked;
+
+        UpdateReminderLikeRequest.SendRequest(this);
+    }
 
     public final String[] toArray()
     {

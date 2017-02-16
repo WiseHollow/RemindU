@@ -32,17 +32,18 @@ import java.util.Map;
 
 public class UpdateReminderLikeRequest extends StringRequest
 {
-    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/likeReminder.php";
+    private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/likeReminderState.php";
     private Map<String, String> params;
 
-    public UpdateReminderLikeRequest(Reminder reminder, Reminder.ReminderState state, Response.Listener<String> listener)
+    public UpdateReminderLikeRequest(Reminder reminder, Reminder.ReminderState state, boolean liked, Response.Listener<String> listener)
     {
         super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("user_id", String.valueOf(UserProfile.PROFILE.GetUserID()));
         params.put("password", PasswordHash.Hash(UserProfile.PROFILE.GetPassword()));
         params.put("reminder_id", String.valueOf(reminder.GetID()));
-        params.put("state", String.valueOf(state.ordinal()));
+        params.put("state_id", String.valueOf(state.ordinal()));
+        params.put("liked", liked ? "1" : "0");
     }
 
     @Override
@@ -64,12 +65,12 @@ public class UpdateReminderLikeRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
-                    Log.d("INFO", "Received response: " + success);
+                    Log.d(UpdateReminderLikeRequest.class.getSimpleName(), "Received response: " + success);
 
                     if (success)
                     {
                         //TODO: Remove call. Shouldn't need it in real-world experience.
-                        MasterScheduler.GetInstance(activity).Call();
+                        //MasterScheduler.GetInstance(activity).Call();
                     }
                     else
                     {
@@ -88,7 +89,7 @@ public class UpdateReminderLikeRequest extends StringRequest
         if (!Network.IsConnected(UserAreaActivity.GetActivity())) { return; }
 
         Response.Listener<String> responseListener = GetUpdateResponseListener(UserAreaActivity.GetActivity());
-        UpdateReminderLikeRequest request = new UpdateReminderLikeRequest(flag.GetReminder(), flag.GetState(), responseListener);
+        UpdateReminderLikeRequest request = new UpdateReminderLikeRequest(flag.GetReminder(), flag.GetState(), flag.IsLiked(), responseListener);
         request.setRetryPolicy(new DefaultRetryPolicy(
                 0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
