@@ -18,6 +18,7 @@ import android.widget.TextView;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
 import net.johnbrooks.remindu.fragments.FeedFragment;
 import net.johnbrooks.remindu.fragments.PrimaryFragment;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
@@ -68,10 +69,13 @@ public class UserProfile implements Parcelable
 
         File fileReminders = new File(MasterScheduler.GetInstance().GetContextWrapper().getBaseContext().getFilesDir(), "reminders.yml");
         File fileIgnores = new File(MasterScheduler.GetInstance().GetContextWrapper().getBaseContext().getFilesDir(), "ignores.yml");
+        File fileReminderFlags = new File(MasterScheduler.GetInstance().GetContextWrapper().getBaseContext().getFilesDir(), "reminderFlags.yml");
         if (fileReminders.exists())
             fileReminders.delete();
         if (fileIgnores.exists())
             fileIgnores.delete();
+        if (fileReminderFlags.exists())
+            fileReminderFlags.delete();
 
         Log.d("INFO", "Removing saved sign in credentials. ");
 
@@ -121,8 +125,6 @@ public class UserProfile implements Parcelable
 
     private Reminder activeReminder;
 
-    public boolean sortRemindersByDueDate;
-
     public UserProfile(int id, final int active, final String fullName, final String username, final String email, final String password, final Integer coins, final String avatarID)
     {
         UserID = id;
@@ -139,7 +141,6 @@ public class UserProfile implements Parcelable
         ReminderIgnores = new ArrayList<>();
 
         activeReminder = null;
-        sortRemindersByDueDate = true;
     }
 
     public final int GetActiveState() { return Active; }
@@ -179,6 +180,14 @@ public class UserProfile implements Parcelable
     }
 
     public List<Reminder> GetReminders() { return Reminders; }
+    public List<ReminderFlag> GetReminderFlags()
+    {
+        List<ReminderFlag> flags = new ArrayList<>();
+        for (Reminder r : GetReminders())
+            for (ReminderFlag f : r.GetFlags())
+                flags.add(f);
+        return flags;
+    }
     public List<Reminder> GetPersonalReminders()
     {
         List<Reminder> list = new ArrayList<>();
@@ -238,8 +247,6 @@ public class UserProfile implements Parcelable
     {
         if (UserAreaActivity.GetActivity() == null)
             return;
-
-        ResetLinearLayout();
 
         Collections.sort(GetReminders());
         Collections.sort(GetContacts());
@@ -304,14 +311,6 @@ public class UserProfile implements Parcelable
             set.add(contact.toString());
         }
         return set;
-    }
-
-    private void ResetLinearLayout()
-    {
-        for (Reminder r : GetReminders())
-        {
-            r.SetWidget(null);
-        }
     }
 
     public void DeleteReminder(Reminder r)
@@ -432,7 +431,7 @@ public class UserProfile implements Parcelable
         Log.d("INFO", "Finished processing current reminders.");
     }
 
-    public void LoadRemindersFromFile(Activity activity)
+    /*public void LoadRemindersFromFilefff(Activity activity)
     {
         final String filename = "reminders.yml";
 
@@ -469,15 +468,11 @@ public class UserProfile implements Parcelable
                     String dateInProgress = rArray[7];
                     String dateCompleted = rArray[8];
 
-                    boolean liked = "true".equalsIgnoreCase(rArray[9]);
-
                     Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
                     if (dateInProgress != null)
                         r.SetDateInProgress(dateInProgress);
                     if (dateCompleted != null)
                         r.SetDateComplete(dateCompleted);
-
-                    r.SetLiked(liked);
                 }
             }
         } catch (FileNotFoundException e)
@@ -489,14 +484,59 @@ public class UserProfile implements Parcelable
         }
 
         Log.d("INFO", "Loaded all reminders from file.");
+    }*/
+
+    public void LoadReminderFlagsFromFile()
+    {
+        final String filename = "reminderFlags.yml";
+        File file = new File(MasterScheduler.GetInstance().GetContextWrapper().getFilesDir(), filename);
+        if (!file.exists())
+        {
+            Log.d("INFO", "Loading reminder flags failed. " + filename + " does not exist. ");
+            return;
+        }
+        Map<String, ArrayList<String>> data;
+
+        try
+        {
+
+            InputStream input = new FileInputStream(file);
+            Yaml config = new Yaml();
+            for (Object o : config.loadAll(input))
+            {
+                data = (Map) o;
+                for (String key : data.keySet())
+                {
+                    String[] rArray = data.get(key).toArray(new String[data.get(key).size()]);
+                    int id = Integer.parseInt(rArray[0]);
+                    int state = Integer.parseInt(rArray[1]);
+                    boolean liked = Integer.parseInt(rArray[2]) == 1;
+
+                    Reminder.ReminderState actualState = Reminder.ReminderState.values()[state];
+
+                    try
+                    {
+                        ReminderFlag.Create(id, actualState, liked);
+                    } catch (ReminderNotFoundException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        Log.d("INFO", "Loaded all reminder flags from file.");
     }
 
-    public void LoadRemindersFromFile(Service service)
+    public void LoadRemindersFromFile()
     {
         final String filename = "reminders.yml";
 
         DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-        File file = new File(service.getBaseContext().getFilesDir(), filename);
+        File file = new File(MasterScheduler.GetInstance().GetContextWrapper().getBaseContext().getFilesDir(), filename);
         Map<String, ArrayList<String>> data;
 
         if (!file.exists())
@@ -524,15 +564,11 @@ public class UserProfile implements Parcelable
                     String dateInProgress = rArray[7];
                     String dateCompleted = rArray[8];
 
-                    boolean liked = "true".equalsIgnoreCase(rArray[9]);
-
                     Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
                     if (dateInProgress != null)
                         r.SetDateInProgress(dateInProgress);
                     if (dateCompleted != null)
                         r.SetDateComplete(dateCompleted);
-
-                    r.SetLiked(liked);
                 }
             }
         } catch (FileNotFoundException e)
@@ -544,6 +580,36 @@ public class UserProfile implements Parcelable
         }
 
         Log.d("INFO", "Loaded all reminders from file.");
+    }
+
+    public void SaveReminderFlagsToFile()
+    {
+        final String filename = "reminderFlags.yml";
+        File file = new File(MasterScheduler.GetInstance().GetContextWrapper().getFilesDir(), filename);
+        if (file.exists())
+            file.delete();
+
+        Map<String, String[]> data = new HashMap<>();
+        for (Reminder r : GetReminders())
+        {
+            for (ReminderFlag f : r.GetFlags())
+                data.put("id_" + r.GetID() + "_" + f.GetState().ordinal(), f.toArray());
+        }
+
+        Yaml config = new Yaml();
+        FileWriter writer;
+        try
+        {
+            writer = new FileWriter(file);
+            config.dump(data, writer);
+            writer.close();
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        }
+
+        Log.d("INFO", "Reminder flags were saved into file.");
     }
 
     public  void SaveRemindersToFile()
@@ -567,7 +633,7 @@ public class UserProfile implements Parcelable
         if (file.exists())
             file.delete();
 
-        Log.d("INFO", file.getAbsolutePath());
+        //Log.d("INFO", file.getAbsolutePath());
 
         Map<String, String[]> data = new HashMap<>();
         for (Reminder r : GetReminders())
@@ -615,11 +681,11 @@ public class UserProfile implements Parcelable
         }
     }
 
-    public void LoadReminderIgnoresFromFile(Activity activity)
+    public void LoadReminderIgnoresFromFile()
     {
         final String filename = "ignores.yml";
 
-        File file = new File(activity.getBaseContext().getFilesDir(), filename);
+        File file = new File(MasterScheduler.GetInstance().GetContextWrapper().getBaseContext().getFilesDir(), filename);
         List<Integer> ignores;
 
         if (!file.exists())
@@ -645,7 +711,7 @@ public class UserProfile implements Parcelable
         }
     }
 
-    public void LoadReminderIgnoresFromFile(Service service)
+    /*public void LoadReminderIgnoresFromFile(Service service)
     {
         if (service == null) { return; }
         final String filename = "ignores.yml";
@@ -674,7 +740,7 @@ public class UserProfile implements Parcelable
         {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public LinearLayout CreateCategoryWidget(final Activity activity)
     {

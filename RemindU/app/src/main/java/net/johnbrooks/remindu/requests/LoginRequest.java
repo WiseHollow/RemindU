@@ -90,8 +90,9 @@ public class LoginRequest extends StringRequest
                         // Using pulled information, we can create a profile for the user.
 
                         UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins, avatarID);
-                        UserProfile.PROFILE.LoadRemindersFromFile(activity);
-                        UserProfile.PROFILE.LoadReminderIgnoresFromFile(activity);
+                        UserProfile.PROFILE.LoadRemindersFromFile();
+                        UserProfile.PROFILE.LoadReminderFlagsFromFile();
+                        UserProfile.PROFILE.LoadReminderIgnoresFromFile();
 
                         // Next, lets make sense of the contacts string given by the server.
                         // It will pass either a AcceptedContactProfile info, or just limited information used to make a ContactProfile.
@@ -180,7 +181,6 @@ public class LoginRequest extends StringRequest
                         // Using pulled information, we can create a profile for the user.
 
                         UserProfile.PROFILE = new UserProfile(id, active, fullName, username, email, password, coins, avatarID);
-                        UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
 
                         // Next, lets make sense of the contacts string given by the server.
                         // It will pass either a AcceptedContactProfile info, or just limited information used to make a ContactProfile.
@@ -205,6 +205,10 @@ public class LoginRequest extends StringRequest
 
 
                         }
+
+                        UserProfile.PROFILE.LoadRemindersFromFile();
+                        UserProfile.PROFILE.LoadReminderFlagsFromFile();
+                        UserProfile.PROFILE.LoadReminderIgnoresFromFile();
 
                         //
                         // Save login data for instant login next time

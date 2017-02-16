@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.requests.LoginRequest;
@@ -31,6 +32,8 @@ public class LoginActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        MasterScheduler.GetInstance(LoginActivity.this);
 
         progressBar = (ProgressBar) findViewById(R.id.login_progress_bar);
         progressBar.setVisibility(View.INVISIBLE);
@@ -161,8 +164,9 @@ public class LoginActivity extends AppCompatActivity
         else
         Log.d("WARNING", "No contacts to load. ");
 
-        UserProfile.PROFILE.LoadRemindersFromFile(service);
-        UserProfile.PROFILE.LoadReminderIgnoresFromFile(service);
+        UserProfile.PROFILE.LoadRemindersFromFile();
+        UserProfile.PROFILE.LoadReminderFlagsFromFile();
+        UserProfile.PROFILE.LoadReminderIgnoresFromFile();
 
         return true;
     }
@@ -208,8 +212,9 @@ public class LoginActivity extends AppCompatActivity
             }
         }
 
-        UserProfile.PROFILE.LoadRemindersFromFile(LoginActivity.this);
-        UserProfile.PROFILE.LoadReminderIgnoresFromFile(LoginActivity.this);
+        UserProfile.PROFILE.LoadRemindersFromFile();
+        UserProfile.PROFILE.LoadReminderFlagsFromFile();
+        UserProfile.PROFILE.LoadReminderIgnoresFromFile();
 
         return true;
     }

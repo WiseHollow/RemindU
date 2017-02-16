@@ -22,6 +22,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -33,6 +34,7 @@ import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.CreateReminderActivity;
 import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
+import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
 import net.johnbrooks.remindu.requests.SendReputationRequest;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
@@ -41,7 +43,9 @@ import net.johnbrooks.remindu.services.ConfirmReminderService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by John on 11/28/2016.
@@ -83,11 +87,12 @@ public class Reminder implements Comparable<Reminder>
         reminder.SetID(id);
         reminder.SetImportant(important);
 
+        Reminder check = UserProfile.PROFILE.GetReminder(id);
+
         // Create a boolean to verify whether or not the active reminder is related to the created one.
         boolean selected = false;
 
         // Let's see if we have a Reminder with this ID already.
-        Reminder check = UserProfile.PROFILE.GetReminder(id);
         if (check != null)
         {
             // Is the one checked equal to the active reminder
@@ -97,11 +102,9 @@ public class Reminder implements Comparable<Reminder>
             if (reminder.GetState() != check.GetState() && reminder.GetFrom() == UserProfile.PROFILE.GetUserID())
             {
                 // Change in state, and we are the sender. Notify the user.
-                reminder.ShowNotification(true, "Activity Update: ", "Task marked as: " + reminder.GetState().toString().toLowerCase());
+                reminder.ShowNotification(true, NotificationType.UPDATED_REMINDER, "Task marked as: " + reminder.GetState().toString().toLowerCase());
                 reminder.SetUpToDate(false);
             }
-
-            reminder.SetLiked(check.IsLiked());
 
             UserProfile.PROFILE.GetReminders().remove(check);
         }
@@ -110,7 +113,7 @@ public class Reminder implements Comparable<Reminder>
             // New reminder has been added, make a notification
             if (!silentLoad)
             {
-                reminder.ShowNotification(true, "New activity from: " + reminder.GetFullName(), reminder.GetMessage());
+                reminder.ShowNotification(true, NotificationType.NEW_REMINDER, reminder.GetMessage());
 
             }
             reminder.SetUpToDate(false);
@@ -121,6 +124,18 @@ public class Reminder implements Comparable<Reminder>
         if (selected)
             UserProfile.PROFILE.SetActiveReminder(reminder);
 
+        for (int i = 0; i <= state.ordinal(); i++)
+        {
+            try
+            {
+                ReminderFlag.Create(id, ReminderState.values()[i], (check != null && check.GetFlag(ReminderState.values()[i]) != null) ? check.GetFlag(ReminderState.values()[i]).IsLiked() : false);
+            }
+            catch (ReminderNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
         return reminder;
     }
 
@@ -128,7 +143,6 @@ public class Reminder implements Comparable<Reminder>
     private int User_ID_From;
     private int User_ID_To;
     private String FullName = null;
-    private TextView Widget;
     private String Message;
     private Date Date;
     private boolean Important;
@@ -141,7 +155,7 @@ public class Reminder implements Comparable<Reminder>
     private String DateInProgress;
     private String DateComplete;
 
-    private boolean Liked;
+    private List<ReminderFlag> Flags;
 
     private Reminder(String message, int user_id_from, int user_id_to, Date date)
     {
@@ -160,6 +174,8 @@ public class Reminder implements Comparable<Reminder>
 
         DateInProgress = null;
         DateComplete = null;
+
+        Flags = new ArrayList<>();
 
         if (user_id_from != -1)
         {
@@ -183,7 +199,6 @@ public class Reminder implements Comparable<Reminder>
         Important = false;
         UpToDate = true;
         State = ReminderState.NOT_STARTED;
-        Liked = false;
     }
 
     public final int GetID() { return ID; }
@@ -200,14 +215,33 @@ public class Reminder implements Comparable<Reminder>
     public final boolean IsUpToDate() { return UpToDate; }
     public final boolean IsOld() { return Old; }
     public final boolean IsLocal() { return (GetFrom() == -1); }
-    public final boolean IsLiked() { return Liked; }
+    public final void AddFlag(ReminderFlag flag)
+    {
+        for (ReminderFlag f : Flags)
+            if (f.GetState().ordinal() == flag.GetState().ordinal())
+            {
+                Flags.remove(f);
+                Flags.add(flag);
+                return;
+            }
+        Flags.add(flag);
+    }
+    public final ReminderFlag GetFlag(ReminderState state)
+    {
+        for (ReminderFlag flag : Flags)
+            if (flag.GetState().ordinal() == state.ordinal())
+                return flag;
+        return null;
+    }
+    public final ReminderFlag[] GetFlags()
+    {
+        return Flags.toArray(new ReminderFlag[Flags.size()]);
+    }
 
-    public void SetLiked(boolean liked) { Liked = liked; }
     public void SetOld(boolean value) { Old = value; }
     public void SetID(final int id) { ID = id; }
     public void SetImportant(final boolean value) { Important = value; }
     public void SetState(ReminderState state) { State = state; }
-    public void SetWidget(TextView To) { Widget = To; }
     public void SetUpToDate(final boolean value) { UpToDate = value; }
 
     public void SetDateInProgress(final String date)
@@ -373,7 +407,7 @@ public class Reminder implements Comparable<Reminder>
                 @Override
                 public void onClick(View v)
                 {
-                    ClickLogButton(activity, reminder);
+                    ClickLogButton(activity);
                 }
             });
 
@@ -391,7 +425,7 @@ public class Reminder implements Comparable<Reminder>
                 @Override
                 public void onClick(View v)
                 {
-                    ClickRemoveButton(activity, reminder);
+                    ClickRemoveButton(activity);
                 }
             });
 
@@ -413,9 +447,9 @@ public class Reminder implements Comparable<Reminder>
         return parent;
     }
 
-    public void ClickLogButton(final Activity activity, final Reminder reminder)
+    public void ClickLogButton(final Activity activity)
     {
-        if (!Network.IsConnected(activity) && !IsLocal())
+        if (!Network.IsConnected(activity) && (!IsLocal() && GetTo() == UserProfile.PROFILE.GetUserID()))
             return;
 
         if (UserProfile.PROFILE.GetUserID() == GetFrom())
@@ -479,6 +513,8 @@ public class Reminder implements Comparable<Reminder>
             btn_complete.setEnabled(false);
         }
 
+        final Reminder reminder = this;
+
         btn_in_progress.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -519,10 +555,12 @@ public class Reminder implements Comparable<Reminder>
         });
     }
 
-    private void ClickRemoveButton(final ReminderListActivity activity, final Reminder reminder)
+    private void ClickRemoveButton(final ReminderListActivity activity)
     {
         if (!Network.IsConnected(activity) && !IsLocal())
             return;
+
+        final Reminder reminder = this;
 
         if (reminder.GetState() != ReminderState.COMPLETE || reminder.GetFrom() != UserProfile.PROFILE.GetUserID())
             UserProfile.PROFILE.DeleteReminder(reminder);
@@ -808,7 +846,7 @@ public class Reminder implements Comparable<Reminder>
             // Time is over.
             //
 
-            ShowNotification(true, "Activity from " + GetFullName(), "Passed deadline.");
+            ShowNotification(true, NotificationType.REMINDER_DEADLINE, "Passed deadline.");
         }
         else if (timeLeft[0] == 1 && timeLeft[1] == 0 && timeLeft[2] == 0)
         {
@@ -816,7 +854,7 @@ public class Reminder implements Comparable<Reminder>
             // One day is left
             //
 
-            ShowNotification(true, "Activity from " + GetFullName(), "Due in 1 day.");
+            ShowNotification(true, NotificationType.REMINDER_DEADLINE, "Due in 1 day.");
         }
         else if (timeLeft[0] == 0 && timeLeft[1] == 1 && timeLeft[2] == 0)
         {
@@ -824,7 +862,7 @@ public class Reminder implements Comparable<Reminder>
             // 1 hours left
             //
 
-            ShowNotification(true, "Activity from " + GetFullName(), "Due in 1 hour.");
+            ShowNotification(true, NotificationType.REMINDER_DEADLINE, "Due in 1 hour.");
         }
 
         return true;
@@ -909,7 +947,7 @@ public class Reminder implements Comparable<Reminder>
         return true;
     }
 
-    private NotificationCompat.Builder GetNotification(String title, String message)
+    private NotificationCompat.Builder GetNotification(NotificationType type, String message)
     {
         if (MasterScheduler.GetInstance() == null) { return null; }
 
@@ -927,11 +965,18 @@ public class Reminder implements Comparable<Reminder>
         PendingIntent pendingConfirmIntent = PendingIntent.getService(MasterScheduler.GetInstance().GetContextWrapper(), 0, confirmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         NotificationCompat.Action confirmAction = new NotificationCompat.Action(android.R.drawable.checkbox_on_background, "Okay", pendingConfirmIntent);
 
+        //Create intent for like
+
+        Intent likeIntent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), ConfirmReminderService.class);
+        confirmIntent.putExtra("reminder", GetID());
+        PendingIntent pendingLikeIntent = PendingIntent.getService(MasterScheduler.GetInstance().GetContextWrapper(), 0, likeIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationCompat.Action likeAction = new NotificationCompat.Action(android.R.drawable.checkbox_on_background, "Like", pendingLikeIntent);
+
         //
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MasterScheduler.GetInstance().GetContextWrapper())
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
-                .setContentTitle(title)
+                .setContentTitle(type.toString())
                 .setContentText(message)
                 .setAutoCancel(true)
                 .addAction(confirmAction)
@@ -956,12 +1001,12 @@ public class Reminder implements Comparable<Reminder>
         return mBuilder;
     }
 
-    public void ShowNotification(boolean vibrate, String title, String message)
+    public void ShowNotification(boolean vibrate, NotificationType type, String message)
     {
         //TODO: Does this take too many resources? IDE said skipped frames.
         if (MasterScheduler.GetInstance() == null || MasterScheduler.GetInstance().GetContextWrapper() == null) { return; }
 
-        NotificationCompat.Builder notification = GetNotification(title, message);
+        NotificationCompat.Builder notification = GetNotification(type, message);
         NotificationManager mNotificationManager = (NotificationManager) MasterScheduler.GetInstance().GetContextWrapper().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(GetID(), notification.build());
         if (!vibrate) { return; }
@@ -1007,32 +1052,11 @@ public class Reminder implements Comparable<Reminder>
     @Override
     public int compareTo(Reminder to)
     {
-        if (UserProfile.PROFILE.sortRemindersByDueDate)
-        {
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            String dateString1 = formatter.format(GetDate());
-            String dateString2 = formatter.format(to.GetDate());
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String dateString1 = formatter.format(GetDate());
+        String dateString2 = formatter.format(to.GetDate());
 
-            return dateString1.compareTo(dateString2);
-        }
-        else
-        {
-            String s1 = "";
-
-            if (GetDateComplete() != null)
-                s1 = GetDateComplete();
-            else if (GetDateInProgress() != null)
-                s1 = GetDateInProgress();
-
-            String s2 = "";
-
-            if (to.GetDateComplete() != null)
-                s2 = to.GetDateComplete();
-            else if (to.GetDateInProgress() != null)
-                s2 = to.GetDateInProgress();
-
-            return s2.compareTo(s1);
-        }
+        return dateString1.compareTo(dateString2);
     }
 
     @Override
@@ -1069,7 +1093,6 @@ public class Reminder implements Comparable<Reminder>
                 String.valueOf(GetState().ordinal()),
                 GetDateInProgress(),
                 GetDateComplete(),
-                (IsLiked() ? "true" : "false")
         };
         return array;
     }
@@ -1087,6 +1110,24 @@ public class Reminder implements Comparable<Reminder>
                 return "In Progress";
             else if (ordinal() == 2)
                 return "Completed";
+            else
+                return super.toString();
+        }
+    }
+
+    public enum NotificationType
+    {
+        NEW_REMINDER, UPDATED_REMINDER, REMINDER_DEADLINE;
+
+        @Override
+        public String toString()
+        {
+            if (ordinal() == 0)
+                return "New Activity";
+            else if (ordinal() == 1)
+                return "Updated Activity";
+            else if (ordinal() == 2)
+                return "Activity Deadline";
             else
                 return super.toString();
         }
