@@ -56,7 +56,7 @@ public class FeedFragment extends Fragment
     public void onStart()
     {
         super.onStart();
-        MasterScheduler.GetInstance().Call();
+        //MasterScheduler.GetInstance().Call();
     }
 
     @Override
