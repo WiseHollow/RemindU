@@ -65,7 +65,7 @@ public class GetRemindersRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String errorMessage = jsonResponse.getString("message");
 
-                    Log.d("INFO", "Received response: " + success);
+                    Log.d(GetRemindersRequest.class.getSimpleName(), "Received response: " + errorMessage);
 
                     if (success)
                     {

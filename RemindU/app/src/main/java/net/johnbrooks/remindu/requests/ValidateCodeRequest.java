@@ -61,28 +61,12 @@ public class ValidateCodeRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
-                    Log.d("INFO", "Received response: " + success);
+                    Log.d(ValidateCodeRequest.class.getSimpleName(), "Received response: " + message);
 
                     if (success)
                     {
                         if (activity == null)
                             return;
-
-                        /*final Dialog dialog = new Dialog(activity);
-                        dialog.setTitle("Confirm Reset Code");
-                        dialog.setContentView(R.layout.dialog_forgot_my_password);
-                        dialog.show();
-
-                        final TextView input = (TextView) dialog.findViewById(R.id.editText_code);
-                        dialog.findViewById(R.id.button_Confirm).setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                String inputString = input.getText().toString();
-                                int code = Integer.parseInt(inputString);
-                            }
-                        });*/
 
                         Intent intent = new Intent(activity, ResetMyPasswordActivity.class);
                         intent.putExtra("email", email);

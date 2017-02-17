@@ -59,8 +59,9 @@ public class AddContactRequest extends StringRequest
                 {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
 
-                    Log.d("INFO", "Received response: " + success);
+                    Log.d(AddContactRequest.class.getSimpleName(), "Received response: " + message);
 
                     if (success)
                     {

@@ -64,6 +64,9 @@ public class PullProfileRequest extends StringRequest
                 {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    Log.d(PullProfileRequest.class.getSimpleName(), "Received response: " + message);
 
                     if (success)
                     {

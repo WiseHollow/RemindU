@@ -62,7 +62,7 @@ public class ForgotMyPasswordRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
-                    Log.d("INFO", "Received response: " + success);
+                    Log.d(ForgotMyPasswordRequest.class.getSimpleName(), "Received response: " + message);
 
                     if (success)
                     {

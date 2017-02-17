@@ -54,6 +54,8 @@ public class RequestActivationEmailRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
+                    Log.d(RequestActivationEmailRequest.class.getSimpleName(), "Received response: " + message);
+
                     if (success)
                     {
                         Log.d("INFO", "Sent request for activation email.");

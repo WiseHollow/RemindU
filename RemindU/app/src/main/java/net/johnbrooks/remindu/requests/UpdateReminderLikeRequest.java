@@ -65,7 +65,7 @@ public class UpdateReminderLikeRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
-                    Log.d(UpdateReminderLikeRequest.class.getSimpleName(), "Received response: " + success);
+                    Log.d(UpdateReminderLikeRequest.class.getSimpleName(), "Received response: " + message);
 
                     if (success)
                     {

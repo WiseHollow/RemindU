@@ -61,6 +61,8 @@ public class UpdateSettingsRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
+                    Log.d(UpdateSettingsRequest.class.getSimpleName(), "Received response: " + message);
+
                     if (!success)
                     {
                         Log.d("ERROR", "Message: " + message);

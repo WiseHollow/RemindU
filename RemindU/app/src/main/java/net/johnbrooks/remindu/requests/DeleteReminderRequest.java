@@ -60,7 +60,7 @@ public class DeleteReminderRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
-                    Log.d("INFO", "Received response: " + success);
+                    Log.d(DeleteReminderRequest.class.getSimpleName(), "Received response: " + message);
 
                     if (success)
                     {

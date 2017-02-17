@@ -2,6 +2,7 @@ package net.johnbrooks.remindu.requests;
 
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
@@ -73,6 +74,9 @@ public class RegisterRequest extends StringRequest
                 {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
+                    String serverMessage = jsonResponse.getString("message");
+
+                    Log.d(RegisterRequest.class.getSimpleName(), "Received response: " + serverMessage);
 
                     boolean usernameAvailable = jsonResponse.getBoolean("username_available");
                     boolean emailAvailable = jsonResponse.getBoolean("email_available");

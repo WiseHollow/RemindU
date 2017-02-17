@@ -58,6 +58,9 @@ public class GetLatestVersionRequest extends StringRequest
                 {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    Log.d(GetLatestVersionRequest.class.getSimpleName(), "Received response: " + message);
 
                     if (success)
                     {
@@ -76,7 +79,6 @@ public class GetLatestVersionRequest extends StringRequest
 
                         if (needsUpdate)
                         {
-                            String message = jsonResponse.getString("message");
                             Log.d("INFO", "There is an update available");
 
                             if (UserAreaActivity.GetActivity() != null)

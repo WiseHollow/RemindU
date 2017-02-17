@@ -60,6 +60,8 @@ public class ActivateAccountRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
+                    Log.d(ActivateAccountRequest.class.getSimpleName(), "Received response: " + message);
+
                     if (success)
                     {
                         //PullScheduler.Call();

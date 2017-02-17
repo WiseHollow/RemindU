@@ -59,9 +59,11 @@ public class SendReputationRequest extends StringRequest
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
+                    Log.d(SendReputationRequest.class.getSimpleName(), "Received response: " + message);
+
                     if (success)
                     {
-                        MasterScheduler.GetInstance().Call();
+                        //MasterScheduler.GetInstance().Call();
                     }
                     else
                     {

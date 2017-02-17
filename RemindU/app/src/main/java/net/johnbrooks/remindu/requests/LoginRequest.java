@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -71,6 +72,9 @@ public class LoginRequest extends StringRequest
                 {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    Log.d(LoginRequest.class.getSimpleName(), "Received response: " + message);
 
                     if (success)
                     {
