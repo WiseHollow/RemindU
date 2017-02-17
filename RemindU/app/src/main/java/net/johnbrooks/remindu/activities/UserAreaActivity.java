@@ -1,9 +1,12 @@
 package net.johnbrooks.remindu.activities;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -15,9 +18,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.fragments.FeedFragment;
+import net.johnbrooks.remindu.fragments.PrimaryFragment;
 import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
@@ -30,6 +36,9 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
     private static UserAreaActivity activity;
     public static UserAreaActivity GetActivity() { return activity; }
     public SharedPreferences SharedPreferences;
+
+    private ViewPager viewPager;
+    private PagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -96,9 +105,33 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         // Create Pager for Fragment view
         //
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+
+        //
+        // Listen for fragment nav button click
+        //
+
+        final ImageView compass = (ImageView) findViewById(R.id.fragment_nav_button_compass);
+        compass.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                viewPager.setCurrentItem(0, true);
+            }
+        });
+
+        final ImageView feed = (ImageView) findViewById(R.id.fragment_nav_button_feed);
+        feed.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                viewPager.setCurrentItem(1, true);
+            }
+        });
 
         //
         // Create Listeners

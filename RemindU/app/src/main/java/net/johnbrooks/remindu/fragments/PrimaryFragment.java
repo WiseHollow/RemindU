@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
-import net.johnbrooks.remindu.util.UserProfile;
 
 public class PrimaryFragment extends Fragment
 {
@@ -21,10 +21,15 @@ public class PrimaryFragment extends Fragment
     public View ContactLayout;
     public ScrollView scrollView;
 
+    private ImageView iv_compass;
+    private ImageView iv_feed;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         primaryFragment = this;
+        iv_compass = (ImageView) UserAreaActivity.GetActivity().findViewById(R.id.fragment_nav_button_compass);
+        iv_feed = (ImageView) UserAreaActivity.GetActivity().findViewById(R.id.fragment_nav_button_feed);
 
         ContentView = inflater.inflate(R.layout.fragment_primary, container, false);
         scrollView = (ScrollView) ContentView.findViewById(R.id.UserArea_ScrollView);
@@ -43,7 +48,11 @@ public class PrimaryFragment extends Fragment
         super.setMenuVisibility(visible);
         if (visible)
         {
-            UserAreaActivity.GetActivity().setTitle("RemindU - Home");
+            if (iv_compass != null)
+                iv_compass.setImageResource(R.drawable.compass_64_blue);
+            if (iv_feed != null)
+                iv_feed.setImageResource(R.drawable.activity_feed_64_grey);
+            UserAreaActivity.GetActivity().setTitle("RemindU");
         }
     }
 }

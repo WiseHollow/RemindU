@@ -35,17 +35,19 @@ public class FeedFragment extends Fragment
     private View ContentView;
     private View ContactLayout;
 
-    private Bundle savedInstanceState;
+    private ImageView iv_compass;
+    private ImageView iv_feed;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         feedFragment = this;
+        iv_compass = (ImageView) UserAreaActivity.GetActivity().findViewById(R.id.fragment_nav_button_compass);
+        iv_feed = (ImageView) UserAreaActivity.GetActivity().findViewById(R.id.fragment_nav_button_feed);
         ContentView = inflater.inflate(R.layout.fragment_feed, container, false);
         ScrollView scrollView = (ScrollView) ContentView.findViewById(R.id.Feed_ScrollView);
         ContactLayout = getLayoutInflater(getArguments()).inflate(R.layout.widget_linear_layout, null);
         scrollView.addView(ContactLayout);
-        this.savedInstanceState = savedInstanceState;
 
         return ContentView;
     }
@@ -63,7 +65,11 @@ public class FeedFragment extends Fragment
         super.setMenuVisibility(visible);
         if (visible)
         {
-            UserAreaActivity.GetActivity().setTitle("RemindU - Feed");
+            if (iv_compass != null)
+                iv_compass.setImageResource(R.drawable.compass_64_grey);
+            if (iv_feed != null)
+                iv_feed.setImageResource(R.drawable.activity_feed_64_blue);
+            UserAreaActivity.GetActivity().setTitle("RemindU");
         }
     }
 
