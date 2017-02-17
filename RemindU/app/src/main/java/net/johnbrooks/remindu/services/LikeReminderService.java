@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.ReminderFlag;
@@ -52,6 +53,14 @@ public class LikeReminderService extends Service
             ReminderFlag flag = reminder.GetFlag(state);
             if (flag != null)
                 flag.SetLiked(true);
+            else
+                try
+                {
+                    ReminderFlag.Create(intent.getIntExtra("reminder", 0), state, true);
+                } catch (ReminderNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
 
             reminder.SetUpToDate(true);
             NotificationManager mNotificationManager = (NotificationManager) MasterScheduler.GetInstance().GetContextWrapper().getSystemService(Context.NOTIFICATION_SERVICE);

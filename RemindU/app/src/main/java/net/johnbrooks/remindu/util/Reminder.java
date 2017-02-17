@@ -969,8 +969,9 @@ public class Reminder implements Comparable<Reminder>
 
         Intent likeIntent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), ConfirmReminderService.class);
         confirmIntent.putExtra("reminder", GetID());
+        confirmIntent.putExtra("state", GetState().ordinal());
         PendingIntent pendingLikeIntent = PendingIntent.getService(MasterScheduler.GetInstance().GetContextWrapper(), 0, likeIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        NotificationCompat.Action likeAction = new NotificationCompat.Action(android.R.drawable.checkbox_on_background, "Like", pendingLikeIntent);
+        NotificationCompat.Action likeAction = new NotificationCompat.Action(R.drawable.like_it_48, "Like", pendingLikeIntent);
 
         //
 
@@ -982,6 +983,10 @@ public class Reminder implements Comparable<Reminder>
                 .addAction(confirmAction)
                 .addAction(cancelAction)
                 ;
+
+        if (type == NotificationType.LIKED_REMINDER_STATE)
+            mBuilder.addAction(likeAction);
+
         Intent intent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), ReminderListActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(MasterScheduler.GetInstance().GetContextWrapper());
 
