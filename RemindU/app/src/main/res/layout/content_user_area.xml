@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
-    android:paddingBottom="8dp"
+    android:paddingBottom="0dp"
     android:paddingTop="8dp"
     android:background="#fff"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="net.johnbrooks.remindu.activities.UserAreaActivity"
     tools:showIn="@layout/app_bar_user_area"
+    android:orientation="vertical"
     >
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="1">
 
 
     </android.support.v4.view.ViewPager>
 
-</RelativeLayout>
+    <include
+        layout="@layout/nav_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></include>
+
+</LinearLayout>
