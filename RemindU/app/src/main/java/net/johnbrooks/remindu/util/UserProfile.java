@@ -371,19 +371,13 @@ public class UserProfile implements Parcelable
     {
         if (MasterScheduler.GetInstance().GetActivity() != null)
         {
-            Log.d("INFO", "Pulling profile from server...");
             PullProfileRequest.SendRequest(MasterScheduler.GetInstance().GetActivity());
-            Log.d("INFO", "Pulling reminders from server...");
             GetRemindersRequest.SendRequest(MasterScheduler.GetInstance().GetActivity());
-            //GetReminderFlagsRequest.SendRequest();
         }
         else if (MasterScheduler.GetInstance().GetService() != null)
         {
-            Log.d("INFO", "Pulling profile from server...");
             PullProfileRequest.SendRequest(MasterScheduler.GetInstance().GetService());
-            Log.d("INFO", "Pulling reminders from server...");
             GetRemindersRequest.SendRequest(MasterScheduler.GetInstance().GetService());
-            //GetReminderFlagsRequest.SendRequest();
         }
     }
 
@@ -427,7 +421,7 @@ public class UserProfile implements Parcelable
             r.ProcessReminderNotifications();
         }
 
-        Log.d("INFO", "Finished processing current reminders.");
+        Log.d(getClass().getSimpleName(), "Finished processing current reminders.");
     }
 
     /*public void LoadRemindersFromFilefff(Activity activity)
@@ -527,7 +521,7 @@ public class UserProfile implements Parcelable
         {
             e.printStackTrace();
         }
-        Log.d("INFO", "Loaded all reminder flags from file.");
+        Log.d(getClass().getSimpleName(), "Loaded all reminder flags from file.");
     }
 
     public void LoadRemindersFromFile()
@@ -578,7 +572,7 @@ public class UserProfile implements Parcelable
             e.printStackTrace();
         }
 
-        Log.d("INFO", "Loaded all reminders from file.");
+        Log.d(getClass().getSimpleName(), "Loaded all reminders from file.");
     }
 
     public void SaveReminderFlagsToFile()
@@ -608,7 +602,7 @@ public class UserProfile implements Parcelable
             ex.printStackTrace();
         }
 
-        Log.d("INFO", "Reminder flags were saved into file.");
+        Log.d(getClass().getSimpleName(), "Reminder flags were saved into file.");
     }
 
     public  void SaveRemindersToFile()
@@ -653,7 +647,7 @@ public class UserProfile implements Parcelable
             ex.printStackTrace();
         }
 
-        Log.d("INFO", "Reminders were saved into file.");
+        Log.d(getClass().getSimpleName(), "Reminders were saved into file.");
     }
 
     public void SaveReminderIgnoresToFile()
