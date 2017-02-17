@@ -984,7 +984,7 @@ public class Reminder implements Comparable<Reminder>
                 .addAction(cancelAction)
                 ;
 
-        if (type == NotificationType.LIKED_REMINDER_STATE)
+        if (type == NotificationType.UPDATED_REMINDER)
             mBuilder.addAction(likeAction);
 
         Intent intent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), ReminderListActivity.class);
