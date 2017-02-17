@@ -3,7 +3,7 @@ package net.johnbrooks.remindu.fragments;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +15,8 @@ import android.widget.TextView;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.UpdateReminderLikeRequest;
-import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.ContactProfile;
-import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.ReminderFlag;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -79,85 +77,96 @@ public class FeedFragment extends Fragment
         ((ViewGroup) ContactLayout).removeAllViews();
 
         int realIndex = 0;
-        for (final ReminderFlag flag : flags)
+        if (flags.isEmpty())
         {
-            if (flag.GetDateOfFlag() == null || flag.GetReminder().GetTo() == UserProfile.PROFILE.GetUserID())
-                continue;
-
-            realIndex++;
-
-            LinearLayout widget = (LinearLayout) getLayoutInflater(null).inflate(R.layout.widget_reminder_in_feed, null);
-            ((ViewGroup) ContactLayout).addView(widget);
-            widget.findViewById(R.id.feed_element_layout_desc).setOnClickListener(new View.OnClickListener()
+            TextView tv = new TextView(UserAreaActivity.GetActivity());
+            tv.setText("Nothing to see here.");
+            tv.setGravity(Gravity.CENTER);
+            tv.setPadding(0, 50, 0, 0);
+            ((ViewGroup) ContactLayout).addView(tv);
+        }
+        else
+        {
+            for (final ReminderFlag flag : flags)
             {
-                @Override
-                public void onClick(View v)
+                if (flag.GetDateOfFlag() == null || flag.GetReminder().GetTo() == UserProfile.PROFILE.GetUserID())
+                    continue;
+
+                realIndex++;
+
+                LinearLayout widget = (LinearLayout) getLayoutInflater(null).inflate(R.layout.widget_reminder_in_feed, null);
+                ((ViewGroup) ContactLayout).addView(widget);
+                widget.findViewById(R.id.feed_element_layout_desc).setOnClickListener(new View.OnClickListener()
                 {
-                    flag.GetReminder().ClickLogButton(UserAreaActivity.GetActivity());
-                }
-            });
+                    @Override
+                    public void onClick(View v)
+                    {
+                        flag.GetReminder().ClickLogButton(UserAreaActivity.GetActivity());
+                    }
+                });
 
-            final View view = widget.findViewById(R.id.feed_element_layout);
-            if (realIndex % 2 != 0)
-                view.setBackgroundColor(Color.parseColor("#eaf7ff"));
-            else
-                view.setBackgroundColor(Color.parseColor("#FCFCFC"));
+                final View view = widget.findViewById(R.id.feed_element_layout);
+                if (realIndex % 2 != 0)
+                    view.setBackgroundColor(Color.parseColor("#eaf7ff"));
+                else
+                    view.setBackgroundColor(Color.parseColor("#FCFCFC"));
 
-            final ImageView iv_avatar = (ImageView) widget.findViewById(R.id.feed_element_avatar);
-            final TextView tv_fullName = (TextView) widget.findViewById(R.id.feed_element_fullName);
-            final TextView tv_state = (TextView) widget.findViewById(R.id.feed_element_state);
-            final TextView tv_activityInfo = (TextView) widget.findViewById(R.id.feed_element_activityInfo);
-            final TextView tv_time = (TextView) widget.findViewById(R.id.feed_element_time);
-            final ImageView iv_like = (ImageView) widget.findViewById(R.id.feed_element_like);
+                final ImageView iv_avatar = (ImageView) widget.findViewById(R.id.feed_element_avatar);
+                final TextView tv_fullName = (TextView) widget.findViewById(R.id.feed_element_fullName);
+                final TextView tv_state = (TextView) widget.findViewById(R.id.feed_element_state);
+                final TextView tv_activityInfo = (TextView) widget.findViewById(R.id.feed_element_activityInfo);
+                final TextView tv_time = (TextView) widget.findViewById(R.id.feed_element_time);
+                final ImageView iv_like = (ImageView) widget.findViewById(R.id.feed_element_like);
 
-            if (flag.IsLiked())
-                iv_like.setBackgroundResource(R.drawable.like_it_filled_48);
-            else
-                iv_like.setBackgroundResource(R.drawable.like_it_48);
-            iv_like.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
+                if (flag.IsLiked())
+                    iv_like.setBackgroundResource(R.drawable.like_it_filled_48);
+                else
+                    iv_like.setBackgroundResource(R.drawable.like_it_48);
+                iv_like.setOnClickListener(new View.OnClickListener()
                 {
-                    flag.SetLiked(!flag.IsLiked());
-                    if (flag.IsLiked())
-                        iv_like.setBackgroundResource(R.drawable.like_it_filled_48);
-                    else
-                        iv_like.setBackgroundResource(R.drawable.like_it_48);
-                    UserProfile.PROFILE.SaveReminderFlagsToFile();
-                    UpdateReminderLikeRequest.SendRequest(flag);
+                    @Override
+                    public void onClick(View v)
+                    {
+                        flag.SetLiked(!flag.IsLiked());
+                        if (flag.IsLiked())
+                            iv_like.setBackgroundResource(R.drawable.like_it_filled_48);
+                        else
+                            iv_like.setBackgroundResource(R.drawable.like_it_48);
+                        UserProfile.PROFILE.SaveReminderFlagsToFile();
+                        UpdateReminderLikeRequest.SendRequest(flag);
+                    }
+                });
+
+                ContactProfile cp;
+                if (flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
+                    cp = ContactProfile.GetProfile(flag.GetReminder().GetTo());
+                else
+                    cp = ContactProfile.GetProfile(flag.GetReminder().GetFrom());
+                iv_avatar.setBackground(AvatarImageUtil.GetAvatar(cp.GetAvatarID()));
+
+                tv_fullName.setText(flag.GetReminder().GetFullName());
+                String state = flag.GetState().name().replace("_", " ").toLowerCase();
+                state = state.substring(0, 1).toUpperCase() + state.substring(1);
+
+                tv_state.setText(state);
+                tv_activityInfo.setText(flag.GetReminder().GetMessage());
+
+                DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                Date reminderDateToCompare;
+                String timeLeft;
+
+                try
+                {
+                    reminderDateToCompare = formatter.parse(flag.GetDateOfFlag());
+                    timeLeft = flag.GetReminder().GetRoughTimeSince(reminderDateToCompare);
+                } catch (ParseException e)
+                {
+                    e.printStackTrace();
+                    timeLeft = "error";
                 }
-            });
 
-            ContactProfile cp;
-            if (flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
-                cp = ContactProfile.GetProfile(flag.GetReminder().GetTo());
-            else
-                cp = ContactProfile.GetProfile(flag.GetReminder().GetFrom());
-            iv_avatar.setBackground(AvatarImageUtil.GetAvatar(cp.GetAvatarID()));
-
-            tv_fullName.setText(flag.GetReminder().GetFullName());
-            String state = flag.GetState().name().replace("_", " ").toLowerCase();
-            state = state.substring(0, 1).toUpperCase() + state.substring(1);
-
-            tv_state.setText(state);
-            tv_activityInfo.setText(flag.GetReminder().GetMessage());
-
-            DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-            Date reminderDateToCompare;
-            String timeLeft;
-
-            try
-            {
-                reminderDateToCompare = formatter.parse(flag.GetDateOfFlag());
-                timeLeft = flag.GetReminder().GetRoughTimeSince(reminderDateToCompare);
-            } catch (ParseException e)
-            {
-                e.printStackTrace();
-                timeLeft = "error";
+                tv_time.setText(timeLeft);
             }
-
-            tv_time.setText(timeLeft);
         }
     }
 }

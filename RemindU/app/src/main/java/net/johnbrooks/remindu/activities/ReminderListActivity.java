@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -144,6 +145,7 @@ public class ReminderListActivity extends AppCompatActivity
         {
             TextView tv = new TextView(ReminderListActivity.this);
             tv.setText("Nothing to see here.");
+            tv.setGravity(Gravity.CENTER);
             ReminderLayout.addView(tv);
         }
         else
