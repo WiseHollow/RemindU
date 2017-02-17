@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
+import net.johnbrooks.remindu.fragments.FeedFragment;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.ReminderFlag;
@@ -65,6 +66,9 @@ public class LikeReminderService extends Service
             reminder.SetUpToDate(true);
             NotificationManager mNotificationManager = (NotificationManager) MasterScheduler.GetInstance().GetContextWrapper().getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.cancel(reminder.GetID());
+
+            if (FeedFragment.GetInstance() != null)
+                FeedFragment.GetInstance().PopulateActivity();
         }
 
         return super.onStartCommand(intent, flags, startId);

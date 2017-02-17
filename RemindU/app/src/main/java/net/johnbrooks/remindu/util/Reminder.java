@@ -40,6 +40,7 @@ import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.services.CancelReminderService;
 import net.johnbrooks.remindu.services.ConfirmReminderService;
+import net.johnbrooks.remindu.services.LikeReminderService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -949,8 +950,6 @@ public class Reminder implements Comparable<Reminder>
 
     private NotificationCompat.Builder GetNotification(NotificationType type, String message)
     {
-        if (MasterScheduler.GetInstance() == null) { return null; }
-
         //Create Intent for Cancel
 
         Intent cancelIntent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), CancelReminderService.class);
@@ -967,9 +966,9 @@ public class Reminder implements Comparable<Reminder>
 
         //Create intent for like
 
-        Intent likeIntent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), ConfirmReminderService.class);
-        confirmIntent.putExtra("reminder", GetID());
-        confirmIntent.putExtra("state", GetState().ordinal());
+        Intent likeIntent = new Intent(MasterScheduler.GetInstance().GetContextWrapper(), LikeReminderService.class);
+        likeIntent.putExtra("reminder", GetID());
+        likeIntent.putExtra("state", GetState().ordinal());
         PendingIntent pendingLikeIntent = PendingIntent.getService(MasterScheduler.GetInstance().GetContextWrapper(), 0, likeIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         NotificationCompat.Action likeAction = new NotificationCompat.Action(R.drawable.like_it_48, "Like", pendingLikeIntent);
 
