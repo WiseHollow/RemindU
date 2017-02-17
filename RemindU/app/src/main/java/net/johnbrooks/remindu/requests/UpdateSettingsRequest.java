@@ -31,14 +31,13 @@ public class UpdateSettingsRequest extends StringRequest
     private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/updateSettings.php";
     private Map<String, String> params;
 
-    public UpdateSettingsRequest(boolean receiveEmails, Response.Listener<String> listener)
+    public UpdateSettingsRequest(Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
         super(Method.POST, REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("user_id", String.valueOf(UserProfile.PROFILE.GetUserID()));
         params.put("password", PasswordHash.Hash(UserProfile.PROFILE.GetPassword()));
-        params.put("receive_emails", (receiveEmails) ? "1" : "0");
         params.put("avatar", UserProfile.PROFILE.GetAvatarID());
     }
 
@@ -58,15 +57,10 @@ public class UpdateSettingsRequest extends StringRequest
                 try
                 {
                     JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
+                    //boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
                     Log.d(UpdateSettingsRequest.class.getSimpleName(), "Received response: " + message);
-
-                    if (!success)
-                    {
-                        Log.d("ERROR", "Message: " + message);
-                    }
                 } catch (JSONException e)
                 {
                     e.printStackTrace();
@@ -79,17 +73,8 @@ public class UpdateSettingsRequest extends StringRequest
     {
         if (!Network.IsConnected()) { return; }
 
-        if (true)
-            return;
-
-        //TODO: REMOVE THIS REQUEST
-
-        boolean receiveEmails;
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(UserAreaActivity.GetActivity());
-        receiveEmails = sharedPrefs.getBoolean("receive_emails_switch", true);
-
         Response.Listener<String> responseListener = GetResponseListener();
-        UpdateSettingsRequest request = new UpdateSettingsRequest(receiveEmails, responseListener);
+        UpdateSettingsRequest request = new UpdateSettingsRequest(responseListener);
         request.setRetryPolicy(new DefaultRetryPolicy(
                 0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,

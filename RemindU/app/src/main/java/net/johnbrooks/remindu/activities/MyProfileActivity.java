@@ -116,6 +116,7 @@ public class MyProfileActivity extends AppCompatActivity
         {
             finish();
             startActivity(getIntent());
+            UserProfile.PROFILE.RefreshReminderLayout();
             UpdateSettingsRequest.SendRequest(MyProfileActivity.this);
         }
     }
