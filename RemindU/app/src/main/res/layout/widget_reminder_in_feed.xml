@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/feed_element_avatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/avatar_generic_default"
             android:layout_marginRight="5dp"/>
 
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:text="Full Name"
                 android:textSize="16dp"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:layout_weight="1"
                 android:gravity="left"/>
 
@@ -45,6 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Activity Description"
+                android:fontFamily="sans-serif-light"
                 android:layout_weight="1"
                 android:gravity="left"/>
 
@@ -65,7 +66,7 @@
                 android:text="In Progress"
                 android:layout_weight="1"
                 android:textSize="12dp"
-                android:textStyle="italic"
+                android:fontFamily="sans-serif-light"
                 android:layout_gravity="end"
                 android:textAlignment="viewEnd"/>
 
@@ -75,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:text="Time"
                 android:textSize="12dp"
-                android:textStyle="italic"
+                android:fontFamily="sans-serif-light"
                 android:layout_weight="1"
                 android:layout_gravity="end"
                 android:textAlignment="viewEnd"/>

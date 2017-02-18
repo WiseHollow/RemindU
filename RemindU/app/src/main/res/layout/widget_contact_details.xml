@@ -15,8 +15,8 @@
         android:paddingRight="10dp">
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/avatar_generic_default"
             android:id="@+id/Contact_Profile_Avatar"
             />
@@ -31,9 +31,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Full Name"
-                android:textStyle="bold"
-                android:paddingLeft="10dp"
-                android:textSize="14dp"
+                android:paddingLeft="12dp"
+                android:textSize="16dp"
+                android:fontFamily="sans-serif-medium"
                 android:id="@+id/Contact_Profile_Full_Name"
                 />
 
@@ -41,8 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reminders"
-                android:paddingLeft="10dp"
-                android:textSize="12dp"
+                android:paddingLeft="12dp"
+                android:fontFamily="sans-serif-light"
                 android:id="@+id/Contact_Profile_Reminders"
                 />
 

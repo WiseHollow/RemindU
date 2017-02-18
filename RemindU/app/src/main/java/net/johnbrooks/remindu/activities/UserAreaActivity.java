@@ -36,8 +36,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
 
-    public Typeface headerFont;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -66,8 +64,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         //
         // Gets
         //
-
-        headerFont = Typeface.createFromAsset(activity.getAssets(), "fonts/pala.ttf");
 
         //ContactScrollView = (ScrollView) findViewById(R.id.UserArea_ScrollView);
         SharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
