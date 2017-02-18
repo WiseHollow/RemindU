@@ -86,7 +86,7 @@ public class FeedFragment extends Fragment
 
         for (final ReminderFlag flag : flags)
         {
-            if (flag.GetDateOfFlag() == null || flag.GetReminder().GetTo() == UserProfile.PROFILE.GetUserID())
+            if (flag.GetDateOfFlag() == null)
                 continue;
 
             realIndex++;
