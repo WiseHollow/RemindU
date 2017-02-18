@@ -233,12 +233,19 @@ public class ReminderListActivity extends AppCompatActivity
     }
 
     @Override
+    public void onBackPressed()
+    {
+        UserProfile.PROFILE.SetActiveReminder(null);
+        finish();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
         {
             case android.R.id.home:
-                this.finish();
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
