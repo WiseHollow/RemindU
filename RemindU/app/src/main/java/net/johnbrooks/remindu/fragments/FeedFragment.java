@@ -75,7 +75,7 @@ public class FeedFragment extends Fragment
 
     public void PopulateActivity()
     {
-        if (getLayoutInflater(null) == null)
+        if (UserAreaActivity.GetActivity().GetLayoutInflater() == null)
             return;
 
         List<ReminderFlag> flags = UserProfile.PROFILE.GetReminderFlags();
@@ -91,7 +91,7 @@ public class FeedFragment extends Fragment
 
             realIndex++;
 
-            LinearLayout widget = (LinearLayout) getLayoutInflater(null).inflate(R.layout.widget_reminder_in_feed, null);
+            LinearLayout widget = (LinearLayout) UserAreaActivity.GetActivity().GetLayoutInflater().inflate(R.layout.widget_reminder_in_feed, null);
             ((ViewGroup) ContactLayout).addView(widget);
             widget.findViewById(R.id.feed_element_layout_desc).setOnClickListener(new View.OnClickListener()
             {

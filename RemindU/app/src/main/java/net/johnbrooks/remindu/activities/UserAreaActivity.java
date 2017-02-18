@@ -1,5 +1,6 @@
 package net.johnbrooks.remindu.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,11 +38,15 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
 
+    private LayoutInflater layoutInflater;
+    public LayoutInflater GetLayoutInflater() { return layoutInflater; }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         activity = UserAreaActivity.this;
+        layoutInflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         setContentView(R.layout.activity_user_area);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
