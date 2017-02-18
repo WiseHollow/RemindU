@@ -142,7 +142,7 @@ public class FeedFragment extends Fragment
             iv_avatar.setBackground(AvatarImageUtil.GetAvatar(cp.GetAvatarID()));
 
             tv_fullName.setText(flag.GetReminder().GetFullName());
-            String state = flag.GetState().name().replace("_", " ").toLowerCase();
+            String state = flag.GetState().toString();
             state = state.substring(0, 1).toUpperCase() + state.substring(1);
 
             tv_state.setText(state);

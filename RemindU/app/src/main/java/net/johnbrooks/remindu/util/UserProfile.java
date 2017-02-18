@@ -22,7 +22,6 @@ import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
 import net.johnbrooks.remindu.fragments.FeedFragment;
 import net.johnbrooks.remindu.fragments.PrimaryFragment;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
-import net.johnbrooks.remindu.requests.GetReminderFlagsRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.PullProfileRequest;
 import net.johnbrooks.remindu.requests.UpdateReminderRequest;
@@ -556,12 +555,15 @@ public class UserProfile implements Parcelable
 
                     String dateInProgress = rArray[7];
                     String dateCompleted = rArray[8];
+                    String dateCreated = rArray[9];
 
                     Reminder r = Reminder.LoadReminder(true, id, from, to, message, important, date, rState);
                     if (dateInProgress != null)
                         r.SetDateInProgress(dateInProgress);
                     if (dateCompleted != null)
                         r.SetDateComplete(dateCompleted);
+                    if (dateCreated != null)
+                        r.SetDateCreated(dateCreated);
                 }
             }
         } catch (FileNotFoundException e)

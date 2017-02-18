@@ -87,12 +87,15 @@ public class GetRemindersRequest extends StringRequest
 
                             String dateInProgress = jsonResponse.getJSONObject(String.valueOf(i)).getString("date_in_progress");
                             String dateComplete = jsonResponse.getJSONObject(String.valueOf(i)).getString("date_complete");
+                            String dateCreated = jsonResponse.getJSONObject(String.valueOf(i)).getString("date_created");
 
                             Reminder r = Reminder.LoadReminder(false, id, from, to, message, important > 0 ? true : false, date, Reminder.ReminderState.values()[state]);
                             if (!dateInProgress.equalsIgnoreCase("null"))
                                 r.SetDateInProgress(dateInProgress);
                             if (!dateComplete.equalsIgnoreCase("null"))
                                 r.SetDateComplete(dateComplete);
+                            if (!dateCreated.equalsIgnoreCase("null"))
+                                r.SetDateCreated(dateCreated);
                         }
                     }
                     else

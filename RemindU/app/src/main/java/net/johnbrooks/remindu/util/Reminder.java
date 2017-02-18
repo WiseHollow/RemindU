@@ -125,6 +125,18 @@ public class Reminder implements Comparable<Reminder>
         if (selected)
             UserProfile.PROFILE.SetActiveReminder(reminder);
 
+        if (reminder.GetDateCreated() != null)
+        {
+            try
+            {
+                ReminderFlag.Create(id, ReminderState.NOT_STARTED, (check != null && check.GetFlag(ReminderState.NOT_STARTED) != null) ? check.GetFlag(ReminderState.NOT_STARTED).IsLiked() : false);
+            }
+            catch (ReminderNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
         for (int i = 0; i <= state.ordinal(); i++)
         {
             try
@@ -153,6 +165,7 @@ public class Reminder implements Comparable<Reminder>
 
     private ReminderState State;
 
+    private String DateCreated;
     private String DateInProgress;
     private String DateComplete;
 
@@ -173,6 +186,8 @@ public class Reminder implements Comparable<Reminder>
         User_ID_From = user_id_from;
         User_ID_To = user_id_to;
 
+        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        DateCreated = formatter.format(new Date());
         DateInProgress = null;
         DateComplete = null;
 
@@ -211,6 +226,7 @@ public class Reminder implements Comparable<Reminder>
     public final boolean GetImportant() { return Important; }
     public final ReminderState GetState() { return State; }
     public final int GetStateOrdinal() { return State.ordinal(); }
+    public final String GetDateCreated() { return DateCreated; }
     public final String GetDateInProgress() { return DateInProgress; }
     public final String GetDateComplete() { return DateComplete; }
     public final boolean IsUpToDate() { return UpToDate; }
@@ -245,11 +261,11 @@ public class Reminder implements Comparable<Reminder>
     public void SetState(ReminderState state) { State = state; }
     public void SetUpToDate(final boolean value) { UpToDate = value; }
 
+    public void SetDateCreated(final String date) { DateCreated = date; }
     public void SetDateInProgress(final String date)
     {
         DateInProgress = date;
     }
-
     public void SetDateComplete(final String date)
     {
         DateComplete = date;
@@ -1033,6 +1049,7 @@ public class Reminder implements Comparable<Reminder>
                 String.valueOf(GetState().ordinal()),
                 GetDateInProgress(),
                 GetDateComplete(),
+                GetDateCreated()
         };
         return array;
     }
@@ -1045,7 +1062,7 @@ public class Reminder implements Comparable<Reminder>
         public String toString()
         {
             if (ordinal() == 0)
-                return "Not Started";
+                return "Created";
             else if (ordinal() == 1)
                 return "In Progress";
             else if (ordinal() == 2)

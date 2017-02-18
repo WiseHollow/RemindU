@@ -38,6 +38,8 @@ public class ReminderFlag implements Comparable<ReminderFlag>
             return reminder.GetDateInProgress();
         else if (state == Reminder.ReminderState.COMPLETE)
             return reminder.GetDateComplete();
+        else if (state == Reminder.ReminderState.NOT_STARTED)
+            return reminder.GetDateCreated();
         else
             return null;
     }

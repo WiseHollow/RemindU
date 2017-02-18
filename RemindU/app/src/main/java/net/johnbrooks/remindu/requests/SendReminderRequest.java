@@ -1,6 +1,5 @@
 package net.johnbrooks.remindu.requests;
 
-import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
@@ -37,7 +36,7 @@ public class SendReminderRequest extends StringRequest
     private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/sendReminder.php";
     private Map<String, String> params;
 
-    public SendReminderRequest(int user_id_from, int user_id_to, String password, String message, boolean important, Date date, Response.Listener<String> listener)
+    public SendReminderRequest(int user_id_from, int user_id_to, String password, String message, boolean important, Date date, String dateCreated, Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
         super(Method.POST, REQUEST_URL, listener, null);
@@ -47,6 +46,7 @@ public class SendReminderRequest extends StringRequest
         params.put("password", PasswordHash.Hash(password));
         params.put("message", message);
         params.put("important", String.valueOf((important) ? 1 : 0));
+        params.put("date_created", dateCreated);
         DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         String dateString = formatter.format(date);
         params.put("date", dateString);
@@ -121,7 +121,7 @@ public class SendReminderRequest extends StringRequest
     {
         if (!Network.IsConnected() || reminder.IsLocal()) { return; }
 
-        SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), reminder.GetTo(), UserProfile.PROFILE.GetPassword(), reminder.GetMessage(), reminder.GetImportant(), reminder.GetDate(), GetSendResponseListener(activity));
+        SendReminderRequest request = new SendReminderRequest(UserProfile.PROFILE.GetUserID(), reminder.GetTo(), UserProfile.PROFILE.GetPassword(), reminder.GetMessage(), reminder.GetImportant(), reminder.GetDate(), reminder.GetDateCreated(), GetSendResponseListener(activity));
         request.setRetryPolicy(new DefaultRetryPolicy(
                 0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
