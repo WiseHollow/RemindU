@@ -135,7 +135,7 @@ public class GetReminderFlagsRequest extends StringRequest
                 0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.GetActivity());
+        RequestQueue queue = Volley.newRequestQueue(MasterScheduler.GetInstance().GetContextWrapper());
         queue.add(request);
     }
 }

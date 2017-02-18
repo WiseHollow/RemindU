@@ -49,6 +49,8 @@ public class BackgroundService extends Service
         else
             Log.d("INFO", "Background service started.");
 
+        MasterScheduler.GetInstance(this);
+
         if (!LoginActivity.AttemptLoadSavedProfile(this))
         {
             Log.d("WARNING", "Could not load saved profile from file.");
