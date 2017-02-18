@@ -290,6 +290,87 @@ public class Reminder implements Comparable<Reminder>
     public LinearLayout CreateWidget(final ReminderListActivity activity)
     {
         final Reminder reminder = this;
+
+        final LinearLayout parent = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_reminder_in_discover, null);
+        final TextView tv_Via = (TextView) parent.findViewById(R.id.reminder_textView_via);
+        final TextView tv_Name = (TextView) parent.findViewById(R.id.reminder_textView_name);
+        final TextView tv_Description = (TextView) parent.findViewById(R.id.reminder_textView_description);
+        final TextView tv_TimeLeft = (TextView) parent.findViewById(R.id.reminder_textView_timeLeft);
+
+        final ImageView iv_statusBar = (ImageView) parent.findViewById(R.id.reminder_imageView_statusBar);
+        final ImageView iv_liked = (ImageView) parent.findViewById(R.id.reminder_imageView_liked);
+
+        parent.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (!IsUpToDate())
+                    SetUpToDate(true);
+                UserProfile.PROFILE.SetActiveReminder(reminder);
+                activity.RefreshReminderLayout();
+            }
+        });
+
+        if (GetImportant())
+            iv_statusBar.setBackgroundColor(Color.parseColor("#AA3939"));
+
+        if (GetFrom() == UserProfile.PROFILE.GetUserID())
+            tv_Via.setText("To: ");
+        else
+            tv_Via.setText("From: ");
+
+        tv_Name.setText(GetFullName());
+        tv_Description.setText(GetMessage());
+        tv_TimeLeft.setText(GetETA());
+
+        ReminderFlag latestFlag = GetFlags()[GetFlags().length - 1];
+        if (latestFlag != null && !latestFlag.IsLiked())
+            iv_liked.setVisibility(View.INVISIBLE);
+
+        if (UserProfile.PROFILE.GetActiveReminder() == reminder)
+        {
+            final LinearLayout controlBar = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_reminder_control_bar, null);
+
+            final ImageView iv_controlBar_1 = (ImageView) controlBar.findViewById(R.id.reminder_cp_button_1);
+            final ImageView iv_controlBar_2 = (ImageView) controlBar.findViewById(R.id.reminder_cp_button_2);
+            final ImageView iv_controlBar_3 = (ImageView) controlBar.findViewById(R.id.reminder_cp_button_3);
+
+            iv_controlBar_1.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    ClickLogButton(activity);
+                }
+            });
+
+            iv_controlBar_2.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    ClickRemoveButton(activity);
+                }
+            });
+
+            iv_controlBar_3.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    ClickMuteButton(activity);
+                }
+            });
+
+            iv_controlBar_1.setImageResource(GetLogButtonResourceID());
+            iv_controlBar_2.setImageResource(GetActionButtonResourceID());
+            iv_controlBar_3.setImageResource(GetMuteButtonResourceID());
+
+            parent.addView(controlBar);
+        }
+
+        /*final Reminder reminder = this;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
                 (
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -443,7 +524,7 @@ public class Reminder implements Comparable<Reminder>
                     ClickMuteButton(activity, reminder);
                 }
             });
-        }
+        }*/
 
         return parent;
     }
@@ -491,6 +572,17 @@ public class Reminder implements Comparable<Reminder>
                 ((TextView) dialog.findViewById(R.id.log_entry_since)).setText("");
             else
                 ((TextView) dialog.findViewById(R.id.log_entry_since)).setText("Since: " + GetStateSince(State));
+
+            /*LinearLayout likesLayout = (LinearLayout) dialog.findViewById(R.id.log_entry_likes_layout);
+            for (ReminderFlag flag : GetFlags())
+            {
+                if (flag.IsLiked())
+                {
+                    TextView tv_liked = new TextView(activity);
+                    tv_liked.setText(flag.GetState().toString() + " liked");
+                    likesLayout.addView(tv_liked);
+                }
+            }*/
 
 
             return;
@@ -645,7 +737,7 @@ public class Reminder implements Comparable<Reminder>
             ReminderListActivity.GetActivity().RefreshReminderLayout();
     }
 
-    private void ClickMuteButton(final ReminderListActivity activity, final Reminder reminder)
+    private void ClickMuteButton(final ReminderListActivity activity)
     {
         UserProfile.PROFILE.SetIgnoreReminder(GetID(), !UserProfile.PROFILE.IsIgnoring(GetID()));
         activity.RefreshReminderLayout();

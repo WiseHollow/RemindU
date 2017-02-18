@@ -154,10 +154,11 @@ public class ReminderListActivity extends AppCompatActivity
             {
                 Reminder r = reminders.get(i);
                 LinearLayout layout = r.CreateWidget(ReminderListActivity.this);
-                if (i % 2 != 0)
-                    layout.setBackgroundColor(Color.parseColor("#EBEBEB"));
+
+                /*if (i % 2 != 0)
+                    layout.setBackgroundColor(Color.parseColor("#eaf7ff"));
                 else
-                    layout.setBackgroundColor(Color.parseColor("#FCFCFC"));
+                    layout.setBackgroundColor(Color.parseColor("#FCFCFC"));*/
 
                 switch (r.GetState())
                 {
@@ -176,6 +177,8 @@ public class ReminderListActivity extends AppCompatActivity
                 //ReminderLayout.addView(layout);
             }
 
+            int index = 0;
+
             if (remindersNotStarted.size() > 0)
             {
                 LinearLayout separatorNotStarted = (LinearLayout) getLayoutInflater().inflate(R.layout.widget_progress_separator, null);
@@ -183,7 +186,14 @@ public class ReminderListActivity extends AppCompatActivity
 
                 ReminderLayout.addView(separatorNotStarted);
                 for (LinearLayout l : remindersNotStarted)
+                {
                     ReminderLayout.addView(l);
+                    if (index % 2 == 0)
+                        l.setBackgroundColor(Color.parseColor("#eaf7ff"));
+                    else
+                        l.setBackgroundColor(Color.parseColor("#FCFCFC"));
+                    index++;
+                }
             }
 
             if (remindersStarted.size() > 0)
@@ -193,7 +203,14 @@ public class ReminderListActivity extends AppCompatActivity
 
                 ReminderLayout.addView(separatorInProgress);
                 for (LinearLayout l : remindersStarted)
+                {
                     ReminderLayout.addView(l);
+                    if (index % 2 == 0)
+                        l.setBackgroundColor(Color.parseColor("#eaf7ff"));
+                    else
+                        l.setBackgroundColor(Color.parseColor("#FCFCFC"));
+                    index++;
+                }
             }
 
             if (remindersComplete.size() > 0)
@@ -203,7 +220,14 @@ public class ReminderListActivity extends AppCompatActivity
 
                 ReminderLayout.addView(separatorComplete);
                 for (LinearLayout l : remindersComplete)
+                {
                     ReminderLayout.addView(l);
+                    if (index % 2 == 0)
+                        l.setBackgroundColor(Color.parseColor("#eaf7ff"));
+                    else
+                        l.setBackgroundColor(Color.parseColor("#FCFCFC"));
+                    index++;
+                }
             }
         }
     }
