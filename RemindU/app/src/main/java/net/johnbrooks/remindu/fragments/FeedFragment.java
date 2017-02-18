@@ -18,6 +18,7 @@ import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.requests.UpdateReminderLikeRequest;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.ContactProfile;
+import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.ReminderFlag;
 import net.johnbrooks.remindu.util.UserProfile;
 
@@ -135,26 +136,27 @@ public class FeedFragment extends Fragment
                 }
             });
 
-            ContactProfile cp = ContactProfile.GetProfile(flag.GetReminder().GetFrom());
+            ContactProfile cp;
 
-            String avatar_id = null;
-            String full_name = null;
+            String avatar_id;
+            String full_name;
 
-            if (cp != null)
-            {
-                avatar_id = cp.GetAvatarID();
-                full_name = cp.GetFullName();
-            }
-            else if (flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
+            if (flag.GetState() == Reminder.ReminderState.NOT_STARTED)
+                cp = ContactProfile.GetProfile(flag.GetReminder().GetFrom());
+            else
+                cp = ContactProfile.GetProfile(flag.GetReminder().GetTo());
+
+            if (cp == null)
             {
                 avatar_id = UserProfile.PROFILE.GetAvatarID();
                 full_name = UserProfile.PROFILE.GetFullName();
             }
-
-            /*if (flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
-                cp = ContactProfile.GetProfile(flag.GetReminder().GetTo());
             else
-                cp = ContactProfile.GetProfile(flag.GetReminder().GetFrom());*/
+            {
+                avatar_id = cp.GetAvatarID();
+                full_name = cp.GetFullName();
+            }
+
 
             if (avatar_id == null || full_name == null)
             {
