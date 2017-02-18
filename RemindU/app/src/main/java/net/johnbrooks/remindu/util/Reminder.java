@@ -432,80 +432,90 @@ public class Reminder implements Comparable<Reminder>
                 ((TextView) dialog.findViewById(R.id.log_entry_since)).setText("");
             else
                 ((TextView) dialog.findViewById(R.id.log_entry_since)).setText("Since: " + GetStateSince(State));
+        }
+        else
+        {
+            final Dialog dialog = new Dialog(activity);
+            dialog.setTitle("Select Activity State");
+            dialog.setContentView(R.layout.dialog_reminder_state_picker);
+            dialog.show();
 
-            /*LinearLayout likesLayout = (LinearLayout) dialog.findViewById(R.id.log_entry_likes_layout);
-            for (ReminderFlag flag : GetFlags())
+            Button btn_in_progress = (Button) dialog.findViewById(R.id.button_rsp_in_progress);
+            Button btn_complete = (Button) dialog.findViewById(R.id.button_rsp_complete);
+
+            if (GetDateInProgress() != null)
             {
-                if (flag.IsLiked())
+                btn_in_progress.setEnabled(false);
+            }
+            if (GetDateComplete() != null)
+            {
+                btn_in_progress.setEnabled(false);
+                btn_complete.setEnabled(false);
+            }
+
+            final Reminder reminder = this;
+
+            btn_in_progress.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
                 {
-                    TextView tv_liked = new TextView(activity);
-                    tv_liked.setText(flag.GetState().toString() + " liked");
-                    likesLayout.addView(tv_liked);
+                    SetState(ReminderState.IN_PROGRESS);
+                    UserProfile.PROFILE.RefreshReminderLayout();
+                    UserProfile.PROFILE.pushReminder(reminder);
+                    dialog.cancel();
+
+                    if (ReminderListActivity.GetActivity() != null)
+                        ReminderListActivity.GetActivity().RefreshReminderLayout();
                 }
-            }*/
+            });
 
-
-            return;
-        }
-
-        final Dialog dialog = new Dialog(activity);
-        dialog.setTitle("Select Activity State");
-        dialog.setContentView(R.layout.dialog_reminder_state_picker);
-        dialog.show();
-
-        Button btn_in_progress = (Button) dialog.findViewById(R.id.button_rsp_in_progress);
-        Button btn_complete = (Button) dialog.findViewById(R.id.button_rsp_complete);
-
-        if (GetDateInProgress() != null)
-        {
-            btn_in_progress.setEnabled(false);
-        }
-        if (GetDateComplete() != null)
-        {
-            btn_in_progress.setEnabled(false);
-            btn_complete.setEnabled(false);
-        }
-
-        final Reminder reminder = this;
-
-        btn_in_progress.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
+            btn_complete.setOnClickListener(new View.OnClickListener()
             {
-                SetState(ReminderState.IN_PROGRESS);
-                UserProfile.PROFILE.RefreshReminderLayout();
-                UserProfile.PROFILE.pushReminder(reminder);
-                dialog.cancel();
+                @Override
+                public void onClick(View view)
+                {
+                    SetState(ReminderState.COMPLETE);
+                    UserProfile.PROFILE.RefreshReminderLayout();
+                    UserProfile.PROFILE.pushReminder(reminder);
+                    dialog.cancel();
 
-                if (ReminderListActivity.GetActivity() != null)
-                    ReminderListActivity.GetActivity().RefreshReminderLayout();
-            }
-        });
+                    if (ReminderListActivity.GetActivity() != null)
+                        ReminderListActivity.GetActivity().RefreshReminderLayout();
+                }
+            });
 
-        btn_complete.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
+            (dialog.findViewById(R.id.button_rsp_cancel)).setOnClickListener(new View.OnClickListener()
             {
-                SetState(ReminderState.COMPLETE);
-                UserProfile.PROFILE.RefreshReminderLayout();
-                UserProfile.PROFILE.pushReminder(reminder);
-                dialog.cancel();
+                @Override
+                public void onClick(View view)
+                {
+                    dialog.cancel();
+                }
+            });
 
-                if (ReminderListActivity.GetActivity() != null)
-                    ReminderListActivity.GetActivity().RefreshReminderLayout();
-            }
-        });
+            dialog.findViewById(R.id.log_entry_progress_bar).setBackgroundColor(GetStateColor());
+            ((TextView) dialog.findViewById(R.id.log_entry_progress_bar_text)).setText("Time left: " + GetETA());
 
-        (dialog.findViewById(R.id.button_rsp_cancel)).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                dialog.cancel();
-            }
-        });
+            if (State == ReminderState.NOT_STARTED)
+                dialog.findViewById(R.id.log_entry_image).setBackgroundResource(R.drawable.running_48);
+            else if (State == ReminderState.IN_PROGRESS)
+                dialog.findViewById(R.id.log_entry_image).setBackgroundResource(R.drawable.running_48_blue);
+            else if (State == ReminderState.COMPLETE)
+                dialog.findViewById(R.id.log_entry_image).setBackgroundResource(R.drawable.running_48_green);
+
+            String state = GetState().name().replace("_", " ").toLowerCase();
+            state = state.replace(String.valueOf(state.charAt(0)), String.valueOf(state.charAt(0)).toUpperCase());
+            if (state.contains(" "))
+                state = state.replace(String.valueOf(state.charAt(state.indexOf(" ") + 1)), String.valueOf(state.charAt(state.indexOf(" ") + 1)).toUpperCase());
+
+            ((TextView) dialog.findViewById(R.id.log_entry_state)).setText(state);
+
+            if (State == ReminderState.NOT_STARTED)
+                ((TextView) dialog.findViewById(R.id.log_entry_since)).setText("");
+            else
+                ((TextView) dialog.findViewById(R.id.log_entry_since)).setText("Since: " + GetStateSince(State));
+        }
     }
 
     private void ClickRemoveButton(final ReminderListActivity activity)
@@ -630,7 +640,7 @@ public class Reminder implements Comparable<Reminder>
         }
         else
         {
-            return R.drawable.coins_48_blue;
+            return R.drawable.add_reputation_48;
         }
     }
 
