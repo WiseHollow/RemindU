@@ -17,7 +17,7 @@
         android:src="@drawable/document_48"
         />
     <ImageView
-        android:layout_width="1px"
+        android:layout_width="2px"
         android:layout_height="match_parent"
         android:background="#cdcd"/>
     <ImageView
@@ -28,7 +28,7 @@
         android:src="@drawable/delete_48"
         />
     <ImageView
-        android:layout_width="1px"
+        android:layout_width="2px"
         android:layout_height="match_parent"
         android:background="#cdcd"/>
     <ImageView

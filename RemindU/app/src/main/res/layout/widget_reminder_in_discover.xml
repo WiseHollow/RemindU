@@ -33,12 +33,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Via: "
-                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
                     android:textSize="16dp"/>
                 <TextView
                     android:id="@+id/reminder_textView_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
                     android:text="Name"
                     android:layout_toRightOf="@+id/reminder_textView_via"
                     android:layout_alignBottom="@+id/reminder_textView_via"
@@ -63,12 +64,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Activity: "
-                    android:textStyle="bold"/>
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="16dp"
+                    android:text="Activity: "/>
                 <TextView
                     android:id="@+id/reminder_textView_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque urna enim, accumsan nec risus ut, luctus tempus eros. Phasellus porttitor feugiat dolor id tristique. Sed ac metus venenatis, maximus ipsum ac, congue sapien."
                     />
 
@@ -82,12 +85,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="16dp"
                     android:text="Time Left: "
-                    android:textStyle="bold"/>
+                    android:fontFamily="sans-serif-medium"/>
                 <TextView
                     android:id="@+id/reminder_textView_timeLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
                     android:text="ETA"/>
 
             </LinearLayout>

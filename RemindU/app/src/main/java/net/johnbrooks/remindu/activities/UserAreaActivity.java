@@ -1,12 +1,10 @@
 package net.johnbrooks.remindu.activities;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
-import net.johnbrooks.remindu.fragments.FeedFragment;
-import net.johnbrooks.remindu.fragments.PrimaryFragment;
 import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
@@ -39,6 +35,8 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
 
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
+
+    public Typeface headerFont;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -68,6 +66,8 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         //
         // Gets
         //
+
+        headerFont = Typeface.createFromAsset(activity.getAssets(), "fonts/pala.ttf");
 
         //ContactScrollView = (ScrollView) findViewById(R.id.UserArea_ScrollView);
         SharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
