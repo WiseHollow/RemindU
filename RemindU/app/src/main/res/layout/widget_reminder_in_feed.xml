@@ -15,12 +15,27 @@
         android:layout_margin="4dp"
         >
 
-        <ImageView
-            android:id="@+id/feed_element_avatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/avatar_generic_default"
-            android:layout_marginRight="5dp"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/feed_element_avatar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/avatar_generic_default"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:id="@+id/feed_element_available"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bullet"
+                android:layout_alignBottom="@+id/feed_element_avatar"/>
+
+        </RelativeLayout>
+
+
 
         <LinearLayout
             android:id="@+id/feed_element_layout_desc"

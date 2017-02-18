@@ -122,6 +122,9 @@ public class FeedFragment extends Fragment
             final ImageView iv_like = (ImageView) widget.findViewById(R.id.feed_element_like);
             final ImageView iv_state = (ImageView) widget.findViewById(R.id.feed_element_image_state);
 
+            if (flag.GetReminder().GetTo() != UserProfile.PROFILE.GetUserID())
+                widget.findViewById(R.id.feed_element_available).setVisibility(View.INVISIBLE);
+
             if (flag.GetState() == Reminder.ReminderState.NOT_STARTED)
                 iv_state.setImageResource(R.drawable.create_new_48);
             else if (flag.GetState() == Reminder.ReminderState.IN_PROGRESS)
