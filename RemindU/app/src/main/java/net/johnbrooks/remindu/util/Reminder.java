@@ -1062,7 +1062,7 @@ public class Reminder implements Comparable<Reminder>
         public String toString()
         {
             if (ordinal() == 0)
-                return "Created";
+                return "Posted";
             else if (ordinal() == 1)
                 return "In Progress";
             else if (ordinal() == 2)

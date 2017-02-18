@@ -3,6 +3,7 @@ package net.johnbrooks.remindu.fragments;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,14 +135,36 @@ public class FeedFragment extends Fragment
                 }
             });
 
-            ContactProfile cp;
-            if (flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
+            ContactProfile cp = ContactProfile.GetProfile(flag.GetReminder().GetFrom());
+
+            String avatar_id = null;
+            String full_name = null;
+
+            if (cp != null)
+            {
+                avatar_id = cp.GetAvatarID();
+                full_name = cp.GetFullName();
+            }
+            else if (flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
+            {
+                avatar_id = UserProfile.PROFILE.GetAvatarID();
+                full_name = UserProfile.PROFILE.GetFullName();
+            }
+
+            /*if (flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
                 cp = ContactProfile.GetProfile(flag.GetReminder().GetTo());
             else
-                cp = ContactProfile.GetProfile(flag.GetReminder().GetFrom());
-            iv_avatar.setBackground(AvatarImageUtil.GetAvatar(cp.GetAvatarID()));
+                cp = ContactProfile.GetProfile(flag.GetReminder().GetFrom());*/
 
-            tv_fullName.setText(flag.GetReminder().GetFullName());
+            if (avatar_id == null || full_name == null)
+            {
+                Log.d("SEVERE", "FeedFragment cannot locate avatar_id and full_name!");
+                continue;
+            }
+
+            iv_avatar.setBackground(AvatarImageUtil.GetAvatar(avatar_id));
+            tv_fullName.setText(full_name);
+
             String state = flag.GetState().toString();
             state = state.substring(0, 1).toUpperCase() + state.substring(1);
 

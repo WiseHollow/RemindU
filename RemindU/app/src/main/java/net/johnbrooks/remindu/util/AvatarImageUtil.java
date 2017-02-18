@@ -15,6 +15,8 @@ public class AvatarImageUtil
 {
     public static Drawable GetAvatar(String AvatarID)
     {
+        if (AvatarID == null)
+            return null;
         if (MasterScheduler.GetInstance() == null)
             return null;
 
