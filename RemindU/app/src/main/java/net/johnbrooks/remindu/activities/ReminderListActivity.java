@@ -112,8 +112,8 @@ public class ReminderListActivity extends AppCompatActivity
                     return;
 
                 Intent intent = new Intent(ReminderListActivity.this, CreateReminderActivity.class);
-                intent.putExtra("user_id_to", (ContactID != -1) ? ContactProfile.GetID() : -1);
-                intent.putExtra("user_to_fullname", (ContactID != -1) ? ContactProfile.GetFullName() : "Me");
+                intent.putExtra("recipients_ids", (ContactID != -1) ? String.valueOf(ContactProfile.GetID()) : String.valueOf(-1));
+                intent.putExtra("recipients_fullNames", (ContactID != -1) ? ContactProfile.GetFullName() : "Me");
                 ReminderListActivity.this.startActivity(intent);
             }
         });
