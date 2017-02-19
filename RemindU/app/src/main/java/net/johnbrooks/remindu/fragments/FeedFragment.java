@@ -165,6 +165,15 @@ public class FeedFragment extends Fragment
             {
                 avatar_id = UserProfile.PROFILE.GetAvatarID();
                 full_name = UserProfile.PROFILE.GetFullName();
+
+                iv_avatar.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        UserProfile.PROFILE.CreatePreviewDialog(UserAreaActivity.GetActivity()).show();
+                    }
+                });
             }
             else
             {

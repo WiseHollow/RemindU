@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -421,6 +422,37 @@ public class UserProfile implements Parcelable
         }
 
         Log.d(getClass().getSimpleName(), "Finished processing current reminders.");
+    }
+
+    public final Dialog CreatePreviewDialog(final Activity activity)
+    {
+        final Dialog dialog = new Dialog(activity);
+        dialog.setTitle("Profile Preview");
+        dialog.setContentView(R.layout.dialog_profile_preview);
+        dialog.show();
+
+        TextView tv_fullName = (TextView) dialog.findViewById(R.id.dialog_profile_preview_fullName);
+        TextView tv_username = (TextView) dialog.findViewById(R.id.dialog_profile_preview_username);
+        TextView tv_email = (TextView) dialog.findViewById(R.id.dialog_profile_preview_email);
+
+        ImageView iv_avatar = (ImageView) dialog.findViewById(R.id.dialog_profile_preview_image);
+        ImageView iv_close = (ImageView) dialog.findViewById(R.id.dialog_profile_preview_close);
+
+        tv_fullName.setText(GetFullName());
+        tv_username.setText(GetUsername());
+        tv_email.setText(GetEmail());
+
+        iv_close.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.cancel();
+            }
+        });
+        iv_avatar.setImageDrawable(AvatarImageUtil.GetAvatar(GetAvatarID()));
+
+        return dialog;
     }
 
     /*public void LoadRemindersFromFilefff(Activity activity)
