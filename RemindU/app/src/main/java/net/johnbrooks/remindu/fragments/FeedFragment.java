@@ -109,7 +109,7 @@ public class FeedFragment extends Fragment
                 @Override
                 public void onClick(View v)
                 {
-                    if (flag.GetState() != Reminder.ReminderState.COMPLETE)
+                    if (flag.GetState() != Reminder.ReminderState.COMPLETE || flag.GetReminder().GetFrom() != UserProfile.PROFILE.GetUserID())
                         flag.GetReminder().ClickLogButton(UserAreaActivity.GetActivity());
                     else
                         flag.GetReminder().ClickRemoveButton(UserAreaActivity.GetActivity());
