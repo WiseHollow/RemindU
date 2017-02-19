@@ -23,15 +23,15 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/compass_64_blue"
-            android:id="@+id/fragment_nav_button_compass"
+            android:src="@drawable/activity_feed_64_blue"
+            android:id="@+id/fragment_nav_button_feed"
             />
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/activity_feed_64_grey"
-            android:id="@+id/fragment_nav_button_feed"
+            android:src="@drawable/compass_64_grey"
+            android:id="@+id/fragment_nav_button_compass"
             />
 
 

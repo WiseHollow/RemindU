@@ -24,9 +24,9 @@ public class PagerAdapter extends FragmentPagerAdapter
         switch (position)
         {
             case 0:
-                return new DiscoverFragment();
-            case 1:
                 return new FeedFragment();
+            case 1:
+                return new DiscoverFragment();
             default:
                 break;
         }

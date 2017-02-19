@@ -120,8 +120,8 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
         // Listen for fragment nav button click
         //
 
-        final ImageView compass = (ImageView) findViewById(R.id.fragment_nav_button_compass);
-        compass.setOnClickListener(new View.OnClickListener()
+        final ImageView feed = (ImageView) findViewById(R.id.fragment_nav_button_feed);
+        feed.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -130,8 +130,8 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
             }
         });
 
-        final ImageView feed = (ImageView) findViewById(R.id.fragment_nav_button_feed);
-        feed.setOnClickListener(new View.OnClickListener()
+        final ImageView compass = (ImageView) findViewById(R.id.fragment_nav_button_compass);
+        compass.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
