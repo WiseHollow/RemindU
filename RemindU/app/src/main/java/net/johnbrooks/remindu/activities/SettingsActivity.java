@@ -23,6 +23,7 @@ import android.view.MenuItem;
 
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
+import net.johnbrooks.remindu.util.UserProfile;
 
 import java.util.List;
 
@@ -108,11 +109,19 @@ public class SettingsActivity extends AppCompatPreferenceActivity
     };
 
     @Override
+    public void onBackPressed()
+    {
+        UserProfile.PROFILE.RefreshReminderLayout();
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
         {
             case android.R.id.home:
+                UserProfile.PROFILE.RefreshReminderLayout();
                 this.finish();
                 return true;
             default:
