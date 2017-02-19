@@ -92,6 +92,7 @@ public class PullProfileRequest extends StringRequest
                             if (contact == "" || contact == " ")
                                 continue;
                             String[] key = contact.split("%");
+
                             if (key[0].equalsIgnoreCase("0"))
                             {
                                 UserProfile.PROFILE.AddContact(new ContactProfile(Integer.parseInt(key[1]), key[2]));

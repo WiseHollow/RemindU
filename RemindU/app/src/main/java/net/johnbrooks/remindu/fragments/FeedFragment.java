@@ -170,6 +170,17 @@ public class FeedFragment extends Fragment
             {
                 avatar_id = cp.GetAvatarID();
                 full_name = cp.GetFullName();
+
+                final ContactProfile fCP = cp;
+
+                iv_avatar.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        fCP.CreatePreviewDialog(UserAreaActivity.GetActivity()).show();
+                    }
+                });
             }
 
 
@@ -180,6 +191,7 @@ public class FeedFragment extends Fragment
             }
 
             iv_avatar.setBackground(AvatarImageUtil.GetAvatar(avatar_id));
+
             tv_fullName.setText(full_name);
 
             String state = flag.GetState().toString();

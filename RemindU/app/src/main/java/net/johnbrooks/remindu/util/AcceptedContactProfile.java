@@ -6,13 +6,13 @@ package net.johnbrooks.remindu.util;
 
 public class AcceptedContactProfile extends ContactProfile
 {
-    private String FullName, Username, Contacts, AvatarID;
+    private String FullName, Email, Contacts, AvatarID;
 
-    public AcceptedContactProfile(final int id, final String email, final String fullName, final String username, final String contacts, final String avatarID)
+    public AcceptedContactProfile(final int id, final String username, final String fullName, final String email, final String contacts, final String avatarID)
     {
-        super(id, email);
+        super(id, username);
         FullName = fullName;
-        Username = username;
+        Email = email;
         Contacts = contacts;
         AvatarID = avatarID;
     }

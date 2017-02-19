@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
@@ -37,19 +38,19 @@ public class ContactProfile implements Comparable<ContactProfile>
     }
 
     private int ID;
-    protected String Email;
+    protected String Username;
 
-    public ContactProfile(int id, String email)
+    public ContactProfile(int id, String username)
     {
         ID = id;
-        Email = email;
+        Username = username;
     }
     public final int GetID() { return ID; }
     public String GetEmail() { return "Pending..."; }
-    public String GetUsername() { return "null"; }
-    public String GetFullName() { return Email; }
-    public String GetShortName() { return "null"; }
-    public String GetDisplayName() { return Email; }
+    public String GetUsername() { return Username; }
+    public String GetFullName() { return "N/A"; }
+    public String GetShortName() { return "N/A"; }
+    public String GetDisplayName() { return Username; }
     public String GetContacts() { return "null"; }
     public String GetAvatarID() { return "default"; }
     public boolean IsContact()
@@ -83,34 +84,38 @@ public class ContactProfile implements Comparable<ContactProfile>
         return list;
     }
 
-/*    public RelativeLayout CreateCategoryWidgetForGrid(final Activity activity)
+    public final Dialog CreatePreviewDialog(final Activity activity)
     {
-        RelativeLayout layout = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_icon, null);
+        final Dialog dialog = new Dialog(activity);
+        dialog.setTitle("Profile Preview");
+        dialog.setContentView(R.layout.dialog_profile_preview);
+        dialog.show();
 
-        TextView tv_name = (TextView) layout.findViewById(R.id.contact_name);
-        TextView tv_reminders = (TextView) layout.findViewById(R.id.contact_reminders);
-        ImageView iv_avatar = (ImageView) layout.findViewById(R.id.contact_avatar);
+        TextView tv_fullName = (TextView) dialog.findViewById(R.id.dialog_profile_preview_fullName);
+        TextView tv_username = (TextView) dialog.findViewById(R.id.dialog_profile_preview_username);
+        TextView tv_email = (TextView) dialog.findViewById(R.id.dialog_profile_preview_email);
 
-        tv_name.setText(GetShortName());
-        tv_reminders.setText("" + GetAmountOfReminders());
-        iv_avatar.setBackground(AvatarImageUtil.GetAvatar(GetAvatarID()));
+        ImageView iv_avatar = (ImageView) dialog.findViewById(R.id.dialog_profile_preview_image);
+        ImageView iv_close = (ImageView) dialog.findViewById(R.id.dialog_profile_preview_close);
 
-        final ContactProfile cp = this;
-        layout.setOnClickListener(new View.OnClickListener()
+        tv_fullName.setText(GetFullName());
+        tv_username.setText(GetUsername());
+        tv_email.setText(GetEmail());
+
+        iv_close.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(UserAreaActivity.GetActivity(), ReminderListActivity.class);
-                intent.putExtra("contactID", cp.GetID());
-                UserAreaActivity.GetActivity().startActivity(intent);
+                dialog.cancel();
             }
         });
+        iv_avatar.setImageDrawable(AvatarImageUtil.GetAvatar(GetAvatarID()));
 
-        return layout;
-    }*/
+        return dialog;
+    }
 
-    public LinearLayout CreateCategoryWidget(final Activity activity)
+    public final LinearLayout CreateCategoryWidget(final Activity activity)
     {
         LinearLayout layout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_details, null);
 
@@ -137,7 +142,7 @@ public class ContactProfile implements Comparable<ContactProfile>
         return layout;
     }
 
-    public LinearLayout CreateWidget(final ManageContactsActivity activity)
+    public final LinearLayout CreateWidget(final ManageContactsActivity activity)
     {
         LinearLayout layout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.widget_contact_details_manage, null);
 

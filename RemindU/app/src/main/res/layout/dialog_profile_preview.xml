@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:minHeight="100dp"
+    android:minWidth="300dp"
+    >
+
+    <ImageView
+        android:id="@+id/dialog_profile_preview_close"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/close_window_48"
+        android:layout_gravity="right" />
+
+    <ImageView
+        android:id="@+id/dialog_profile_preview_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/avatar_generic_04"
+        android:layout_gravity="center"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="3dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full Name: "
+                android:fontFamily="sans-serif-medium"
+                android:textSize="16dp"/>
+            <TextView
+                android:id="@+id/dialog_profile_preview_fullName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="N/A"
+                android:fontFamily="sans-serif-light"
+                android:textSize="16dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="3dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username: "
+                android:fontFamily="sans-serif-medium"
+                android:textSize="16dp"/>
+            <TextView
+                android:id="@+id/dialog_profile_preview_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="N/A"
+                android:fontFamily="sans-serif-light"
+                android:textSize="16dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="3dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email: "
+                android:fontFamily="sans-serif-medium"
+                android:textSize="16dp"/>
+            <TextView
+                android:id="@+id/dialog_profile_preview_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="N/A"
+                android:fontFamily="sans-serif-light"
+                android:textSize="16dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
