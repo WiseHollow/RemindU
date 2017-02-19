@@ -94,6 +94,11 @@ public class FeedFragment extends Fragment
             if (flag.GetDateOfFlag() == null)
                 continue;
 
+            if (!UserAreaActivity.GetActivity().SharedPreferences.getBoolean("settings_display_creations", false) &&
+                    flag.GetState() == Reminder.ReminderState.NOT_STARTED &&
+                    flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
+                continue;
+
             realIndex++;
 
             LinearLayout widget = (LinearLayout) UserAreaActivity.GetActivity().GetLayoutInflater().inflate(R.layout.widget_reminder_in_feed, null);

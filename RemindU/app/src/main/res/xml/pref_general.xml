@@ -12,4 +12,10 @@
         android:summary="@string/summary_settings_background_service"
         android:title="@string/title_settings_background_service" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="settings_display_creations"
+        android:summary="Display the activities you post, on your feed."
+        android:title="Display Your Creations" />
+
 </PreferenceScreen>
