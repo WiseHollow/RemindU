@@ -541,15 +541,13 @@ public class Reminder implements Comparable<Reminder>
             dialog.setContentView(R.layout.dialog_send_coins);
             dialog.show();
 
-            final TextView tv_recipient = (TextView) dialog.findViewById(R.id.textView_sc_recipient);
-            final TextView tv_coins = (TextView) dialog.findViewById(R.id.textView_sc_coins);
+            final TextView tv_message = (TextView) dialog.findViewById(R.id.textView_sc_message);
             final Button button_skip = (Button) dialog.findViewById(R.id.button_sc_skip);
             final Button button_send_1 = (Button) dialog.findViewById(R.id.button_sc_send_1);
             final Button button_send_5 = (Button) dialog.findViewById(R.id.button_sc_send_5);
             final Button button_send_10 = (Button) dialog.findViewById(R.id.button_sc_send_10);
 
-            tv_recipient.setText("Recipient: " + reminder.GetFullName());
-            tv_coins.setText("Reputation: " + UserProfile.PROFILE.GetCoins());
+            tv_message.setText(tv_message.getText().toString().replace("%fn", GetFullName()));
 
             button_skip.setOnClickListener(new View.OnClickListener()
             {
@@ -979,8 +977,12 @@ public class Reminder implements Comparable<Reminder>
         //TODO: Does this take too many resources? IDE said skipped frames.
         if (MasterScheduler.GetInstance() == null || MasterScheduler.GetInstance().GetContextWrapper() == null) { return; }
 
-        NotificationCompat.Builder notification = GetNotification(type, message);
         NotificationManager mNotificationManager = (NotificationManager) MasterScheduler.GetInstance().GetContextWrapper().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Remove any notifications concerning this reminder first.
+        mNotificationManager.cancel(GetID());
+
+        NotificationCompat.Builder notification = GetNotification(type, message);
         mNotificationManager.notify(GetID(), notification.build());
         if (!vibrate) { return; }
 

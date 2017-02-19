@@ -3,84 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="20dp">
+    android:padding="20dp"
+    android:gravity="center_horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="20dp"
-        >
+        android:text="Activity Completion Rewarding"
+        android:textSize="20dp"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginBottom="10dp"
+        />
 
-        <TextView
-            android:text="Recipient: "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_sc_recipient"
-            android:gravity="left"
-            android:layout_weight="1"
-            />
-
-        <TextView
-            android:text="Coins: "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_sc_coins"
-            android:gravity="right"
-            android:layout_weight="1"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textView_sc_message"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        >
+        android:text="How did %fn perform? Send him reputation that reflect the quality of the activity completion."
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginBottom="10dp"
+        />
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Skip"
-            android:id="@+id/button_sc_skip"
-            />
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Nice! (+1)"
-            android:id="@+id/button_sc_send_1"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        >
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Great! (+2)"
-            android:id="@+id/button_sc_send_5"
-            />
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Perfect! (+3)"
-            android:id="@+id/button_sc_send_10"
-            />
-
-
-    </LinearLayout>
+        android:layout_height="150px"
+        android:text="Skip"
+        android:id="@+id/button_sc_skip"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="150px"
+        android:text="Nice! (+1)"
+        android:id="@+id/button_sc_send_1"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="150px"
+        android:text="Great! (+2)"
+        android:id="@+id/button_sc_send_5"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="150px"
+        android:text="Perfect! (+3)"
+        android:id="@+id/button_sc_send_10"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
