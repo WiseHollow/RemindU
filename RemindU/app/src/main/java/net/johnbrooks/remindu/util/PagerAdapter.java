@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import net.johnbrooks.remindu.fragments.FeedFragment;
-import net.johnbrooks.remindu.fragments.PrimaryFragment;
+import net.johnbrooks.remindu.fragments.DiscoverFragment;
 
 /**
  * Created by ieatl on 2/2/2017.
@@ -24,7 +24,7 @@ public class PagerAdapter extends FragmentPagerAdapter
         switch (position)
         {
             case 0:
-                return new PrimaryFragment();
+                return new DiscoverFragment();
             case 1:
                 return new FeedFragment();
             default:

@@ -29,6 +29,7 @@ import net.johnbrooks.remindu.util.Reminder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 public class CreateReminderActivity extends AppCompatActivity
 {
@@ -77,7 +78,11 @@ public class CreateReminderActivity extends AppCompatActivity
         b_date = (Button) findViewById(R.id.button_cnr_pick_date);
         b_send = (Button) findViewById(R.id.button_cnr_send);
 
-        tv_recipient.setText("Recipient: " + getIntent().getStringExtra("user_to_fullname"));
+        final String recipientFullNames = getIntent().getStringExtra("recipients_fullNames");
+        final String recipientIds = getIntent().getStringExtra("recipients_ids");
+
+        //tv_recipient.setText("Recipient: " + getIntent().getStringExtra("user_to_fullname"));
+        tv_recipient.setText("Recipient: " + recipientFullNames);
 
         calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -172,23 +177,29 @@ public class CreateReminderActivity extends AppCompatActivity
 
                 boolean important = s_important.isChecked();
 
-                int user_id_to = getIntent().getIntExtra("user_id_to", 0);
-                if (user_id_to == 0)
+                for (String element : recipientIds.split(", "))
                 {
-                    Log.d("SEVERE", "Cannot find user_id_to for creating reminder.");
-                    finish();
-                    return;
+                    int user_id_to = Integer.parseInt(element);
+
+                    //int user_id_to = getIntent().getIntExtra("user_id_to", 0);
+                    if (user_id_to == 0)
+                    {
+                        Log.d("SEVERE", "Cannot find user_id_to for creating reminder.");
+                        continue;
+                    }
+                    else if(user_id_to == -1)
+                    {
+                        progressBar.setVisibility(View.VISIBLE);
+                        Reminder.CreatePersonalReminder(message, important, calendar.getTime(), CreateReminderActivity.this);
+                    }
+                    else
+                    {
+                        progressBar.setVisibility(View.VISIBLE);
+                        Reminder.CreateReminder(user_id_to, message, important, calendar.getTime(), CreateReminderActivity.this);
+                    }
                 }
-                else if(user_id_to == -1)
-                {
-                    progressBar.setVisibility(View.VISIBLE);
-                    Reminder.CreatePersonalReminder(message, important, calendar.getTime(), CreateReminderActivity.this);
-                }
-                else
-                {
-                    progressBar.setVisibility(View.VISIBLE);
-                    Reminder.CreateReminder(user_id_to, message, important, calendar.getTime(), CreateReminderActivity.this);
-                }
+
+
 
                 b_send.setEnabled(false);
             }

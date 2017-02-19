@@ -1,5 +1,6 @@
 package net.johnbrooks.remindu.fragments;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -50,6 +51,8 @@ public class FeedFragment extends Fragment
         ScrollView scrollView = (ScrollView) ContentView.findViewById(R.id.Feed_ScrollView);
         ContactLayout = getLayoutInflater(getArguments()).inflate(R.layout.widget_linear_layout, null);
         scrollView.addView(ContactLayout);
+
+        ContentView.findViewById(R.id.fab).setOnClickListener(UserAreaActivity.GetActivity().OnClickSelectRecipients());
 
         return ContentView;
     }

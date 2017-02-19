@@ -35,6 +35,7 @@ import net.johnbrooks.remindu.activities.CreateReminderActivity;
 import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
+import net.johnbrooks.remindu.requests.SendRemindersRequest;
 import net.johnbrooks.remindu.requests.SendReputationRequest;
 import net.johnbrooks.remindu.requests.SendReminderRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
@@ -60,7 +61,7 @@ public class Reminder implements Comparable<Reminder>
         Reminder reminder = new Reminder(message, UserProfile.PROFILE.GetUserID(), user_id_to, date);
         reminder.SetImportant(important);
 
-        SendReminderRequest.SendRequest(activity, reminder);
+        SendRemindersRequest.SendRequest(activity, reminder);
 
         return reminder;
     }

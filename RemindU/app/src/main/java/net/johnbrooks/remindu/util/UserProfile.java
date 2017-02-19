@@ -2,7 +2,6 @@ package net.johnbrooks.remindu.util;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,7 +20,7 @@ import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
 import net.johnbrooks.remindu.fragments.FeedFragment;
-import net.johnbrooks.remindu.fragments.PrimaryFragment;
+import net.johnbrooks.remindu.fragments.DiscoverFragment;
 import net.johnbrooks.remindu.requests.DeleteReminderRequest;
 import net.johnbrooks.remindu.requests.GetRemindersRequest;
 import net.johnbrooks.remindu.requests.PullProfileRequest;
@@ -253,16 +252,16 @@ public class UserProfile implements Parcelable
         Collections.sort(GetContacts());
 
         char latestChar = '-';
-        ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).removeAllViews();
+        ((ViewGroup) DiscoverFragment.GetInstance().ContactLayout).removeAllViews();
 
         // Separator and personal view for personal reminders
 
         LinearLayout sep = (LinearLayout) UserAreaActivity.GetActivity().getLayoutInflater().inflate(R.layout.widget_alphabet_separator, null);
         TextView character = (TextView) sep.findViewById(R.id.Alphabet_Separator);
         character.setText("Local");
-        ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).addView(sep);
+        ((ViewGroup) DiscoverFragment.GetInstance().ContactLayout).addView(sep);
         View personalView = CreateCategoryWidget(UserAreaActivity.GetActivity());
-        ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).addView(personalView);
+        ((ViewGroup) DiscoverFragment.GetInstance().ContactLayout).addView(personalView);
         personalView.setBackgroundColor(Color.parseColor("#d1ecfc"));
 
         //
@@ -277,13 +276,13 @@ public class UserProfile implements Parcelable
                     sep = (LinearLayout) UserAreaActivity.GetActivity().getLayoutInflater().inflate(R.layout.widget_alphabet_separator, null);
                     character = (TextView) sep.findViewById(R.id.Alphabet_Separator);
                     character.setText("" + cp.GetFullName().charAt(0));
-                    ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).addView(sep);
+                    ((ViewGroup) DiscoverFragment.GetInstance().ContactLayout).addView(sep);
                 }
 
                 latestChar = cp.GetFullName().charAt(0);
                 View view = cp.CreateCategoryWidget(UserAreaActivity.GetActivity());
 
-                ((ViewGroup) PrimaryFragment.GetInstance().ContactLayout).addView(view);
+                ((ViewGroup) DiscoverFragment.GetInstance().ContactLayout).addView(view);
 
                 if (i % 2 != 0)
                     view.setBackgroundColor(Color.parseColor("#eaf7ff"));

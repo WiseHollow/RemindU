@@ -12,10 +12,10 @@ import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 
-public class PrimaryFragment extends Fragment
+public class DiscoverFragment extends Fragment
 {
-    private static PrimaryFragment primaryFragment;
-    public static PrimaryFragment GetInstance() { return primaryFragment; }
+    private static DiscoverFragment discoverFragment;
+    public static DiscoverFragment GetInstance() { return discoverFragment; }
 
     private View ContentView;
     public View ContactLayout;
@@ -27,7 +27,7 @@ public class PrimaryFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        primaryFragment = this;
+        discoverFragment = this;
         iv_compass = (ImageView) UserAreaActivity.GetActivity().findViewById(R.id.fragment_nav_button_compass);
         iv_feed = (ImageView) UserAreaActivity.GetActivity().findViewById(R.id.fragment_nav_button_feed);
 
@@ -36,9 +36,9 @@ public class PrimaryFragment extends Fragment
         ContactLayout = getLayoutInflater(getArguments()).inflate(R.layout.widget_linear_layout, null);
         scrollView.addView(ContactLayout);
 
-        //UpdateUserAreaScheduler.Initialize();
+        ContentView.findViewById(R.id.fab).setOnClickListener(UserAreaActivity.GetActivity().OnClickSelectRecipients());
+
         MasterScheduler.GetInstance(UserAreaActivity.GetActivity()).StartRepeatingTasks();
-        //UserProfile.PROFILE.RefreshReminderLayout();
         return ContentView;
     }
 
