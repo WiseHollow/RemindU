@@ -332,6 +332,12 @@ public class Reminder implements Comparable<Reminder>
         if (GetImportant())
             iv_statusBar.setBackgroundColor(Color.parseColor("#AA3939"));
 
+        if (!UpToDate)
+        {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) iv_statusBar.getLayoutParams();
+            params.width = 20;
+        }
+
         if (GetFrom() == UserProfile.PROFILE.GetUserID())
             tv_Via.setText("To: ");
         else
