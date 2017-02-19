@@ -525,7 +525,7 @@ public class Reminder implements Comparable<Reminder>
         }
     }
 
-    private void ClickRemoveButton(final ReminderListActivity activity)
+    public void ClickRemoveButton(final Activity activity)
     {
         if (!Network.IsConnected() && !IsLocal())
             return;
