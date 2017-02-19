@@ -31,7 +31,7 @@ public class PrimaryFragment extends Fragment
         iv_compass = (ImageView) UserAreaActivity.GetActivity().findViewById(R.id.fragment_nav_button_compass);
         iv_feed = (ImageView) UserAreaActivity.GetActivity().findViewById(R.id.fragment_nav_button_feed);
 
-        ContentView = inflater.inflate(R.layout.fragment_primary, container, false);
+        ContentView = inflater.inflate(R.layout.fragment_discover, container, false);
         scrollView = (ScrollView) ContentView.findViewById(R.id.UserArea_ScrollView);
         ContactLayout = getLayoutInflater(getArguments()).inflate(R.layout.widget_linear_layout, null);
         scrollView.addView(ContactLayout);
