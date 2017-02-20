@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 
 import net.johnbrooks.remindu.activities.AccountDisabledActivity;
 import net.johnbrooks.remindu.activities.ActivateAccountActivity;
+import net.johnbrooks.remindu.activities.ManageContactsActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AcceptedContactProfile;
@@ -127,6 +128,9 @@ public class PullProfileRequest extends StringRequest
                 {
                     e.printStackTrace();
                 }
+
+                if (ManageContactsActivity.GetInstance() != null)
+                    ManageContactsActivity.GetInstance().UpdateContactsList();
             }
         };
     }

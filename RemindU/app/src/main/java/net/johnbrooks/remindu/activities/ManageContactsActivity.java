@@ -26,10 +26,14 @@ import java.util.List;
 
 public class ManageContactsActivity extends AppCompatActivity
 {
+    private static ManageContactsActivity activity;
+    public static ManageContactsActivity GetInstance() { return activity; }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        activity = this;
         setContentView(R.layout.activity_manage_contacts);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

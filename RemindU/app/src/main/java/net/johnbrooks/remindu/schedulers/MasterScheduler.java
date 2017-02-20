@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import net.johnbrooks.remindu.activities.ManageContactsActivity;
 import net.johnbrooks.remindu.util.UserProfile;
 
 /**

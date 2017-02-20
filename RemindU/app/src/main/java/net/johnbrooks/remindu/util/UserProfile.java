@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.johnbrooks.remindu.R;
+import net.johnbrooks.remindu.activities.ManageContactsActivity;
 import net.johnbrooks.remindu.activities.ReminderListActivity;
 import net.johnbrooks.remindu.activities.UserAreaActivity;
 import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
