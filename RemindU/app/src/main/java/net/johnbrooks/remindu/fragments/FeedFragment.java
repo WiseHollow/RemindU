@@ -1,5 +1,6 @@
 package net.johnbrooks.remindu.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
@@ -83,7 +84,7 @@ public class FeedFragment extends Fragment
         if (UserAreaActivity.GetActivity().GetLayoutInflater() == null)
             return;
 
-        List<ReminderFlag> flags = UserProfile.PROFILE.GetReminderFlags();
+        final List<ReminderFlag> flags = UserProfile.PROFILE.GetReminderFlags();
         Collections.sort(flags);
         ((ViewGroup) ContactLayout).removeAllViews();
 
@@ -101,23 +102,47 @@ public class FeedFragment extends Fragment
 
             realIndex++;
 
-            LinearLayout widget = (LinearLayout) UserAreaActivity.GetActivity().GetLayoutInflater().inflate(R.layout.widget_reminder_in_feed, null);
+            final LinearLayout widget = (LinearLayout) UserAreaActivity.GetActivity().GetLayoutInflater().inflate(R.layout.widget_reminder_in_feed, null);
             ((ViewGroup) ContactLayout).addView(widget);
+            flag.SetWidget(widget);
 
-            View.OnClickListener clickLogListener = new View.OnClickListener()
+            // listener for popping up the toolbar.
+            View.OnClickListener clickFlagListener = new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
-                    if (flag.GetState() != Reminder.ReminderState.COMPLETE || flag.GetReminder().GetFrom() != UserProfile.PROFILE.GetUserID())
-                        flag.GetReminder().ClickLogButton(UserAreaActivity.GetActivity());
-                    else
-                        flag.GetReminder().ClickRemoveButton(UserAreaActivity.GetActivity());
+                    RefreshWidgetBackgroundColors(flags);
+                    widget.setBackgroundColor(Color.parseColor("#d5e7f2"));
+
+                    if (UserAreaActivity.GetActivity().ActiveFlag == flag)
+                    {
+                        UserAreaActivity.GetActivity().ToolLayout.setVisibility(View.INVISIBLE);
+                        UserAreaActivity.GetActivity().ActiveFlag = null;
+                        return;
+                    }
+
+                    RefreshToolbar(flag);
                 }
             };
 
-            widget.findViewById(R.id.feed_element_layout_desc).setOnClickListener(clickLogListener);
-            widget.findViewById(R.id.feed_element_state_desc).setOnClickListener(clickLogListener);
+            // listener that will close the toolbar.
+            ContentView.findViewById(R.id.feed_fragment_layout).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    UserAreaActivity.GetActivity().ToolLayout.setVisibility(View.INVISIBLE);
+                    RefreshWidgetBackgroundColors(flags);
+                    UserAreaActivity.GetActivity().ActiveFlag = null;
+                }
+            });
+
+            LinearLayout layoutDesc = (LinearLayout) widget.findViewById(R.id.feed_element_layout_desc);
+            LinearLayout layoutState = (LinearLayout) widget.findViewById(R.id.feed_element_state_desc);
+
+            layoutDesc.setOnClickListener(clickFlagListener);
+            layoutState.setOnClickListener(clickFlagListener);
 
             final View view = widget.findViewById(R.id.feed_element_layout);
             if (realIndex % 2 != 0)
@@ -245,5 +270,69 @@ public class FeedFragment extends Fragment
             tv.setPadding(0, 50, 0, 0);
             ((ViewGroup) ContactLayout).addView(tv);
         }
+    }
+
+    public void RefreshWidgetBackgroundColors(final List<ReminderFlag> flags)
+    {
+        for (ReminderFlag otherFlag : flags)
+        {
+            if (otherFlag == null || otherFlag.GetWidget() == null)
+                continue;
+            otherFlag.GetWidget().setBackgroundColor(Color.parseColor("#ffffff"));
+        }
+    }
+
+    public void RefreshToolbar(final ReminderFlag flag)
+    {
+        final LinearLayout toolLayout = UserAreaActivity.GetActivity().ToolLayout;
+
+        ImageView iv_button_1 = (ImageView) toolLayout.findViewById(R.id.fragment_nav_tools_button_details);
+        ImageView iv_button_2 = (ImageView) toolLayout.findViewById(R.id.fragment_nav_tools_button_delete);
+        ImageView iv_button_3 = (ImageView) toolLayout.findViewById(R.id.fragment_nav_tools_button_mute);
+
+        iv_button_1.setImageResource(flag.GetReminder().GetLogButtonResourceID());
+        iv_button_2.setImageResource(flag.GetReminder().GetActionButtonResourceID());
+        iv_button_3.setImageResource(flag.GetReminder().GetMuteButtonResourceID());
+
+        iv_button_1.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (UserAreaActivity.GetActivity().ActiveFlag == null)
+                    return;
+                UserAreaActivity.GetActivity().ActiveFlag.GetReminder().ClickLogButton(UserAreaActivity.GetActivity());
+                RefreshToolbar(flag);
+                UserAreaActivity.GetActivity().ToolLayout.setVisibility(View.INVISIBLE);
+                UserAreaActivity.GetActivity().ActiveFlag = null;
+            }
+        });
+        iv_button_2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (UserAreaActivity.GetActivity().ActiveFlag == null)
+                    return;
+                UserAreaActivity.GetActivity().ActiveFlag.GetReminder().ClickRemoveButton(UserAreaActivity.GetActivity());
+                RefreshToolbar(flag);
+                UserAreaActivity.GetActivity().ToolLayout.setVisibility(View.INVISIBLE);
+                UserAreaActivity.GetActivity().ActiveFlag = null;
+            }
+        });
+        iv_button_3.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (UserAreaActivity.GetActivity().ActiveFlag == null)
+                    return;
+                UserAreaActivity.GetActivity().ActiveFlag.GetReminder().ClickMuteButton();
+                RefreshToolbar(flag);
+            }
+        });
+
+        toolLayout.setVisibility(View.VISIBLE);
+        UserAreaActivity.GetActivity().ActiveFlag = flag;
     }
 }

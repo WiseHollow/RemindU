@@ -374,7 +374,7 @@ public class Reminder implements Comparable<Reminder>
                 @Override
                 public void onClick(View v)
                 {
-                    ClickMuteButton(activity);
+                    ClickMuteButton();
                 }
             });
 
@@ -604,13 +604,43 @@ public class Reminder implements Comparable<Reminder>
             ReminderListActivity.GetActivity().RefreshReminderLayout();
     }
 
-    private void ClickMuteButton(final ReminderListActivity activity)
+    public void ClickMuteButton()
     {
         UserProfile.PROFILE.SetIgnoreReminder(GetID(), !UserProfile.PROFILE.IsIgnoring(GetID()));
-        activity.RefreshReminderLayout();
+
+        if (ReminderListActivity.GetActivity() != null)
+            ReminderListActivity.GetActivity().RefreshReminderLayout();
     }
 
-    private int GetLogButtonResourceID()
+    public int GetLogButtonResourceID()
+    {
+        if (GetTo() == UserProfile.PROFILE.GetUserID())
+            return R.drawable.mark_as_tool_64;
+        else
+            return R.drawable.details_tool_64;
+    }
+
+    public int GetActionButtonResourceID()
+    {
+        if (GetState() != ReminderState.COMPLETE || GetFrom() != UserProfile.PROFILE.GetUserID())
+        {
+            return R.drawable.delete_tool_64;
+        }
+        else
+        {
+            return R.drawable.approval_tool_64;
+        }
+    }
+
+    public int GetMuteButtonResourceID()
+    {
+        if (!UserProfile.PROFILE.IsIgnoring(GetID()))
+            return R.drawable.mute_tool_64;
+        else
+            return R.drawable.mute_tool_on_64;
+    }
+
+    /*private int GetLogButtonResourceID()
     {
         if (GetState() == ReminderState.IN_PROGRESS)
         if (GetTo() == UserProfile.PROFILE.GetUserID())
@@ -627,9 +657,9 @@ public class Reminder implements Comparable<Reminder>
         return R.drawable.running_48;
     else
         return R.drawable.document_48;
-    }
+    }*/
 
-    private int GetActionButtonResourceID()
+    /*private int GetActionButtonResourceID()
     {
         if (GetState() != ReminderState.COMPLETE || GetFrom() != UserProfile.PROFILE.GetUserID())
         {
@@ -639,15 +669,15 @@ public class Reminder implements Comparable<Reminder>
         {
             return R.drawable.add_reputation_48;
         }
-    }
+    }*/
 
-    private int GetMuteButtonResourceID()
+    /*private int GetMuteButtonResourceID()
     {
         if (!UserProfile.PROFILE.IsIgnoring(GetID()))
             return R.drawable.mute_48;
         else
             return R.drawable.mute_48_red;
-    }
+    }*/
 
     public int[] GetTimeRemaining(Date compare)
     {

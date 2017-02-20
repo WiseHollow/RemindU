@@ -1,5 +1,7 @@
 package net.johnbrooks.remindu.util;
 
+import android.view.View;
+
 import net.johnbrooks.remindu.exceptions.ReminderNotFoundException;
 
 /**
@@ -22,6 +24,8 @@ public class ReminderFlag implements Comparable<ReminderFlag>
     private Reminder.ReminderState state;
     private boolean liked;
 
+    private View widget;
+
     private ReminderFlag(Reminder reminder, Reminder.ReminderState state, boolean liked)
     {
         this.reminder = reminder;
@@ -32,6 +36,7 @@ public class ReminderFlag implements Comparable<ReminderFlag>
     public final boolean IsLiked() { return liked; }
     public final Reminder GetReminder() { return reminder; }
     public final Reminder.ReminderState GetState() { return state; }
+    public final View GetWidget() { return widget; }
     public final String GetDateOfFlag()
     {
         if (state == Reminder.ReminderState.IN_PROGRESS)
@@ -48,6 +53,7 @@ public class ReminderFlag implements Comparable<ReminderFlag>
     {
         this.liked = liked;
     }
+    public final void SetWidget(View widget) { this.widget = widget; }
 
     public final String[] toArray()
     {
