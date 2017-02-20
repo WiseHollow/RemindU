@@ -144,9 +144,9 @@ public class FeedFragment extends Fragment
                 iv_state.setImageResource(R.drawable.activity_complete_48);
 
             if (flag.IsLiked())
-                iv_like.setBackgroundResource(R.drawable.like_it_filled_48);
+                iv_like.setImageResource(R.drawable.like_it_filled_48);
             else
-                iv_like.setBackgroundResource(R.drawable.like_it_48);
+                iv_like.setImageResource(R.drawable.like_it_48);
             iv_like.setOnClickListener(new View.OnClickListener()
             {
                 @Override

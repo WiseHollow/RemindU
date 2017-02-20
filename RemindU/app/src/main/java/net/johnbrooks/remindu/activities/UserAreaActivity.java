@@ -257,6 +257,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
                     @Override
                     public void onClick(View v)
                     {
+
                         String fullNames = "";
                         String userIds = "";
 
@@ -268,6 +269,12 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
                                 fullNames += c.GetFullName() + ", ";
                                 userIds += c.GetID() + ", ";
                             }
+                        }
+
+                        if (userIds == "" || fullNames == "")
+                        {
+                            dialog.cancel();
+                            return;
                         }
 
                         fullNames = fullNames.substring(0, fullNames.length() - 2);

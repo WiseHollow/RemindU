@@ -390,7 +390,7 @@ public class Reminder implements Comparable<Reminder>
 
     public void ClickLogButton(final Activity activity)
     {
-        if (!Network.IsConnected() && (!IsLocal() && GetTo() == UserProfile.PROFILE.GetUserID()))
+        if (activity == null || (!Network.IsConnected() && (!IsLocal() && GetTo() == UserProfile.PROFILE.GetUserID())))
             return;
 
         if (UserProfile.PROFILE.GetUserID() == GetFrom())
@@ -519,7 +519,7 @@ public class Reminder implements Comparable<Reminder>
 
     public void ClickRemoveButton(final Activity activity)
     {
-        if (!Network.IsConnected() && !IsLocal())
+        if (activity == null || (!Network.IsConnected() && !IsLocal()))
             return;
 
         final Reminder reminder = this;

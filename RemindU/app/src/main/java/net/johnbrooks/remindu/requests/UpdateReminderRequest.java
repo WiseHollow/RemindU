@@ -1,6 +1,7 @@
 package net.johnbrooks.remindu.requests;
 
 import android.app.Activity;
+import android.content.ContextWrapper;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -56,7 +57,7 @@ public class UpdateReminderRequest extends StringRequest
         return params;
     }
 
-    private static Response.Listener<String> GetUpdateResponseListener(final Activity activity)
+    private static Response.Listener<String> GetUpdateResponseListener()
     {
         return new Response.Listener<String>()
         {
@@ -73,7 +74,8 @@ public class UpdateReminderRequest extends StringRequest
 
                     if (success)
                     {
-                        MasterScheduler.GetInstance(activity).Call();
+                        if (MasterScheduler.GetInstance() != null)
+                            MasterScheduler.GetInstance().Call();
                     }
                     else
                     {
@@ -91,7 +93,7 @@ public class UpdateReminderRequest extends StringRequest
     {
         if (!Network.IsConnected()) { return; }
 
-        Response.Listener<String> responseListener = GetUpdateResponseListener(UserAreaActivity.GetActivity());
+        Response.Listener<String> responseListener = GetUpdateResponseListener();
         UpdateReminderRequest request = new UpdateReminderRequest(r, responseListener);
         request.setRetryPolicy(new DefaultRetryPolicy(
                 0,

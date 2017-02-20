@@ -245,7 +245,7 @@ public class UserProfile implements Parcelable
 
     public void RefreshReminderLayout()
     {
-        if (UserAreaActivity.GetActivity() == null)
+        if (UserAreaActivity.GetActivity() == null || DiscoverFragment.GetInstance() == null || FeedFragment.GetInstance() == null)
             return;
 
         Collections.sort(GetReminders());
