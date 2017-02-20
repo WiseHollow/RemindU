@@ -2,8 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#f7f7f7"
-    android:orientation="horizontal">
+    android:background="#d4f1ff"
+    android:orientation="horizontal"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <ImageView
         android:layout_width="1px"
@@ -14,33 +16,21 @@
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:layout_weight="1"
-        android:src="@drawable/document_48"
+        android:src="@drawable/details_tool_64"
         />
-    <ImageView
-        android:layout_width="2px"
-        android:layout_height="match_parent"
-        android:background="#cdcd"/>
     <ImageView
         android:id="@+id/reminder_cp_button_2"
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:layout_weight="1"
-        android:src="@drawable/delete_48"
+        android:src="@drawable/delete_tool_64"
         />
-    <ImageView
-        android:layout_width="2px"
-        android:layout_height="match_parent"
-        android:background="#cdcd"/>
     <ImageView
         android:id="@+id/reminder_cp_button_3"
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:layout_weight="1"
-        android:src="@drawable/mute_48"
+        android:src="@drawable/mute_tool_64"
         />
-    <ImageView
-        android:layout_width="1px"
-        android:layout_height="match_parent"
-        android:background="#cdcd"/>
 
 </LinearLayout>
