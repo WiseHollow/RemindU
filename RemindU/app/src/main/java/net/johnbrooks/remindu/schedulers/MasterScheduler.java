@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import net.johnbrooks.remindu.activities.ManageContactsActivity;
+import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
 /**
@@ -27,6 +28,7 @@ public class MasterScheduler
         if (masterScheduler == null)
         {
             masterScheduler = new MasterScheduler(Activity);
+            Network.InitializeNetworkQueue(Activity);
         }
 
         return masterScheduler;
@@ -40,6 +42,7 @@ public class MasterScheduler
         if (masterScheduler == null)
         {
             masterScheduler = new MasterScheduler(Service);
+            Network.InitializeNetworkQueue(Service);
         }
 
         return masterScheduler;

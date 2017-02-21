@@ -125,7 +125,6 @@ public class ActivateAccountRequest extends StringRequest
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-        RequestQueue queue = Volley.newRequestQueue(activity);
-        queue.add(request);
+        Network.PushRequest(request);
     }
 }

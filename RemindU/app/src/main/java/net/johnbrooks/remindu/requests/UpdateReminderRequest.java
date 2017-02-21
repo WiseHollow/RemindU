@@ -99,7 +99,7 @@ public class UpdateReminderRequest extends StringRequest
                 0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.GetActivity());
-        queue.add(request);
+
+        Network.PushRequest(request);
     }
 }

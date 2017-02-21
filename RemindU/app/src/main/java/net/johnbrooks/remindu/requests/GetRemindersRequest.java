@@ -143,7 +143,10 @@ public class GetRemindersRequest extends StringRequest
 
     public static void SendRequest(final Service service)
     {
-        if (service == null || !Network.IsConnected()) { return; }
+        if (service == null || !Network.IsConnected())
+        {
+            return;
+        }
 
         if (UserProfile.PROFILE == null)
             return;
@@ -154,7 +157,7 @@ public class GetRemindersRequest extends StringRequest
                 0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue queue = Volley.newRequestQueue(service);
-        queue.add(request);
+
+        Network.PushRequest(request);
     }
 }

@@ -41,8 +41,6 @@ public class SendRemindersRequest extends StringRequest
     private static final String REQUEST_URL = "http://johnbrooks.net/remindu/scripts/sendReminder.php";
     private Map<String, String> params;
 
-    private static RequestQueue queue = null;
-
     public SendRemindersRequest(int user_id_from, int user_id_to, String password, String message, boolean important, Date date, String dateCreated, Response.Listener<String> listener)
     {
         //TODO: Give error listener instead of null
@@ -127,14 +125,13 @@ public class SendRemindersRequest extends StringRequest
     public static void SendRequest(final CreateReminderActivity activity, Reminder reminder)
     {
         if (!Network.IsConnected() || reminder.IsLocal()) { return; }
-        if (queue == null)
-            queue = Volley.newRequestQueue(activity);
 
         SendRemindersRequest request = new SendRemindersRequest(UserProfile.PROFILE.GetUserID(), reminder.GetTo(), UserProfile.PROFILE.GetPassword(), reminder.GetMessage(), reminder.GetImportant(), reminder.GetDate(), reminder.GetDateCreated(), GetSendResponseListener(activity));
         request.setRetryPolicy(new DefaultRetryPolicy(
                 0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
+
+        Network.PushRequest(request);
     }
 }

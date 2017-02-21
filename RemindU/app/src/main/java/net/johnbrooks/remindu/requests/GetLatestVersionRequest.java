@@ -122,7 +122,7 @@ public class GetLatestVersionRequest extends StringRequest
                 0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue queue = (activity == null) ? Volley.newRequestQueue(UserAreaActivity.GetActivity()) : Volley.newRequestQueue(activity);
-        queue.add(request);
+
+        Network.PushRequest(request);
     }
 }
