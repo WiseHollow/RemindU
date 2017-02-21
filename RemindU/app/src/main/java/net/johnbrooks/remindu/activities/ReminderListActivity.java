@@ -123,6 +123,31 @@ public class ReminderListActivity extends AppCompatActivity
     protected void onStart()
     {
         super.onStart();
+        RefreshReminderLayout();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        UserProfile.PROFILE.SetActiveReminder(null);
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void RefreshReminderLayout()
+    {
         ReminderLayout.removeAllViews();
 
         List<LinearLayout> remindersNotStarted = new ArrayList<>();
@@ -230,30 +255,5 @@ public class ReminderListActivity extends AppCompatActivity
                 }
             }
         }
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        UserProfile.PROFILE.SetActiveReminder(null);
-        finish();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public void RefreshReminderLayout()
-    {
-        onStart();
     }
 }
