@@ -339,7 +339,10 @@ public class Reminder implements Comparable<Reminder>
         tv_Description.setText(GetMessage());
         tv_TimeLeft.setText(GetETA());
 
-        ReminderFlag latestFlag = GetFlags()[GetFlags().length - 1];
+        int pos = GetFlags().length - 1;
+        if (pos == -1)
+            return parent;
+        ReminderFlag latestFlag = GetFlags()[pos];
         if (latestFlag != null && !latestFlag.IsLiked())
             iv_liked.setVisibility(View.INVISIBLE);
 
