@@ -44,6 +44,10 @@ public class AcceptedContactProfile extends ContactProfile
     @Override
     public final boolean IsContact()
     {
+        if (GetID() == -1)
+            return true;
+        if (Contacts.equalsIgnoreCase(""))
+            return false;
         for (String s : Contacts.split(" "))
             if (Integer.parseInt(s) == UserProfile.PROFILE.GetUserID())
                 return true;

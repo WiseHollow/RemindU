@@ -26,12 +26,15 @@ import android.widget.TextView;
 import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.GetLatestVersionRequest;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
+import net.johnbrooks.remindu.util.AcceptedContactProfile;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.PagerAdapter;
 import net.johnbrooks.remindu.util.UserProfile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class UserAreaActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -292,8 +295,20 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
 
                 LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.dialog_select_recipients_layout);
 
+                // Get ourselves first.
+                /*View our_View = getLayoutInflater().inflate(R.layout.widget_contact_selection, null);
+                TextView our_tv_fullName = (TextView) our_View.findViewById(R.id.widget_contact_selection_fullName);
+                TextView our_tv_reputation = (TextView) our_View.findViewById(R.id.widget_contact_selection_reputation);
+                ImageView our_iv_avatar = (ImageView) our_View.findViewById(R.id.widget_contact_selection_avatar);
+                CheckBox our_cb_select = (CheckBox) our_View.findViewById(R.id.widget_contact_selection_checkbox);*/
 
-                for (ContactProfile cp : UserProfile.PROFILE.GetContacts())
+                AcceptedContactProfile us = new AcceptedContactProfile(-1, UserProfile.PROFILE.GetUsername(), "Me", UserProfile.PROFILE.GetEmail(), "", UserProfile.PROFILE.GetAvatarID());
+                List<ContactProfile> profiles = new ArrayList<>();
+                profiles.add(us);
+                profiles.addAll(UserProfile.PROFILE.GetContacts());
+
+
+                for (ContactProfile cp : profiles)
                 {
                     if (cp.IsContact())
                     {
@@ -301,10 +316,9 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
 
                         TextView tv_fullName = (TextView) view.findViewById(R.id.widget_contact_selection_fullName);
                         TextView tv_reputation = (TextView) view.findViewById(R.id.widget_contact_selection_reputation);
-
                         ImageView iv_avatar = (ImageView) view.findViewById(R.id.widget_contact_selection_avatar);
-
                         CheckBox cb_select = (CheckBox) view.findViewById(R.id.widget_contact_selection_checkbox);
+
                         selection.put(cb_select, cp);
 
                         tv_fullName.setText(cp.GetFullName());
@@ -319,17 +333,4 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
             }
         };
     }
-
-    /*public ContactViewType GetCurrentContactViewType()
-    {
-        return ContactViewType.values()[SharedPreferences.getInt("VIEW", 0)];
-    }
-
-    public void ApplyContactViewType()
-    {
-        ContactViewType viewType = GetCurrentContactViewType();
-        ContactScrollView.removeAllViewsInLayout();
-        ContactLayout = ((viewType == ContactViewType.LIST) ? getLayoutInflater().inflate(R.layout.widget_linear_layout, null) : getLayoutInflater().inflate(R.layout.widget_grid_layout, null));
-        ContactScrollView.addView(ContactLayout);
-    }*/
 }
