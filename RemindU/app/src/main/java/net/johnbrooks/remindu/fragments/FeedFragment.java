@@ -106,9 +106,13 @@ public class FeedFragment extends Fragment
             if (flag.GetDateOfFlag() == null)
                 continue;
 
-            if (!UserAreaActivity.GetActivity().SharedPreferences.getBoolean("settings_display_creations", false) &&
+            boolean showMyActivity = UserAreaActivity.GetActivity().SharedPreferences.getBoolean("settings_display_my_activities", false);
+            if (!showMyActivity &&
                     flag.GetState() == Reminder.ReminderState.NOT_STARTED &&
                     flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
+                continue;
+
+            if (!showMyActivity && flag.GetReminder().GetTo() == UserProfile.PROFILE.GetUserID())
                 continue;
 
             realIndex++;

@@ -14,8 +14,8 @@
 
     <SwitchPreference
         android:defaultValue="false"
-        android:key="settings_display_creations"
-        android:summary="Display the activities you post, on your feed."
-        android:title="Display Your Creations" />
+        android:key="settings_display_my_activities"
+        android:summary="Populate the feed with activities that you created and updated."
+        android:title="Display Your Activities on Feed" />
 
 </PreferenceScreen>
