@@ -116,9 +116,9 @@ public class FeedFragment extends Fragment
             LinearLayout widget = flag.CreateWidget(UserAreaActivity.GetActivity());
             ((ViewGroup) ContactLayout).addView(widget);
             if (realIndex % 2 != 0)
-                widget.findViewById(R.id.feed_element_layout).setBackgroundColor(Color.parseColor("#eaf7ff"));
+                widget.setBackgroundColor(Color.parseColor("#eaf7ff"));
             else
-                widget.findViewById(R.id.feed_element_layout).setBackgroundColor(Color.parseColor("#FCFCFC"));
+                widget.setBackgroundColor(Color.parseColor("#FCFCFC"));
         }
 
         if (realIndex == 0)
