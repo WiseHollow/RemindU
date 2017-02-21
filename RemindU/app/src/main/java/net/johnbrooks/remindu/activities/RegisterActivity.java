@@ -3,6 +3,7 @@ package net.johnbrooks.remindu.activities;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,7 +53,7 @@ public class RegisterActivity extends AppCompatActivity
                 final String passwordConfirm = etPasswordConfirm.getText().toString();
 
                 AlertDialog.Builder errorDialog = new AlertDialog.Builder(RegisterActivity.this);
-                if (!password.equals(passwordConfirm))
+                if (password.hashCode() != passwordConfirm.hashCode())
                 {
                     etPassword.setText("");
                     etPasswordConfirm.setText("");
