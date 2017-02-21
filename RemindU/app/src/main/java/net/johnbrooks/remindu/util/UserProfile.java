@@ -125,6 +125,7 @@ public class UserProfile implements Parcelable
     private List<Integer> ReminderIgnores;
 
     private Reminder activeReminder;
+    private ReminderFlag activeReminderFlag;
 
     public UserProfile(int id, final int active, final String fullName, final String username, final String email, final String password, final Integer coins, final String avatarID)
     {
@@ -142,6 +143,7 @@ public class UserProfile implements Parcelable
         ReminderIgnores = new ArrayList<>();
 
         activeReminder = null;
+        activeReminderFlag = null;
     }
 
     public final int GetActiveState() { return Active; }
@@ -154,6 +156,7 @@ public class UserProfile implements Parcelable
     public final int GetCoins() { return Coins; }
     public final boolean IsIgnoring(int id) { return ReminderIgnores.contains(id); }
     public final Reminder GetActiveReminder() { return activeReminder; }
+    public final ReminderFlag GetActiveReminderFlag() { return activeReminderFlag; }
     public final String GetAvatarID() { return AvatarID; }
     public final List<Reminder> GetActiveSentReminders()
     {
@@ -205,6 +208,7 @@ public class UserProfile implements Parcelable
     {
         activeReminder = reminder;
     }
+    public void SetActiveReminderFlag(ReminderFlag flag) { activeReminderFlag = flag; }
     public void SetIgnoreReminder(int id, boolean value)
     {
         if (value)

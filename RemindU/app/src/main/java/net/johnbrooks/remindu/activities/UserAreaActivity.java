@@ -29,7 +29,6 @@ import net.johnbrooks.remindu.schedulers.MasterScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
 import net.johnbrooks.remindu.util.ContactProfile;
 import net.johnbrooks.remindu.util.PagerAdapter;
-import net.johnbrooks.remindu.util.ReminderFlag;
 import net.johnbrooks.remindu.util.UserProfile;
 
 import java.util.HashMap;
@@ -45,17 +44,12 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
 
     private LayoutInflater layoutInflater;
     public LayoutInflater GetLayoutInflater() { return layoutInflater; }
-    public LinearLayout ToolLayout = null;
-
-    public ReminderFlag ActiveFlag;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         activity = UserAreaActivity.this;
-        ActiveFlag = null;
         layoutInflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         setContentView(R.layout.activity_user_area);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -144,8 +138,6 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
                 viewPager.setCurrentItem(1, true);
             }
         });
-
-        ToolLayout = (LinearLayout) findViewById(R.id.fragment_nav_tools_layout);
 
         //
         // Create Listeners

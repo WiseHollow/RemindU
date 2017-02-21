@@ -90,6 +90,17 @@ public class FeedFragment extends Fragment
 
         int realIndex = 0;
 
+        ContentView.findViewById(R.id.feed_fragment_layout).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //When anywhere else is clicked
+                UserProfile.PROFILE.SetActiveReminderFlag(null);
+                RefreshReminderLayout();
+            }
+        });
+
         for (final ReminderFlag flag : flags)
         {
             if (flag.GetDateOfFlag() == null)
@@ -102,164 +113,12 @@ public class FeedFragment extends Fragment
 
             realIndex++;
 
-            final LinearLayout widget = (LinearLayout) UserAreaActivity.GetActivity().GetLayoutInflater().inflate(R.layout.widget_reminder_in_feed, null);
+            LinearLayout widget = flag.CreateWidget(UserAreaActivity.GetActivity());
             ((ViewGroup) ContactLayout).addView(widget);
-            flag.SetWidget(widget);
-
-            // listener for popping up the toolbar.
-            View.OnClickListener clickFlagListener = new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    RefreshWidgetBackgroundColors(flags);
-                    widget.setBackgroundColor(Color.parseColor("#d5e7f2"));
-
-                    if (UserAreaActivity.GetActivity().ActiveFlag == flag)
-                    {
-                        UserAreaActivity.GetActivity().ToolLayout.setVisibility(View.INVISIBLE);
-                        UserAreaActivity.GetActivity().ActiveFlag = null;
-                        return;
-                    }
-
-                    RefreshToolbar(flag);
-                }
-            };
-
-            // listener that will close the toolbar.
-            ContentView.findViewById(R.id.feed_fragment_layout).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    UserAreaActivity.GetActivity().ToolLayout.setVisibility(View.INVISIBLE);
-                    RefreshWidgetBackgroundColors(flags);
-                    UserAreaActivity.GetActivity().ActiveFlag = null;
-                }
-            });
-
-            LinearLayout layoutDesc = (LinearLayout) widget.findViewById(R.id.feed_element_layout_desc);
-            LinearLayout layoutState = (LinearLayout) widget.findViewById(R.id.feed_element_state_desc);
-
-            layoutDesc.setOnClickListener(clickFlagListener);
-            layoutState.setOnClickListener(clickFlagListener);
-
-            final View view = widget.findViewById(R.id.feed_element_layout);
             if (realIndex % 2 != 0)
-                view.setBackgroundColor(Color.parseColor("#eaf7ff"));
+                widget.findViewById(R.id.feed_element_layout).setBackgroundColor(Color.parseColor("#eaf7ff"));
             else
-                view.setBackgroundColor(Color.parseColor("#FCFCFC"));
-
-            final ImageView iv_avatar = (ImageView) widget.findViewById(R.id.feed_element_avatar);
-            final TextView tv_fullName = (TextView) widget.findViewById(R.id.feed_element_fullName);
-            final TextView tv_state = (TextView) widget.findViewById(R.id.feed_element_state);
-            final TextView tv_activityInfo = (TextView) widget.findViewById(R.id.feed_element_activityInfo);
-            final TextView tv_time = (TextView) widget.findViewById(R.id.feed_element_time);
-            final ImageView iv_like = (ImageView) widget.findViewById(R.id.feed_element_like);
-            final ImageView iv_state = (ImageView) widget.findViewById(R.id.feed_element_image_state);
-
-            if (flag.GetReminder().GetTo() != UserProfile.PROFILE.GetUserID())
-                widget.findViewById(R.id.feed_element_available).setVisibility(View.INVISIBLE);
-
-            if (flag.GetState() == Reminder.ReminderState.NOT_STARTED)
-                iv_state.setImageResource(R.drawable.create_new_48);
-            else if (flag.GetState() == Reminder.ReminderState.IN_PROGRESS)
-                iv_state.setImageResource(R.drawable.in_progress_48);
-            else
-                iv_state.setImageResource(R.drawable.activity_complete_48);
-
-            if (flag.IsLiked())
-                iv_like.setImageResource(R.drawable.like_it_filled_48);
-            else
-                iv_like.setImageResource(R.drawable.like_it_48);
-            iv_like.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    flag.SetLiked(!flag.IsLiked());
-                    if (flag.IsLiked())
-                        iv_like.setImageResource(R.drawable.like_it_blue_48);
-                    else
-                        iv_like.setImageResource(R.drawable.like_it_48);
-                    UserProfile.PROFILE.SaveReminderFlagsToFile();
-                    UpdateReminderLikeRequest.SendRequest(flag);
-                }
-            });
-
-            ContactProfile cp;
-
-            String avatar_id;
-            String full_name;
-
-            if (flag.GetState() == Reminder.ReminderState.NOT_STARTED)
-                cp = ContactProfile.GetProfile(flag.GetReminder().GetFrom());
-            else
-                cp = ContactProfile.GetProfile(flag.GetReminder().GetTo());
-
-            if (cp == null)
-            {
-                avatar_id = UserProfile.PROFILE.GetAvatarID();
-                full_name = UserProfile.PROFILE.GetFullName();
-
-                iv_avatar.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        UserProfile.PROFILE.CreatePreviewDialog(UserAreaActivity.GetActivity()).show();
-                    }
-                });
-            }
-            else
-            {
-                avatar_id = cp.GetAvatarID();
-                full_name = cp.GetFullName();
-
-                final ContactProfile fCP = cp;
-
-                iv_avatar.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        fCP.CreatePreviewDialog(UserAreaActivity.GetActivity()).show();
-                    }
-                });
-            }
-
-
-            if (avatar_id == null || full_name == null)
-            {
-                Log.d("SEVERE", "FeedFragment cannot locate avatar_id and full_name!");
-                continue;
-            }
-
-            iv_avatar.setBackground(AvatarImageUtil.GetAvatar(avatar_id));
-
-            tv_fullName.setText(full_name);
-
-            String state = flag.GetState().toString();
-            state = state.substring(0, 1).toUpperCase() + state.substring(1);
-
-            tv_state.setText(state);
-            tv_activityInfo.setText(flag.GetReminder().GetMessage());
-
-            DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-            Date reminderDateToCompare;
-            String timeLeft;
-
-            try
-            {
-                reminderDateToCompare = formatter.parse(flag.GetDateOfFlag());
-                timeLeft = flag.GetReminder().GetRoughTimeSince(reminderDateToCompare);
-            } catch (ParseException e)
-            {
-                e.printStackTrace();
-                timeLeft = "error";
-            }
-
-            tv_time.setText(timeLeft);
+                widget.findViewById(R.id.feed_element_layout).setBackgroundColor(Color.parseColor("#FCFCFC"));
         }
 
         if (realIndex == 0)
@@ -272,67 +131,8 @@ public class FeedFragment extends Fragment
         }
     }
 
-    public void RefreshWidgetBackgroundColors(final List<ReminderFlag> flags)
+    public void RefreshReminderLayout()
     {
-        for (ReminderFlag otherFlag : flags)
-        {
-            if (otherFlag == null || otherFlag.GetWidget() == null)
-                continue;
-            otherFlag.GetWidget().setBackgroundColor(Color.parseColor("#ffffff"));
-        }
-    }
-
-    public void RefreshToolbar(final ReminderFlag flag)
-    {
-        final LinearLayout toolLayout = UserAreaActivity.GetActivity().ToolLayout;
-
-        ImageView iv_button_1 = (ImageView) toolLayout.findViewById(R.id.fragment_nav_tools_button_details);
-        ImageView iv_button_2 = (ImageView) toolLayout.findViewById(R.id.fragment_nav_tools_button_delete);
-        ImageView iv_button_3 = (ImageView) toolLayout.findViewById(R.id.fragment_nav_tools_button_mute);
-
-        iv_button_1.setImageResource(flag.GetReminder().GetLogButtonResourceID());
-        iv_button_2.setImageResource(flag.GetReminder().GetActionButtonResourceID());
-        iv_button_3.setImageResource(flag.GetReminder().GetMuteButtonResourceID());
-
-        iv_button_1.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (UserAreaActivity.GetActivity().ActiveFlag == null)
-                    return;
-                UserAreaActivity.GetActivity().ActiveFlag.GetReminder().ClickLogButton(UserAreaActivity.GetActivity());
-                RefreshToolbar(flag);
-                UserAreaActivity.GetActivity().ToolLayout.setVisibility(View.INVISIBLE);
-                UserAreaActivity.GetActivity().ActiveFlag = null;
-            }
-        });
-        iv_button_2.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (UserAreaActivity.GetActivity().ActiveFlag == null)
-                    return;
-                UserAreaActivity.GetActivity().ActiveFlag.GetReminder().ClickRemoveButton(UserAreaActivity.GetActivity());
-                RefreshToolbar(flag);
-                UserAreaActivity.GetActivity().ToolLayout.setVisibility(View.INVISIBLE);
-                UserAreaActivity.GetActivity().ActiveFlag = null;
-            }
-        });
-        iv_button_3.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (UserAreaActivity.GetActivity().ActiveFlag == null)
-                    return;
-                UserAreaActivity.GetActivity().ActiveFlag.GetReminder().ClickMuteButton();
-                RefreshToolbar(flag);
-            }
-        });
-
-        toolLayout.setVisibility(View.VISIBLE);
-        UserAreaActivity.GetActivity().ActiveFlag = flag;
+        PopulateActivity();
     }
 }
