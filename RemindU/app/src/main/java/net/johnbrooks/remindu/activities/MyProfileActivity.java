@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,7 +13,6 @@ import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.requests.UpdateSettingsRequest;
 import net.johnbrooks.remindu.schedulers.UpdateMyProfileScheduler;
 import net.johnbrooks.remindu.util.AvatarImageUtil;
-import net.johnbrooks.remindu.util.Reminder;
 import net.johnbrooks.remindu.util.UserProfile;
 
 public class MyProfileActivity extends AppCompatActivity
@@ -106,7 +103,7 @@ public class MyProfileActivity extends AppCompatActivity
         tvActiveSentReminders.setText("" + UserProfile.PROFILE.GetActiveSentReminders().size());
         tvPendingReceivedReminders.setText("" + UserProfile.PROFILE.GetActiveReceivedReminders().size());
 
-        tvPointsRemaining.setText("" + UserProfile.PROFILE.GetCoins());
+        tvPointsRemaining.setText("" + UserProfile.PROFILE.GetReputation());
     }
 
     @Override

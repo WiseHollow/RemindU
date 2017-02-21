@@ -53,6 +53,7 @@ public class ContactProfile implements Comparable<ContactProfile>
     public String GetDisplayName() { return Username; }
     public String GetContacts() { return "null"; }
     public String GetAvatarID() { return "default"; }
+    public int GetReputation() { return 0; }
     public boolean IsContact()
     {
         if (this.getClass() == AcceptedContactProfile.class)

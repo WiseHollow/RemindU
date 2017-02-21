@@ -7,6 +7,7 @@ package net.johnbrooks.remindu.util;
 public class AcceptedContactProfile extends ContactProfile
 {
     private String FullName, Email, Contacts, AvatarID;
+    private int Reputation;
 
     public AcceptedContactProfile(final int id, final String username, final String fullName, final String email, final String contacts, final String avatarID)
     {
@@ -15,6 +16,7 @@ public class AcceptedContactProfile extends ContactProfile
         Email = email;
         Contacts = contacts;
         AvatarID = avatarID;
+        Reputation = 0;
     }
     @Override
     public final String GetFullName() { return FullName; }
@@ -52,5 +54,16 @@ public class AcceptedContactProfile extends ContactProfile
             if (Integer.parseInt(s) == UserProfile.PROFILE.GetUserID())
                 return true;
         return false;
+    }
+
+    @Override
+    public final int GetReputation()
+    {
+        return Reputation;
+    }
+
+    public final void SetReputation(final int Rep)
+    {
+        Reputation = Rep;
     }
 }

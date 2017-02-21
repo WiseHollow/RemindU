@@ -303,6 +303,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
                 CheckBox our_cb_select = (CheckBox) our_View.findViewById(R.id.widget_contact_selection_checkbox);*/
 
                 AcceptedContactProfile us = new AcceptedContactProfile(-1, UserProfile.PROFILE.GetUsername(), "Me", UserProfile.PROFILE.GetEmail(), "", UserProfile.PROFILE.GetAvatarID());
+                us.SetReputation(UserProfile.PROFILE.GetReputation());
                 List<ContactProfile> profiles = new ArrayList<>();
                 profiles.add(us);
                 profiles.addAll(UserProfile.PROFILE.GetContacts());
@@ -322,7 +323,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
                         selection.put(cb_select, cp);
 
                         tv_fullName.setText(cp.GetFullName());
-                        tv_reputation.setText("N/A");
+                        tv_reputation.setText(String.valueOf(cp.GetReputation()));
                         iv_avatar.setImageDrawable(AvatarImageUtil.GetAvatar(cp.GetAvatarID()));
 
                         layout.addView(view);

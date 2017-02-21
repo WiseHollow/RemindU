@@ -68,7 +68,7 @@ public class UpdateMyProfileScheduler
             Activity.tvActiveSentReminders.setText("" + UserProfile.PROFILE.GetActiveSentReminders().size());
             Activity.tvPendingReceivedReminders.setText("" + UserProfile.PROFILE.GetActiveReceivedReminders().size());
 
-            Activity.tvPointsRemaining.setText("" + UserProfile.PROFILE.GetCoins());
+            Activity.tvPointsRemaining.setText("" + UserProfile.PROFILE.GetReputation());
         }
     }
 
