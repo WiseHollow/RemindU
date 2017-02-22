@@ -176,7 +176,7 @@ public class ContactProfile implements Comparable<ContactProfile>
     @Override
     public String toString()
     {
-        return GetID() + "%" + GetEmail() + "%" + GetUsername() + "%" + GetFullName() + "%" + GetContacts() + "%" + GetAvatarID();
+        return GetID() + "%" + GetEmail() + "%" + GetUsername() + "%" + GetFullName() + "%" + GetContacts() + "%" + GetAvatarID() + "%" + GetReputation();
     }
 
     @Override

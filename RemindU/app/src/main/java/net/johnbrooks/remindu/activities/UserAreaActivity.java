@@ -302,8 +302,7 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
                 ImageView our_iv_avatar = (ImageView) our_View.findViewById(R.id.widget_contact_selection_avatar);
                 CheckBox our_cb_select = (CheckBox) our_View.findViewById(R.id.widget_contact_selection_checkbox);*/
 
-                AcceptedContactProfile us = new AcceptedContactProfile(-1, UserProfile.PROFILE.GetUsername(), "Me", UserProfile.PROFILE.GetEmail(), "", UserProfile.PROFILE.GetAvatarID());
-                us.SetReputation(UserProfile.PROFILE.GetReputation());
+                AcceptedContactProfile us = new AcceptedContactProfile(-1, UserProfile.PROFILE.GetUsername(), "Me", UserProfile.PROFILE.GetEmail(), "", UserProfile.PROFILE.GetAvatarID(), UserProfile.PROFILE.GetReputation());
                 List<ContactProfile> profiles = new ArrayList<>();
                 profiles.add(us);
                 profiles.addAll(UserProfile.PROFILE.GetContacts());

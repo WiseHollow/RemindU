@@ -154,11 +154,12 @@ public class LoginActivity extends AppCompatActivity
                 String cFullName = element[3];
                 String cContacts = element[4];
                 String cAvatarID = element[5];
+                int reputation = Integer.parseInt(element[6]);
 
                 if (cFullName.equalsIgnoreCase("null"))
                     UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
                 else
-                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID));
+                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID, reputation));
             }
         }
         else
@@ -204,11 +205,12 @@ public class LoginActivity extends AppCompatActivity
                 String cFullName = element[3];
                 String cContacts = element[4];
                 String cAvatarID = element[5];
+                int reputation = Integer.parseInt(element[6]);
 
                 if (cFullName.equalsIgnoreCase("null"))
                     UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
                 else
-                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID));
+                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID, reputation));
             }
         }
 

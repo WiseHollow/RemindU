@@ -9,14 +9,14 @@ public class AcceptedContactProfile extends ContactProfile
     private String FullName, Email, Contacts, AvatarID;
     private int Reputation;
 
-    public AcceptedContactProfile(final int id, final String username, final String fullName, final String email, final String contacts, final String avatarID)
+    public AcceptedContactProfile(final int id, final String username, final String fullName, final String email, final String contacts, final String avatarID, final int reputation)
     {
         super(id, username);
         FullName = fullName;
         Email = email;
         Contacts = contacts;
         AvatarID = avatarID;
-        Reputation = 0;
+        Reputation = reputation;
     }
     @Override
     public final String GetFullName() { return FullName; }
