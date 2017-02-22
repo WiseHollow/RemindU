@@ -339,12 +339,13 @@ public class Reminder implements Comparable<Reminder>
         tv_Description.setText(GetMessage());
         tv_TimeLeft.setText(GetETA());
 
-        int pos = GetFlags().length - 1;
-        if (pos == -1)
-            return parent;
-        ReminderFlag latestFlag = GetFlags()[pos];
-        if (latestFlag != null && !latestFlag.IsLiked())
-            iv_liked.setVisibility(View.INVISIBLE);
+        final int pos = GetFlags().length - 1;
+        if (pos != -1)
+        {
+            ReminderFlag latestFlag = GetFlags()[pos];
+            if (latestFlag != null && !latestFlag.IsLiked())
+                iv_liked.setVisibility(View.INVISIBLE);
+        }
 
         if (UserProfile.PROFILE.GetActiveReminder() == reminder)
         {
@@ -617,7 +618,7 @@ public class Reminder implements Comparable<Reminder>
 
     public int GetLogButtonResourceID()
     {
-        if (GetTo() == UserProfile.PROFILE.GetUserID())
+        if (GetTo() == UserProfile.PROFILE.GetUserID() || GetTo() == -1)
             return R.drawable.mark_as_tool_64;
         else
             return R.drawable.details_tool_64;
