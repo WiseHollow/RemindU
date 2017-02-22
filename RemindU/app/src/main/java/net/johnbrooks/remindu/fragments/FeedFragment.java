@@ -115,6 +115,9 @@ public class FeedFragment extends Fragment
             if (!showMyActivity && flag.GetReminder().GetTo() == UserProfile.PROFILE.GetUserID())
                 continue;
 
+            if (!showMyActivity && flag.GetReminder().IsLocal())
+                continue;
+
             realIndex++;
 
             LinearLayout widget = flag.CreateWidget(UserAreaActivity.GetActivity());

@@ -70,6 +70,15 @@ public class Reminder implements Comparable<Reminder>
         if (ReminderListActivity.GetActivity() != null)
             ReminderListActivity.GetActivity().RefreshReminderLayout();
 
+        try
+        {
+            ReminderFlag.Create(reminder.GetID(), ReminderState.NOT_STARTED, (reminder.GetFlag(ReminderState.NOT_STARTED) != null) ? reminder.GetFlag(ReminderState.NOT_STARTED).IsLiked() : false);
+        }
+        catch (ReminderNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
         return reminder;
     }
     /** Insert a reminder into memory (local only). */
@@ -618,7 +627,7 @@ public class Reminder implements Comparable<Reminder>
 
     public int GetLogButtonResourceID()
     {
-        if (GetTo() == UserProfile.PROFILE.GetUserID() || GetTo() == -1)
+        if (GetTo() == UserProfile.PROFILE.GetUserID() || IsLocal())
             return R.drawable.mark_as_tool_64;
         else
             return R.drawable.details_tool_64;
