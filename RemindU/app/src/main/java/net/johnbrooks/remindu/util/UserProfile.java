@@ -437,6 +437,7 @@ public class UserProfile implements Parcelable
         TextView tv_fullName = (TextView) dialog.findViewById(R.id.dialog_profile_preview_fullName);
         TextView tv_username = (TextView) dialog.findViewById(R.id.dialog_profile_preview_username);
         TextView tv_email = (TextView) dialog.findViewById(R.id.dialog_profile_preview_email);
+        TextView tv_reputation = (TextView) dialog.findViewById(R.id.dialog_profile_preview_reputation);
 
         ImageView iv_avatar = (ImageView) dialog.findViewById(R.id.dialog_profile_preview_image);
         ImageView iv_close = (ImageView) dialog.findViewById(R.id.dialog_profile_preview_close);
@@ -444,6 +445,7 @@ public class UserProfile implements Parcelable
         tv_fullName.setText(GetFullName());
         tv_username.setText(GetUsername());
         tv_email.setText(GetEmail());
+        tv_reputation.setText(String.valueOf(GetReputation()));
 
         iv_close.setOnClickListener(new View.OnClickListener()
         {

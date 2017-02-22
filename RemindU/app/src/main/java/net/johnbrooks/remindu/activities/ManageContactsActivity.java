@@ -105,9 +105,20 @@ public class ManageContactsActivity extends AppCompatActivity
 
         List<ContactProfile> contacts = UserProfile.PROFILE.GetContacts();
         Collections.sort(contacts);
-        for (ContactProfile profile : contacts)
+        for (final ContactProfile profile : contacts)
         {
-            layout.addView(profile.CreateWidget(ManageContactsActivity.this));
+            LinearLayout widget = profile.CreateWidget(ManageContactsActivity.this);
+
+            widget.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    profile.CreatePreviewDialog(ManageContactsActivity.this).show();
+                }
+            });
+
+            layout.addView(widget);
         }
     }
 
