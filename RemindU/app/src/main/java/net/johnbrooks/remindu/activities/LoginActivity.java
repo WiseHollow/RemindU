@@ -21,6 +21,7 @@ import net.johnbrooks.remindu.requests.LoginRequest;
 import net.johnbrooks.remindu.util.Network;
 import net.johnbrooks.remindu.util.UserProfile;
 
+import java.text.ParseException;
 import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity
@@ -147,23 +148,34 @@ public class LoginActivity extends AppCompatActivity
         {
             for(String s : contactsString)
             {
-                String[] element = s.split("%");
-                int cID = Integer.parseInt(element[0]);
-                String cEmail = element[1];
-                String cUsername = element[2];
-                String cFullName = element[3];
-                String cContacts = element[4];
-                String cAvatarID = element[5];
-                int reputation = Integer.parseInt(element[6]);
+                try
+                {
+                    String[] element = s.split("%");
+                    int cID = Integer.parseInt(element[0]);
+                    String cEmail = element[1];
+                    String cUsername = element[2];
+                    String cFullName = element[3];
+                    String cContacts = element[4];
+                    String cAvatarID = element[5];
+                    int reputation = Integer.parseInt(element[6]);
 
-                if (cFullName.equalsIgnoreCase("null"))
-                    UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
-                else
-                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID, reputation));
+                    if (cFullName.equalsIgnoreCase("null"))
+                        UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
+                    else
+                        UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID, reputation));
+                }
+                catch (IndexOutOfBoundsException ex)
+                {
+                    ex.printStackTrace();
+                }
+                catch (NumberFormatException ex)
+                {
+                    ex.printStackTrace();
+                }
             }
         }
         else
-        Log.d("WARNING", "No contacts to load. ");
+            Log.d("WARNING", "No contacts to load. ");
 
         UserProfile.PROFILE.LoadRemindersFromFile();
         UserProfile.PROFILE.LoadReminderFlagsFromFile();
@@ -198,19 +210,30 @@ public class LoginActivity extends AppCompatActivity
         {
             for(String s : contactsString)
             {
-                String[] element = s.split("%");
-                int cID = Integer.parseInt(element[0]);
-                String cEmail = element[1];
-                String cUsername = element[2];
-                String cFullName = element[3];
-                String cContacts = element[4];
-                String cAvatarID = element[5];
-                int reputation = Integer.parseInt(element[6]);
+                try
+                {
+                    String[] element = s.split("%");
+                    int cID = Integer.parseInt(element[0]);
+                    String cEmail = element[1];
+                    String cUsername = element[2];
+                    String cFullName = element[3];
+                    String cContacts = element[4];
+                    String cAvatarID = element[5];
+                    int reputation = Integer.parseInt(element[6]);
 
-                if (cFullName.equalsIgnoreCase("null"))
-                    UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
-                else
-                    UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID, reputation));
+                    if (cFullName.equalsIgnoreCase("null"))
+                        UserProfile.PROFILE.AddContact(new ContactProfile(cID, cEmail));
+                    else
+                        UserProfile.PROFILE.AddContact(new AcceptedContactProfile(cID, cEmail, cFullName, cUsername, cContacts, cAvatarID, reputation));
+                }
+                catch (IndexOutOfBoundsException ex)
+                {
+                    ex.printStackTrace();
+                }
+                catch (NumberFormatException ex)
+                {
+                    ex.printStackTrace();
+                }
             }
         }
 

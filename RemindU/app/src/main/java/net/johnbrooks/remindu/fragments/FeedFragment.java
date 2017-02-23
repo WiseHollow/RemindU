@@ -112,8 +112,8 @@ public class FeedFragment extends Fragment
                     flag.GetReminder().GetFrom() == UserProfile.PROFILE.GetUserID())
                 continue;
 
-            if (!showMyActivity && flag.GetReminder().GetTo() == UserProfile.PROFILE.GetUserID())
-                continue;
+            /*if (!showMyActivity && flag.GetReminder().GetTo() == UserProfile.PROFILE.GetUserID())
+                continue;*/
 
             if (!showMyActivity && flag.GetReminder().IsLocal())
                 continue;
