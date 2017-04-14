@@ -5,6 +5,7 @@ import android.app.Service;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import net.johnbrooks.remindu.R;
 import net.johnbrooks.remindu.schedulers.MasterScheduler;
 
 /**
@@ -35,9 +36,13 @@ public class AvatarImageUtil
         if (AvatarID.equalsIgnoreCase("default"))
             AvatarID = DefaultAvatarID;
         int id = activity.getResources().getIdentifier(AvatarID, "drawable", activity.getPackageName());
-        Drawable drawable = activity.getResources().getDrawable(id);
+        Drawable drawable = null;
+        if (id != 0)
+        {
+            drawable = activity.getDrawable(id);
+        }
         if (drawable == null)
-            Log.d("SEVERE", "Avatar image is a null object.");
+            drawable = activity.getDrawable(R.drawable.avatar_generic_default);
         return drawable;
     }
 
@@ -46,9 +51,13 @@ public class AvatarImageUtil
         if (AvatarID.equalsIgnoreCase("default"))
             AvatarID = DefaultAvatarID;
         int id = service.getResources().getIdentifier(AvatarID, "drawable", service.getPackageName());
-        Drawable drawable = service.getResources().getDrawable(id);
+        Drawable drawable = null;
+        if (id != 0)
+        {
+            drawable = service.getDrawable(id);
+        }
         if (drawable == null)
-            Log.d("SEVERE", "Avatar image is a null object.");
+            drawable = service.getDrawable(R.drawable.avatar_generic_default);
         return drawable;
     }
 

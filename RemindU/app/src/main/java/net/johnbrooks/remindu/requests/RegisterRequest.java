@@ -42,14 +42,14 @@ public class RegisterRequest extends StringRequest
         super(Method.POST, REQUEST_URL, listener, null);
 
         params = new HashMap<>();
-        password = PasswordHash.Hash(password);
+        String hashedPassword = PasswordHash.Hash(password);
         if (password == null)
             return;
 
         params.put("fullname", fullname);
         params.put("username", username);
         params.put("email", email);
-        params.put("password", password);
+        params.put("password", hashedPassword);
 
         FullName = fullname;
         Username = username;
@@ -72,6 +72,8 @@ public class RegisterRequest extends StringRequest
             {
                 try
                 {
+                    activity.RegisterButton.setEnabled(false);
+
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
                     String serverMessage = jsonResponse.getString("message");
@@ -109,10 +111,12 @@ public class RegisterRequest extends StringRequest
                                 .setNegativeButton("Retry", null)
                                 .create()
                                 .show();
+                        activity.RegisterButton.setEnabled(true);
                     }
                 } catch (JSONException e)
                 {
                     e.printStackTrace();
+                    activity.RegisterButton.setEnabled(true);
                 }
 
             }
@@ -122,6 +126,8 @@ public class RegisterRequest extends StringRequest
     public static void SendRequest(RegisterActivity activity, final String fullname, final String username, final String email, final String password)
     {
         if (!Network.IsConnected()) { return; }
+
+        activity.RegisterButton.setEnabled(false);
 
         Response.Listener<String> listener = GetResponseListener(activity);
 

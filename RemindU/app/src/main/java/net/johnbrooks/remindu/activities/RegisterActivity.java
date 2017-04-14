@@ -14,6 +14,7 @@ import net.johnbrooks.remindu.requests.RegisterRequest;
 
 public class RegisterActivity extends AppCompatActivity
 {
+    public Button RegisterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -27,7 +28,7 @@ public class RegisterActivity extends AppCompatActivity
         final EditText etPassword = (EditText) findViewById(R.id.editText_Password);
         final EditText etPasswordConfirm = (EditText) findViewById(R.id.editText_Password_Confirm);
 
-        final Button bRegister = (Button) findViewById(R.id.button_Register);
+        RegisterButton = (Button) findViewById(R.id.button_Register);
         final TextView tv_alreadyRegistered = (TextView) findViewById(R.id.textView_AlreadyRegistered);
 
         tv_alreadyRegistered.setOnClickListener(new View.OnClickListener()
@@ -39,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity
             }
         });
 
-        bRegister.setOnClickListener(new View.OnClickListener()
+        RegisterButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
