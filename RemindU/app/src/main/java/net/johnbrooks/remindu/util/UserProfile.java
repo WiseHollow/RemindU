@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,8 +100,8 @@ public class UserProfile implements Parcelable
         editor.putInt("id", id);
         editor.putBoolean("active", (active > 0) ? true : false);
         editor.putInt("reputation", reputation);
-        editor.putStringSet("contacts", UserProfile.PROFILE.GetContactStringSet());
-        editor.putString("avatar", UserProfile.PROFILE.GetAvatarID());
+        editor.putStringSet("contacts", (UserProfile.PROFILE != null) ? UserProfile.PROFILE.GetContactStringSet() : new HashSet<String>());
+        editor.putString("avatar", (UserProfile.PROFILE != null) ? UserProfile.PROFILE.GetAvatarID() : AvatarImageUtil.DefaultAvatarID);
 
         editor.commit();
     }

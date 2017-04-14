@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
@@ -55,11 +56,27 @@ public class Network
             return false;
 
         ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+
+        boolean connected = false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (connectivityManager.getNetworkInfo(connectivityManager.getActiveNetwork()).getState() == NetworkInfo.State.CONNECTED)
+                connected = true;
+        }
+        else if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)
         {
-            return true;
+            connected = true;
         }
+        //if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+        {
+
+        }
+
+
+
+        if (connected)
+            return true;
         else
         {
             if (UserAreaActivity.GetActivity() != null)
@@ -71,7 +88,6 @@ public class Network
                             .setAction("Action", null).show();
                 }
             }
-
 
             return false;
         }

@@ -13,6 +13,8 @@ import net.johnbrooks.remindu.schedulers.MasterScheduler;
 
 public class AvatarImageUtil
 {
+    public static String DefaultAvatarID = "avatar_generic_default";
+
     public static Drawable GetAvatar(String AvatarID)
     {
         if (AvatarID == null)
@@ -31,7 +33,7 @@ public class AvatarImageUtil
     private static Drawable GetAvatar(Activity activity, String AvatarID)
     {
         if (AvatarID.equalsIgnoreCase("default"))
-            AvatarID = "avatar_generic_default";
+            AvatarID = DefaultAvatarID;
         int id = activity.getResources().getIdentifier(AvatarID, "drawable", activity.getPackageName());
         Drawable drawable = activity.getResources().getDrawable(id);
         if (drawable == null)
@@ -42,7 +44,7 @@ public class AvatarImageUtil
     private static Drawable GetAvatar(Service service, String AvatarID)
     {
         if (AvatarID.equalsIgnoreCase("default"))
-            AvatarID = "avatar_generic_default";
+            AvatarID = DefaultAvatarID;
         int id = service.getResources().getIdentifier(AvatarID, "drawable", service.getPackageName());
         Drawable drawable = service.getResources().getDrawable(id);
         if (drawable == null)
