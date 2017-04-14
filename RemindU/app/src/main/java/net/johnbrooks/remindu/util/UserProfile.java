@@ -661,7 +661,7 @@ public class UserProfile implements Parcelable
 
         final String filename = "reminders.yml";
 
-        File file = new File(UserAreaActivity.GetActivity().getBaseContext().getFilesDir(), filename);
+        File file = new File(MasterScheduler.GetInstance().GetActivity().getBaseContext().getFilesDir(), filename);
 
         if (file.exists())
             file.delete();

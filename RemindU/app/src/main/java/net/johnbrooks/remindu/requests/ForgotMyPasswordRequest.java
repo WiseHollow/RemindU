@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -78,7 +79,8 @@ public class ForgotMyPasswordRequest extends StringRequest
                         dialog.show();
 
                         final TextView input = (TextView) dialog.findViewById(R.id.editText_code);
-                        dialog.findViewById(R.id.button_Confirm).setOnClickListener(new View.OnClickListener()
+                        final Button buttonConfirm = (Button) dialog.findViewById(R.id.button_Confirm);
+                        buttonConfirm.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
@@ -88,6 +90,7 @@ public class ForgotMyPasswordRequest extends StringRequest
 
                                 //TODO: Confirm that the code is correct.
                                 ValidateCodeRequest.SendRequest(activity, target, code);
+                                buttonConfirm.setEnabled(false);
                             }
                         });
                     }
