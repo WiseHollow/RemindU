@@ -7,8 +7,8 @@ android {
         applicationId "net.johnbrooks.remindu"
         minSdkVersion 22
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.57 Alpha"
+        versionCode 2
+        versionName "1.58 Alpha"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
