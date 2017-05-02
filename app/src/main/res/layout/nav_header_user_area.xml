@@ -16,7 +16,7 @@
         android:id="@+id/drawer_profile_picture"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:background="@android:drawable/sym_def_app_icon"
+        android:background="@drawable/avatar_generic_default"
         />
 
     <LinearLayout
