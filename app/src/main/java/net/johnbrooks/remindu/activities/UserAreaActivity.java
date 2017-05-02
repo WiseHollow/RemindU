@@ -170,6 +170,8 @@ public class UserAreaActivity extends AppCompatActivity implements NavigationVie
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
+        if (UserProfile.PROFILE == null)
+            return super.onPrepareOptionsMenu(menu);
         findViewById(R.id.drawer_profile_picture).setBackground(AvatarImageUtil.GetAvatar(UserProfile.PROFILE.GetAvatarID()));
         ((TextView) findViewById(R.id.drawer_profile_name)).setText(UserProfile.PROFILE.GetFullName());
         ((TextView) findViewById(R.id.drawer_profile_email)).setText(UserProfile.PROFILE.GetEmail());

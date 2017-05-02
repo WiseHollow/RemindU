@@ -59,21 +59,18 @@ public class Network
 
         boolean connected = false;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (connectivityManager.getNetworkInfo(connectivityManager.getActiveNetwork()).getState() == NetworkInfo.State.CONNECTED)
+        if (connectivityManager != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && connectivityManager.getActiveNetwork() != null))
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (connectivityManager.getNetworkInfo(connectivityManager.getActiveNetwork()).getState() == NetworkInfo.State.CONNECTED)
+                    connected = true;
+            }
+            else if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                    connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)
+            {
                 connected = true;
+            }
         }
-        else if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)
-        {
-            connected = true;
-        }
-        //if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
-        {
-
-        }
-
-
 
         if (connected)
             return true;
@@ -88,9 +85,9 @@ public class Network
                             .setAction("Action", null).show();
                 }
             }
-
-            return false;
         }
+
+        return false;
     }
 
     /*public static final boolean IsConnected(Activity activity)
